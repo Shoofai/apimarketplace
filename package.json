@@ -14,7 +14,8 @@
     "test:e2e:ui": "playwright test --ui",
     "load:marketplace": "k6 run tests/load/marketplace.js",
     "load:dashboard": "k6 run tests/load/dashboard.js",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "create-test-users": "tsx scripts/create-test-users.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
@@ -68,11 +69,13 @@
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.14",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "jsdom": "^25.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "^5",
     "vitest": "^2.1.8",
     "webpack-bundle-analyzer": "^4.10.2"
