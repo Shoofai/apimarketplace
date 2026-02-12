@@ -80,8 +80,8 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
+      <div>
+        <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
         <p className="text-muted-foreground mt-2">
           Sign in to your account to continue
         </p>
