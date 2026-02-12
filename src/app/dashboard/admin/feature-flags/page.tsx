@@ -4,8 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Flag, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Flag } from 'lucide-react';
+
+async function toggleFlag(flagName: string, isEnabled: boolean) {
+  'use server';
+  const supabase = await createClient();
+
+  await supabase
+    .from('feature_flags')
+    .update({ enabled_globally: isEnabled })
+    .eq('name', flagName);
+}
 
 export default async function FeatureFlagsPage() {
   const supabase = await createClient();
@@ -32,7 +41,7 @@ export default async function FeatureFlagsPage() {
   const { data: flags } = await supabase
     .from('feature_flags')
     .select('*')
-    .order('flag_name');
+    .order('name');
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -52,49 +61,44 @@ export default async function FeatureFlagsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action="/api/admin/feature-flags/update" method="POST">
-            <div className="space-y-6">
-              {flags?.map((flag) => (
-                <div
-                  key={flag.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
+          <div className="space-y-6">
+            {flags?.map((flag) => (
+              <form key={flag.id} action={async (formData: FormData) => {
+                'use server';
+                const isChecked = formData.get(flag.name) === 'on';
+                await toggleFlag(flag.name, isChecked);
+              }}>
+                <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Label htmlFor={flag.flag_key} className="text-base font-medium">
-                        {flag.flag_name}
+                      <Label htmlFor={flag.name} className="text-base font-medium">
+                        {flag.name}
                       </Label>
-                      <Badge variant={flag.is_enabled ? 'default' : 'secondary'}>
-                        {flag.is_enabled ? 'Enabled' : 'Disabled'}
+                      <Badge variant={flag.enabled_globally ? 'default' : 'secondary'}>
+                        {flag.enabled_globally ? 'Enabled' : 'Disabled'}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{flag.description}</p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded mt-2 inline-block">
-                      {flag.flag_key}
-                    </code>
                   </div>
                   <div className="ml-4">
                     <Switch
-                      id={flag.flag_key}
-                      name={flag.flag_key}
-                      defaultChecked={flag.is_enabled}
-                      data-flag-key={flag.flag_key}
+                      id={flag.name}
+                      name={flag.name}
+                      defaultChecked={flag.enabled_globally}
                       onCheckedChange={async (checked) => {
-                        // Update via API
-                        await fetch(`/api/admin/feature-flags/${flag.flag_key}`, {
+                        await fetch(`/api/admin/feature-flags/${encodeURIComponent(flag.name)}`, {
                           method: 'PATCH',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ is_enabled: checked }),
                         });
-                        // Reload page to reflect changes
                         window.location.reload();
                       }}
                     />
                   </div>
                 </div>
-              ))}
-            </div>
-          </form>
+              </form>
+            ))}
+          </div>
 
           {flags?.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
@@ -113,8 +117,8 @@ export default async function FeatureFlagsPage() {
           <div>
             <h4 className="font-medium mb-2">Launch Page</h4>
             <p className="text-sm text-muted-foreground">
-              When enabled, shows the marketing landing page to all visitors. When disabled,
-              shows the main application home page.
+              When enabled, shows the marketing landing page to all visitors. When disabled
+              (default), shows the main application home page.
             </p>
           </div>
           <div>

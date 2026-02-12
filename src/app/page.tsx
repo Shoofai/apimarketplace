@@ -16,7 +16,7 @@ import { ArrowRight, Code, Zap, Shield, TrendingUp } from 'lucide-react';
 
 export default async function Home() {
   // Check if launch page is enabled
-  const showLaunchPage = await getFeatureFlag('launch_page_enabled');
+  const showLaunchPage = await getFeatureFlag('Launch Page');
 
   if (showLaunchPage) {
     // Show marketing launch page

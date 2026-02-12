@@ -1,34 +1,34 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 
 /**
- * Get feature flag value
+ * Get feature flag value by name
  */
-export async function getFeatureFlag(flagKey: string): Promise<boolean> {
+export async function getFeatureFlag(flagName: string): Promise<boolean> {
   const supabase = createAdminClient();
   
   const { data, error } = await supabase
     .from('feature_flags')
-    .select('is_enabled')
-    .eq('flag_key', flagKey)
+    .select('enabled_globally')
+    .eq('name', flagName)
     .single();
 
   if (error || !data) {
     return false;
   }
 
-  return data.is_enabled;
+  return data.enabled_globally;
 }
 
 /**
  * Set feature flag value
  */
-export async function setFeatureFlag(flagKey: string, isEnabled: boolean): Promise<void> {
+export async function setFeatureFlag(flagName: string, isEnabled: boolean): Promise<void> {
   const supabase = createAdminClient();
 
   await supabase
     .from('feature_flags')
-    .update({ is_enabled: isEnabled })
-    .eq('flag_key', flagKey);
+    .update({ enabled_globally: isEnabled })
+    .eq('name', flagName);
 }
 
 /**
@@ -40,7 +40,7 @@ export async function getAllFeatureFlags() {
   const { data, error } = await supabase
     .from('feature_flags')
     .select('*')
-    .order('flag_name');
+    .order('name');
 
   if (error) {
     return [];
