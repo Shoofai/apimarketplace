@@ -8,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Users, Copy, Check, Share2, MessageSquare } from 'lucide-react';
-import { RequestBuilder } from '@/components/features/sandbox/RequestBuilder';
-import { ResponseViewer } from '@/components/features/sandbox/ResponseViewer';
+import { RequestBuilder, ResponseViewer } from '@/components/features/sandbox/RequestBuilder';
 
 interface Participant {
   user_id: string;

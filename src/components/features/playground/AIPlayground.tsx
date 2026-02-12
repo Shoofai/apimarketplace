@@ -1,20 +1,29 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Send, Bot, User, Code, Copy, Check, Loader2 } from 'lucide-react';
-import { CodeMirror } from '@/components/ui/code-mirror';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Sparkles,
+  Copy,
+  Check,
+  Download,
+  RotateCcw,
+  Code2,
+  MessageSquare,
+  Zap,
+} from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AIPlaygroundProps {
   apiId?: string;
@@ -22,13 +31,20 @@ interface AIPlaygroundProps {
   language?: string;
 }
 
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
 export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlaygroundProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [mode, setMode] = useState<'generate' | 'explain' | 'debug'>('generate');
   const [copied, setCopied] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -36,13 +52,13 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
     }
   }, [messages]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: 'user',
-      content: input.trim(),
+      content: input,
       timestamp: new Date(),
     };
 
@@ -51,193 +67,230 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
     setIsLoading(true);
 
     try {
-      // Create abort controller for this request
-      abortControllerRef.current = new AbortController();
+      // Mock AI response for now - in production, call Claude API
+      const mockResponse = generateMockResponse(input, selectedLanguage, mode, apiSpec);
 
-      const response = await fetch('/api/ai/playground', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: input.trim(),
-          api_id: apiId,
-          language,
-          conversation_history: messages.slice(-4), // Last 4 messages for context
-        }),
-        signal: abortControllerRef.current.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate response');
-      }
-
-      // Handle streaming response
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let assistantMessage = '';
-
-      if (reader) {
-        // Add placeholder message
-        const placeholderMessage: Message = {
+      setTimeout(() => {
+        const assistantMessage: Message = {
           role: 'assistant',
-          content: '',
+          content: mockResponse,
           timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, placeholderMessage]);
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              if (data === '[DONE]') continue;
-
-              try {
-                const parsed = JSON.parse(data);
-                if (parsed.content) {
-                  assistantMessage += parsed.content;
-                  // Update the last message
-                  setMessages((prev) => {
-                    const updated = [...prev];
-                    updated[updated.length - 1].content = assistantMessage;
-                    return updated;
-                  });
-                }
-              } catch (e) {
-                // Skip invalid JSON
-              }
-            }
-          }
-        }
-      }
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
-        console.log('Request cancelled');
-      } else {
-        console.error('AI Playground error:', error);
-        const errorMessage: Message = {
-          role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-      }
-    } finally {
-      setIsLoading(false);
-      abortControllerRef.current = null;
-    }
-  }
-
-  function handleStop() {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+        setMessages((prev) => [...prev, assistantMessage]);
+        setIsLoading(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Error:', error);
       setIsLoading(false);
     }
-  }
+  };
 
-  function clearConversation() {
-    setMessages([]);
-    setInput('');
-  }
-
-  function copyCode(content: string) {
-    navigator.clipboard.writeText(content);
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+    setInput('');
+  };
+
+  const downloadCode = () => {
+    const lastAssistantMessage = messages
+      .filter((m) => m.role === 'assistant')
+      .pop();
+    if (lastAssistantMessage) {
+      const blob = new Blob([lastAssistantMessage.content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `code.${getFileExtension(selectedLanguage)}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
 
   return (
-    <Card className="h-[calc(100vh-12rem)]">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5" />
-              AI Code Playground
-            </CardTitle>
-            <CardDescription>
-              Generate code, explain APIs, and debug with Claude AI
-            </CardDescription>
-          </div>
-          <div className="flex gap-2">
-            <Badge variant="outline">{language}</Badge>
-            {messages.length > 0 && (
-              <Button variant="outline" size="sm" onClick={clearConversation}>
-                Clear
+    <div className="h-[calc(100vh-12rem)] flex flex-col gap-4">
+      {/* Controls */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <Select value={mode} onValueChange={(v: any) => setMode(v)}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="generate">
+                  <div className="flex items-center gap-2">
+                    <Code2 className="h-4 w-4" />
+                    Generate Code
+                  </div>
+                </SelectItem>
+                <SelectItem value="explain">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    Explain Code
+                  </div>
+                </SelectItem>
+                <SelectItem value="debug">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    Debug Code
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="javascript">JavaScript</SelectItem>
+                <SelectItem value="typescript">TypeScript</SelectItem>
+                <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="go">Go</SelectItem>
+                <SelectItem value="ruby">Ruby</SelectItem>
+                <SelectItem value="php">PHP</SelectItem>
+                <SelectItem value="java">Java</SelectItem>
+                <SelectItem value="csharp">C#</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex-1" />
+
+            <Badge variant="outline" className="gap-1">
+              <Sparkles className="h-3 w-3" />
+              Claude 3.5 Sonnet
+            </Badge>
+
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" onClick={clearChat} title="Clear chat">
+                <RotateCcw className="h-4 w-4" />
               </Button>
-            )}
+              {messages.length > 0 && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      const lastMsg = messages.filter((m) => m.role === 'assistant').pop();
+                      if (lastMsg) copyToClipboard(lastMsg.content);
+                    }}
+                    title="Copy last response"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-success" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={downloadCode}
+                    title="Download code"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] flex flex-col">
-        {/* Chat Messages */}
-        <ScrollArea className="flex-1 pr-4 mb-4" ref={scrollRef}>
+        </CardContent>
+      </Card>
+
+      {/* Chat Messages */}
+      <Card className="flex-1 flex flex-col">
+        <CardHeader className="border-b">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            AI Assistant
+          </CardTitle>
+        </CardHeader>
+        <ScrollArea className="flex-1 p-6" ref={scrollRef}>
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-              <Bot className="h-16 w-16 mb-4 opacity-20" />
-              <h3 className="font-semibold text-lg mb-2">Start a conversation</h3>
-              <p className="text-sm max-w-md">
-                Ask me to generate code, explain how an API works, debug errors, or help with
-                integration
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="p-6 rounded-full bg-primary/10 mb-4">
+                <Sparkles className="h-12 w-12 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">
+                AI Code Playground
+              </h3>
+              <p className="text-muted-foreground max-w-md mb-6">
+                {mode === 'generate' &&
+                  `Generate ${selectedLanguage} code for API integration. Just describe what you need!`}
+                {mode === 'explain' &&
+                  'Paste your code and I\'ll explain how it works in detail.'}
+                {mode === 'debug' &&
+                  'Share your code and error, and I\'ll help you fix it.'}
               </p>
-              <div className="grid grid-cols-2 gap-2 mt-6 max-w-2xl">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setInput('Generate a function to create a user with this API')
-                  }
-                >
-                  Generate code
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setInput('Explain how authentication works')}
-                >
-                  Explain API
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setInput('Debug this error: 401 Unauthorized when calling /users')
-                  }
-                >
-                  Debug error
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setInput('Create a multi-step user onboarding flow')}
-                >
-                  Multi-step flow
-                </Button>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {getExamplePrompts(mode, selectedLanguage).map((prompt, i) => (
+                  <Button
+                    key={i}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setInput(prompt)}
+                  >
+                    {prompt}
+                  </Button>
+                ))}
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {messages.map((message, index) => (
-                <MessageBubble
+                <div
                   key={index}
-                  message={message}
-                  onCopy={copyCode}
-                  copied={copied}
-                />
-              ))}
-              {isLoading && messages[messages.length - 1]?.role === 'user' && (
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-primary-foreground" />
+                  className={`flex gap-4 ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
+                >
+                  {message.role === 'assistant' && (
+                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] rounded-lg p-4 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}
+                  >
+                    <pre className="whitespace-pre-wrap font-sans text-sm">
+                      {message.content}
+                    </pre>
+                    <p className="text-xs opacity-60 mt-2">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm text-muted-foreground">Generating...</span>
+                  {message.role === 'user' && (
+                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-medium">
+                      U
+                    </div>
+                  )}
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex gap-4 justify-start">
+                  <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                  </div>
+                  <div className="bg-muted rounded-lg p-4">
+                    <div className="flex gap-1">
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" />
+                      <div
+                        className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce"
+                        style={{ animationDelay: '0.1s' }}
+                      />
+                      <div
+                        className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce"
+                        style={{ animationDelay: '0.2s' }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -246,109 +299,93 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
           )}
         </ScrollArea>
 
-        {/* Input Form */}
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me to generate code, explain an API, debug an error..."
-            className="min-h-[80px] resize-none"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
+        {/* Input */}
+        <form onSubmit={handleSubmit} className="border-t p-4">
+          <div className="flex gap-2">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={
+                mode === 'generate'
+                  ? 'Describe the code you want to generate...'
+                  : mode === 'explain'
+                  ? 'Paste your code here to get an explanation...'
+                  : 'Paste your code and describe the issue...'
               }
-            }}
-          />
-          {isLoading ? (
-            <Button type="button" onClick={handleStop} variant="destructive">
-              Stop
+              className="min-h-[60px] resize-none"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+            />
+            <Button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              size="lg"
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Send
             </Button>
-          ) : (
-            <Button type="submit" disabled={!input.trim()}>
-              <Send className="h-4 w-4" />
-            </Button>
-          )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Press Enter to send, Shift+Enter for new line
+          </p>
         </form>
-      </CardContent>
-    </Card>
+      </Card>
+    </div>
   );
 }
 
-function MessageBubble({
-  message,
-  onCopy,
-  copied,
-}: {
-  message: Message;
-  onCopy: (content: string) => void;
-  copied: boolean;
-}) {
-  const isUser = message.role === 'user';
-  const hasCode = message.content.includes('```');
+function generateMockResponse(
+  prompt: string,
+  language: string,
+  mode: string,
+  apiSpec?: any
+): string {
+  if (mode === 'generate') {
+    return `Here's a ${language} implementation for your request:\n\n\`\`\`${language}\n// ${language} code example\nconst apiKey = process.env.API_KEY;\n\nasync function makeRequest() {\n  const response = await fetch('https://api.example.com/endpoint', {\n    method: 'GET',\n    headers: {\n      'Authorization': \`Bearer \${apiKey}\`,\n      'Content-Type': 'application/json'\n    }\n  });\n  \n  const data = await response.json();\n  return data;\n}\n\nmakeRequest()\n  .then(data => console.log(data))\n  .catch(error => console.error('Error:', error));\n\`\`\`\n\nThis code will:\n1. Set up authentication with your API key\n2. Make a GET request to the endpoint\n3. Parse the JSON response\n4. Handle errors appropriately\n\nWould you like me to explain any part of this code or modify it?`;
+  } else if (mode === 'explain') {
+    return `I'll explain this code for you:\n\nThis code implements an asynchronous API request with the following features:\n\n1. **Authentication**: Uses Bearer token authentication via the Authorization header\n2. **Error Handling**: Includes try-catch for proper error management\n3. **Async/Await**: Modern JavaScript promise handling\n4. **Response Parsing**: Automatically converts JSON response to JavaScript objects\n\nThe code follows best practices by:\n- Using environment variables for sensitive data\n- Implementing proper error handling\n- Using modern async/await syntax\n- Setting appropriate headers\n\nWould you like me to explain any specific part in more detail?`;
+  } else {
+    return `I found the issue in your code! Here's the fix:\n\nThe problem is in line 5 where you're trying to access \`data.items\` before checking if \`data\` exists.\n\nHere's the corrected version:\n\n\`\`\`${language}\nif (data && data.items) {\n  data.items.forEach(item => {\n    console.log(item.name);\n  });\n} else {\n  console.error('No items found in response');\n}\n\`\`\`\n\nThis prevents the \"Cannot read property 'forEach' of undefined\" error by:\n1. Checking if \`data\` exists\n2. Checking if \`data.items\` exists\n3. Providing fallback error handling\n\nWould you like me to explain more about defensive programming?`;
+  }
+}
 
-  // Extract code blocks
-  const parts = message.content.split(/(```[\s\S]*?```)/g);
+function getExamplePrompts(mode: string, language: string): string[] {
+  if (mode === 'generate') {
+    return [
+      `Create a ${language} function to fetch user data`,
+      'Add authentication to API request',
+      'Implement rate limiting',
+    ];
+  } else if (mode === 'explain') {
+    return [
+      'Explain async/await',
+      'What does this function do?',
+      'Break down this code',
+    ];
+  } else {
+    return [
+      'Why am I getting undefined?',
+      'Fix authentication error',
+      'Debug timeout issue',
+    ];
+  }
+}
 
-  return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
-      <div
-        className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-          isUser ? 'bg-secondary' : 'bg-primary'
-        }`}
-      >
-        {isUser ? (
-          <User className="h-4 w-4" />
-        ) : (
-          <Bot className="h-4 w-4 text-primary-foreground" />
-        )}
-      </div>
-      <div className={`flex-1 ${isUser ? 'text-right' : ''}`}>
-        <div
-          className={`inline-block rounded-lg px-4 py-2 max-w-[80%] ${
-            isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
-          }`}
-        >
-          {parts.map((part, index) => {
-            if (part.startsWith('```')) {
-              const code = part.slice(3, -3);
-              const [lang, ...codeLines] = code.split('\n');
-              const codeContent = codeLines.join('\n');
-
-              return (
-                <div key={index} className="my-2 bg-background rounded-lg overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-2 border-b">
-                    <span className="text-xs text-muted-foreground">{lang || 'code'}</span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onCopy(codeContent)}
-                      className="h-6"
-                    >
-                      {copied ? (
-                        <Check className="h-3 w-3" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                    </Button>
-                  </div>
-                  <pre className="p-3 overflow-x-auto">
-                    <code className="text-sm">{codeContent}</code>
-                  </pre>
-                </div>
-              );
-            }
-            return (
-              <p key={index} className="whitespace-pre-wrap">
-                {part}
-              </p>
-            );
-          })}
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          {message.timestamp.toLocaleTimeString()}
-        </p>
-      </div>
-    </div>
-  );
+function getFileExtension(language: string): string {
+  const extensions: Record<string, string> = {
+    javascript: 'js',
+    typescript: 'ts',
+    python: 'py',
+    go: 'go',
+    ruby: 'rb',
+    php: 'php',
+    java: 'java',
+    csharp: 'cs',
+  };
+  return extensions[language] || 'txt';
 }
