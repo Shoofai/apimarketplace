@@ -43,12 +43,12 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
   ]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">API Marketplace</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold mb-2">API Marketplace</h1>
+          <p className="text-muted-foreground">
             Discover and integrate powerful APIs to accelerate your development
           </p>
         </div>
@@ -58,15 +58,15 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
         <div className="flex gap-8">
           {/* Sidebar Filters */}
           <aside className="w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
-              <h2 className="font-semibold text-gray-900 mb-4">Categories</h2>
+            <div className="bg-card rounded-lg border border-border p-6 sticky top-8">
+              <h2 className="font-semibold mb-4">Categories</h2>
               <div className="space-y-2">
                 <a
                   href="/marketplace"
-                  className={`block px-3 py-2 rounded-md text-sm ${
+                  className={`block px-3 py-2 rounded-md text-sm transition-colors ${
                     !category
-                      ? 'bg-blue-50 text-blue-700 font-medium'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-primary text-primary-foreground font-medium'
+                      : 'text-foreground hover:bg-accent'
                   }`}
                 >
                   All APIs
@@ -75,10 +75,10 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
                   <a
                     key={cat.id}
                     href={`/marketplace?category=${cat.id}`}
-                    className={`block px-3 py-2 rounded-md text-sm ${
+                    className={`block px-3 py-2 rounded-md text-sm transition-colors ${
                       category === cat.id
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-primary text-primary-foreground font-medium'
+                        : 'text-foreground hover:bg-accent'
                     }`}
                   >
                     {cat.name}
@@ -91,10 +91,10 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
           {/* Main Content */}
           <main className="flex-1">
             {/* Search and Sort */}
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div className="bg-card rounded-lg border border-border p-4 mb-6">
               <div className="flex gap-4">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     type="search"
                     placeholder="Search APIs..."
@@ -121,7 +121,7 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
 
             {/* Results */}
             <div className="mb-6">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Showing {searchResults.apis.length} of {searchResults.total} APIs
                 {query && ` for "${query}"`}
               </p>
@@ -135,10 +135,10 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-                <Filter className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No APIs found</h3>
-                <p className="text-gray-600 mb-4">
+              <div className="bg-card rounded-lg border border-border p-12 text-center">
+                <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium mb-2">No APIs found</h3>
+                <p className="text-muted-foreground mb-4">
                   Try adjusting your search or filters
                 </p>
                 <Button asChild variant="outline">

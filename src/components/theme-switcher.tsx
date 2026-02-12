@@ -3,15 +3,13 @@
 import * as React from 'react';
 import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalTitle,
-  ModalTrigger,
-} from '@/components/ui/modal';
-import { cn } from '@/lib/cn';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
@@ -24,92 +22,37 @@ export function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="h-9 w-9">
-        <Sun className="h-5 w-5" />
+      <Button variant="ghost" size="icon" className="w-9 h-9">
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle theme</span>
       </Button>
     );
   }
 
-  const themes = [
-    {
-      id: 'light',
-      name: 'Light',
-      icon: Sun,
-      description: 'Light mode for bright environments',
-    },
-    {
-      id: 'dark',
-      name: 'Dark',
-      icon: Moon,
-      description: 'Dark mode for low-light environments',
-    },
-    {
-      id: 'system',
-      name: 'System',
-      icon: Monitor,
-      description: 'Automatically match your device settings',
-    },
-  ];
-
-  const currentTheme = themes.find((t) => t.id === theme) || themes[0];
-  const CurrentIcon = currentTheme.icon;
-
   return (
-    <Modal>
-      <ModalTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 transition-transform hover:scale-110"
-        >
-          <CurrentIcon className="h-5 w-5 transition-transform duration-300" />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="w-9 h-9">
+          {theme === 'light' && <Sun className="h-[1.2rem] w-[1.2rem]" />}
+          {theme === 'dark' && <Moon className="h-[1.2rem] w-[1.2rem]" />}
+          {theme === 'system' && <Monitor className="h-[1.2rem] w-[1.2rem]" />}
           <span className="sr-only">Toggle theme</span>
         </Button>
-      </ModalTrigger>
-      <ModalContent className="max-w-md">
-        <ModalHeader>
-          <ModalTitle>Choose Theme</ModalTitle>
-        </ModalHeader>
-        <div className="grid gap-3 py-4">
-          {themes.map((themeOption) => {
-            const Icon = themeOption.icon;
-            const isActive = theme === themeOption.id;
-
-            return (
-              <button
-                key={themeOption.id}
-                onClick={() => setTheme(themeOption.id)}
-                className={cn(
-                  'flex items-start gap-4 rounded-lg border-2 p-4 text-left transition-all hover:bg-accent',
-                  isActive
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
-                )}
-              >
-                <div
-                  className={cn(
-                    'rounded-lg p-2 transition-colors',
-                    isActive ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{themeOption.name}</span>
-                    {isActive && (
-                      <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{themeOption.description}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </ModalContent>
-    </Modal>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          <Sun className="mr-2 h-4 w-4" />
+          <span>Light</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          <Moon className="mr-2 h-4 w-4" />
+          <span>Dark</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>
+          <Monitor className="mr-2 h-4 w-4" />
+          <span>System</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
