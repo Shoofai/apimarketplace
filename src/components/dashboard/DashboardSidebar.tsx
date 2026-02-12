@@ -15,13 +15,16 @@ import {
   Workflow,
   Globe,
   TestTube2,
+  Layers,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface DashboardSidebarProps {
   user: {
     is_platform_admin: boolean;
     organizations?: {
       type: string;
+      plan: string;
     };
   };
 }
@@ -34,12 +37,14 @@ interface NavItem {
   adminOnly?: boolean;
   providerOnly?: boolean;
   consumerOnly?: boolean;
+  comingSoon?: boolean;
 }
 
 export default function DashboardSidebar({ user }: DashboardSidebarProps) {
   const pathname = usePathname();
   const isAdmin = user.is_platform_admin;
   const orgType = user.organizations?.type;
+  const orgPlan = user.organizations?.plan;
   const isProvider = orgType === 'provider' || orgType === 'both';
   const isConsumer = orgType === 'consumer' || orgType === 'both';
 
@@ -63,7 +68,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     {
       title: 'Subscriptions',
       href: '/dashboard/subscriptions',
-      icon: Users,
+      icon: Layers,
       consumerOnly: true,
     },
     {
@@ -75,6 +80,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       title: 'AI Playground',
       href: '/dashboard/playground',
       icon: Zap,
+      badge: orgPlan === 'free' ? '50/day' : undefined,
     },
     {
       title: 'Sandbox',
@@ -85,11 +91,13 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       title: 'Workflows',
       href: '/dashboard/workflows',
       icon: Workflow,
+      comingSoon: orgPlan === 'free',
     },
     {
       title: 'Collaborative Testing',
       href: '/dashboard/collab',
       icon: Code2,
+      comingSoon: orgPlan === 'free',
     },
     {
       title: 'Settings',
@@ -144,44 +152,59 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
   });
 
   return (
-    <aside className="hidden lg:block w-64 border-r bg-card min-h-[calc(100vh-4rem)]">
-      <nav className="p-4 space-y-2">
+    <aside className="hidden lg:block w-64 border-r bg-card/50 min-h-[calc(100vh-4rem)] backdrop-blur-sm">
+      <nav className="p-4 space-y-6">
         {/* Main Navigation */}
-        <div className="space-y-1">
-          {filteredNavItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-            const Icon = item.icon;
+        <div>
+          <div className="px-3 mb-2">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Main
+            </h3>
+          </div>
+          <div className="space-y-1">
+            {filteredNavItems.map((item) => {
+              const isActive = pathname === item.href || (pathname !== '/dashboard' && pathname.startsWith(item.href + '/'));
+              const Icon = item.icon;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{item.title}</span>
-                {item.badge && (
-                  <span className="ml-auto text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={item.comingSoon ? '#' : item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                    isActive
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                    item.comingSoon && 'opacity-50 cursor-not-allowed'
+                  )}
+                  onClick={(e) => item.comingSoon && e.preventDefault()}
+                >
+                  <Icon className={cn('h-4 w-4', isActive && 'text-primary-foreground')} />
+                  <span className="flex-1">{item.title}</span>
+                  {item.badge && (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
+                      {item.badge}
+                    </Badge>
+                  )}
+                  {item.comingSoon && (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+                      Soon
+                    </Badge>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {/* Admin Section */}
         {isAdmin && (
-          <>
-            <div className="pt-4 pb-2">
-              <div className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <div>
+            <div className="px-3 mb-2">
+              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <Crown className="h-3 w-3" />
                 Platform Admin
-              </div>
+              </h3>
             </div>
             <div className="space-y-1">
               {adminItems.map((item) => {
@@ -193,19 +216,39 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
                       isActive
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className={cn('h-4 w-4', isActive && 'text-primary-foreground')} />
                     <span>{item.title}</span>
                   </Link>
                 );
               })}
             </div>
-          </>
+          </div>
+        )}
+
+        {/* Upgrade CTA for Free Users */}
+        {orgPlan === 'free' && (
+          <div className="px-3 pt-4">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+              <h4 className="font-semibold text-sm mb-1 flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Upgrade to Pro
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                Unlock unlimited AI generations, workflows, and collaboration
+              </p>
+              <Link href="/pricing">
+                <Button size="sm" className="w-full">
+                  Upgrade Now
+                </Button>
+              </Link>
+            </div>
+          </div>
         )}
       </nav>
     </aside>

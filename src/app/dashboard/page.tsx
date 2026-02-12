@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Activity,
   Box,
@@ -11,8 +12,14 @@ import {
   Crown,
   DollarSign,
   TrendingUp,
+  TrendingDown,
   Users,
   Zap,
+  ArrowUpRight,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -59,48 +66,61 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          Welcome back, {userData.full_name}
-          {isAdmin && <Crown className="w-6 h-6 text-yellow-500" />}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          {org?.name} • {org?.plan.charAt(0).toUpperCase() + org?.plan.slice(1)} Plan
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold flex items-center gap-3 mb-2">
+            Welcome back, {userData.full_name}
+            {isAdmin && <Crown className="w-7 h-7 text-primary" />}
+          </h1>
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <span className="text-lg">{org?.name}</span>
+            <span className="text-muted-foreground/50">•</span>
+            <Badge variant="outline" className="text-xs font-medium border-primary/30 text-primary">
+              {org?.plan.charAt(0).toUpperCase() + org?.plan.slice(1)} Plan
+            </Badge>
+          </div>
+        </div>
+        {isAdmin && (
+          <Link href="/dashboard/admin">
+            <Button size="lg" className="gap-2">
+              <Crown className="w-4 h-4" />
+              Admin Dashboard
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Platform Admin Section */}
       {isAdmin && (
-        <Card className="border-primary/50 bg-primary/5">
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/5 to-accent/10 dark:from-primary/10 dark:via-primary/5 dark:to-accent/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-xl">
               <Crown className="w-5 h-5 text-primary" />
               Platform Admin Access
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-base">
               Manage platform operations, review APIs, and monitor system health
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex gap-3 flex-wrap">
-              <Link href="/dashboard/admin">
-                <Button variant="default">
-                  <Activity className="w-4 h-4 mr-2" />
-                  Admin Dashboard
-                </Button>
-              </Link>
               <Link href="/dashboard/admin/apis/review">
-                <Button variant="outline">
+                <Button variant="default" size="lg">
                   Review APIs
                 </Button>
               </Link>
               <Link href="/dashboard/admin/feature-flags">
-                <Button variant="outline">
+                <Button variant="outline" size="lg">
                   Feature Flags
                 </Button>
               </Link>
+              <Link href="/dashboard/admin/users">
+                <Button variant="outline" size="lg">
+                  Manage Users
+                </Button>
+              </Link>
               <Link href="/dashboard/admin/tracker">
-                <Button variant="outline">
+                <Button variant="outline" size="lg">
                   Implementation Tracker
                 </Button>
               </Link>
@@ -111,36 +131,45 @@ export default async function DashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          Quick Actions
+          <Zap className="w-5 h-5 text-primary" />
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isProvider && (
             <>
-              <Link href="/dashboard/apis/new">
-                <Card className="cursor-pointer hover:bg-accent transition-colors">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Publish API
-                    </CardTitle>
-                    <Box className="h-4 w-4 text-muted-foreground" />
+              <Link href="/dashboard/apis/new" className="group">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <Box className="h-5 w-5" />
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-muted-foreground">
+                    <CardTitle className="text-lg mb-2">Publish API</CardTitle>
+                    <p className="text-sm text-muted-foreground">
                       Upload OpenAPI spec and create new API
                     </p>
                   </CardContent>
                 </Card>
               </Link>
 
-              <Link href="/dashboard/provider/analytics">
-                <Card className="cursor-pointer hover:bg-accent transition-colors">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Provider Analytics
-                    </CardTitle>
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              <Link href="/dashboard/provider/analytics" className="group">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <BarChart3 className="h-5 w-5" />
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-muted-foreground">
+                    <CardTitle className="text-lg mb-2">Provider Analytics</CardTitle>
+                    <p className="text-sm text-muted-foreground">
                       View revenue and subscriber metrics
                     </p>
                   </CardContent>
@@ -151,32 +180,38 @@ export default async function DashboardPage() {
 
           {isConsumer && (
             <>
-              <Link href="/marketplace">
-                <Card className="cursor-pointer hover:bg-accent transition-colors">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Browse APIs
-                    </CardTitle>
-                    <Box className="h-4 w-4 text-muted-foreground" />
+              <Link href="/marketplace" className="group">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <Box className="h-5 w-5" />
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-muted-foreground">
+                    <CardTitle className="text-lg mb-2">Browse APIs</CardTitle>
+                    <p className="text-sm text-muted-foreground">
                       Discover and subscribe to APIs
                     </p>
                   </CardContent>
                 </Card>
               </Link>
 
-              <Link href="/dashboard/sandbox">
-                <Card className="cursor-pointer hover:bg-accent transition-colors">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      API Sandbox
-                    </CardTitle>
-                    <Code2 className="h-4 w-4 text-muted-foreground" />
+              <Link href="/dashboard/sandbox" className="group">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <Code2 className="h-5 w-5" />
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-muted-foreground">
+                    <CardTitle className="text-lg mb-2">API Sandbox</CardTitle>
+                    <p className="text-sm text-muted-foreground">
                       Test APIs in isolated environment
                     </p>
                   </CardContent>
@@ -185,32 +220,38 @@ export default async function DashboardPage() {
             </>
           )}
 
-          <Link href="/dashboard/playground">
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  AI Playground
-                </CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground" />
+          <Link href="/dashboard/playground" className="group">
+            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <Zap className="h-5 w-5" />
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">
+                <CardTitle className="text-lg mb-2">AI Playground</CardTitle>
+                <p className="text-sm text-muted-foreground">
                   Generate code with Claude AI
                 </p>
               </CardContent>
             </Card>
           </Link>
 
-          <Link href="/dashboard/analytics">
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Analytics
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <Link href="/dashboard/analytics" className="group">
+            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">
+                <CardTitle className="text-lg mb-2">Analytics</CardTitle>
+                <p className="text-sm text-muted-foreground">
                   View usage and performance data
                 </p>
               </CardContent>
@@ -229,7 +270,14 @@ export default async function DashboardPage() {
 
       {/* Recent Activity */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Recent Activity</h2>
+          <Link href="/dashboard/activity">
+            <Button variant="ghost" size="sm">
+              View All
+            </Button>
+          </Link>
+        </div>
         <Suspense fallback={<ActivitySkeleton />}>
           <RecentActivity userId={userData.id} />
         </Suspense>
@@ -267,75 +315,109 @@ async function DashboardStats({
     publishedAPIsCount = count || 0;
   }
 
-  // Get total API calls (mock data for now)
-  const totalAPICalls = 0;
-
-  // Get total revenue (mock data for now)
-  const totalRevenue = 0;
+  // Mock data for trends (would be calculated from historical data)
+  const mockTrends = {
+    apis: { value: 0, isPositive: true },
+    subscribers: { value: 0, isPositive: true },
+    revenue: { value: 0, isPositive: true },
+    calls: { value: 0, isPositive: true },
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {isProvider && (
         <>
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Published APIs
               </CardTitle>
-              <Box className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Box className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{publishedAPIsCount}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="flex items-baseline gap-2">
+                <div className="text-3xl font-bold">{publishedAPIsCount}</div>
+                <div className="flex items-center gap-1 text-xs text-success">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>+{mockTrends.apis.value}%</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
                 Active in marketplace
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Subscribers
               </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Users className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="flex items-baseline gap-2">
+                <div className="text-3xl font-bold">0</div>
+                <div className="flex items-center gap-1 text-xs text-success">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>+{mockTrends.subscribers.value}%</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
                 Across all APIs
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Monthly Revenue
               </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <DollarSign className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${totalRevenue}</div>
-              <p className="text-xs text-muted-foreground">
-                +0% from last month
+              <div className="flex items-baseline gap-2">
+                <div className="text-3xl font-bold">$0</div>
+                <div className="flex items-center gap-1 text-xs text-success">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>+{mockTrends.revenue.value}%</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                vs. last month
               </p>
             </CardContent>
           </Card>
         </>
       )}
 
-      <Card>
+      <Card className="hover:shadow-md transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
             {isProvider ? 'API Calls' : 'Active Subscriptions'}
           </CardTitle>
-          <Activity className="h-4 w-4 text-muted-foreground" />
+          <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            <Activity className="h-4 w-4" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {isProvider ? totalAPICalls : subscriptionCount || 0}
+          <div className="flex items-baseline gap-2">
+            <div className="text-3xl font-bold">
+              {isProvider ? '0' : subscriptionCount || 0}
+            </div>
+            <div className="flex items-center gap-1 text-xs text-success">
+              <TrendingUp className="h-3 w-3" />
+              <span>+{mockTrends.calls.value}%</span>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground mt-2">
             {isProvider ? 'This month' : 'Current subscriptions'}
           </p>
         </CardContent>
@@ -352,19 +434,61 @@ async function RecentActivity({ userId }: { userId: string }) {
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(8);
 
   if (!activities || activities.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">
-            No recent activity to display
-          </p>
+      <Card className="border-dashed">
+        <CardContent className="p-12 text-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="p-4 rounded-full bg-muted">
+              <Clock className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="font-medium mb-1">No recent activity</p>
+              <p className="text-sm text-muted-foreground">
+                Your activity will appear here as you use the platform
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
   }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'success':
+        return <CheckCircle className="h-4 w-4 text-success" />;
+      case 'failed':
+      case 'error':
+        return <XCircle className="h-4 w-4 text-destructive" />;
+      case 'pending':
+        return <AlertCircle className="h-4 w-4 text-warning" />;
+      default:
+        return <Activity className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'success':
+        return <Badge className="bg-success/10 text-success hover:bg-success/20 border-success/30">Success</Badge>;
+      case 'failed':
+      case 'error':
+        return <Badge variant="destructive">Failed</Badge>;
+      case 'pending':
+        return <Badge className="bg-warning/10 text-warning hover:bg-warning/20 border-warning/30">Pending</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const formatAction = (action: string) => {
+    return action.split('.').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
 
   return (
     <Card>
@@ -373,17 +497,35 @@ async function RecentActivity({ userId }: { userId: string }) {
           {activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex items-start justify-between border-b pb-4 last:border-0 last:pb-0"
+              className="flex items-start gap-4 pb-4 last:pb-0 border-b last:border-0 border-border/50"
             >
-              <div>
-                <p className="font-medium">{activity.action}</p>
+              <div className="p-2 rounded-lg bg-muted flex-shrink-0">
+                {getStatusIcon(activity.status)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <p className="font-medium text-sm">
+                    {formatAction(activity.action)}
+                  </p>
+                  {getStatusBadge(activity.status)}
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  {activity.resource_type} • {activity.status}
+                  {activity.resource_type}
+                  {activity.metadata && typeof activity.metadata === 'object' && (
+                    <span className="text-xs ml-2">
+                      {Object.keys(activity.metadata).length} details
+                    </span>
+                  )}
                 </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {new Date(activity.created_at).toLocaleDateString()}
-              </p>
+              <div className="text-xs text-muted-foreground flex-shrink-0">
+                {new Date(activity.created_at).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </div>
             </div>
           ))}
         </div>
@@ -399,10 +541,10 @@ function StatsSkeleton() {
         <Card key={i}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-            <div className="h-4 w-4 bg-muted animate-pulse rounded" />
+            <div className="h-10 w-10 bg-muted animate-pulse rounded-lg" />
           </CardHeader>
           <CardContent>
-            <div className="h-8 w-16 bg-muted animate-pulse rounded mb-2" />
+            <div className="h-10 w-20 bg-muted animate-pulse rounded mb-2" />
             <div className="h-3 w-32 bg-muted animate-pulse rounded" />
           </CardContent>
         </Card>
@@ -416,12 +558,13 @@ function ActivitySkeleton() {
     <Card>
       <CardContent className="p-6">
         <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="flex items-start justify-between border-b pb-4 last:border-0"
+              className="flex items-start gap-4 pb-4 border-b last:border-0"
             >
-              <div className="space-y-2">
+              <div className="h-10 w-10 bg-muted animate-pulse rounded-lg" />
+              <div className="flex-1 space-y-2">
                 <div className="h-4 w-48 bg-muted animate-pulse rounded" />
                 <div className="h-3 w-32 bg-muted animate-pulse rounded" />
               </div>

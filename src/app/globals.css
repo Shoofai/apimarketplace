@@ -11,25 +11,33 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%; /* Blue primary */
+    --primary: 262 83% 58%; /* Purple primary - Violet-500 */
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 220 14% 96%;
     --muted-foreground: 215 16% 47%; /* Better contrast for muted text */
-    --accent: 220 14% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 262 90% 96%; /* Light purple tint */
+    --accent-foreground: 262 83% 30%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 221 83% 53%;
+    --ring: 262 83% 58%;
     --radius: 0.5rem;
     
+    /* Additional colors for badges and status */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    
     /* Chart colors - light mode */
-    --chart-1: 221 83% 53%;
+    --chart-1: 262 83% 58%;
     --chart-2: 142 76% 36%;
-    --chart-3: 262 83% 58%;
+    --chart-3: 199 89% 48%;
     --chart-4: 32 95% 44%;
     --chart-5: 340 82% 52%;
   }
@@ -42,24 +50,32 @@
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%; /* Lighter blue for dark mode */
+    --primary: 262 80% 65%; /* Lighter purple for dark mode - Violet-400 */
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 19%; /* Better contrast secondary */
     --secondary-foreground: 210 40% 98%;
     --muted: 223 47% 19%;
     --muted-foreground: 215 20% 65%; /* More readable muted text */
-    --accent: 217 91% 60%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 262 70% 25%; /* Dark purple tint */
+    --accent-foreground: 262 80% 85%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
     --border: 217 33% 17%; /* Subtle borders */
     --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    --ring: 262 80% 65%;
+    
+    /* Additional colors for badges and status */
+    --success: 142 69% 58%;
+    --success-foreground: 222 47% 11%;
+    --warning: 32 98% 56%;
+    --warning-foreground: 222 47% 11%;
+    --info: 199 89% 58%;
+    --info-foreground: 222 47% 11%;
     
     /* Chart colors - dark mode (brighter, more vibrant) */
-    --chart-1: 217 91% 60%;
+    --chart-1: 262 80% 65%;
     --chart-2: 142 69% 58%;
-    --chart-3: 262 80% 65%;
+    --chart-3: 199 89% 58%;
     --chart-4: 32 98% 56%;
     --chart-5: 340 75% 55%;
   }
