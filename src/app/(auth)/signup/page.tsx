@@ -111,7 +111,7 @@ export default function SignupPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold">Create your account</h2>
+        <h2 className="text-2xl font-bold text-foreground">Create your account</h2>
         <p className="text-muted-foreground mt-2">
           Get started with APIMarketplace Pro today
         </p>
@@ -167,7 +167,7 @@ export default function SignupPage() {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-muted-foreground">
+          <span className="bg-card dark:bg-card px-2 text-muted-foreground">
             Or continue with email
           </span>
         </div>
@@ -259,18 +259,18 @@ export default function SignupPage() {
 
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+        <Link href="/login" className="text-primary hover:text-primary/80 font-medium transition-colors">
           Sign in
         </Link>
       </div>
 
       <p className="text-xs text-center text-muted-foreground">
         By creating an account, you agree to our{' '}
-        <Link href="/terms" className="underline hover:text-primary-600">
+        <Link href="/terms" className="underline hover:text-foreground transition-colors">
           Terms of Service
         </Link>{' '}
         and{' '}
-        <Link href="/privacy" className="underline hover:text-primary-600">
+        <Link href="/privacy" className="underline hover:text-foreground transition-colors">
           Privacy Policy
         </Link>
       </p>

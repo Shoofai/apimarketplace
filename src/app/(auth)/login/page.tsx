@@ -81,7 +81,7 @@ export default function LoginPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold">Welcome back</h2>
+        <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
         <p className="text-muted-foreground mt-2">
           Sign in to your account to continue
         </p>
@@ -137,7 +137,7 @@ export default function LoginPage() {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-muted-foreground">
+          <span className="bg-card dark:bg-card px-2 text-muted-foreground">
             Or continue with email
           </span>
         </div>
@@ -186,7 +186,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-end">
             <Link
               href="/forgot-password"
-              className="text-sm text-primary-600 hover:text-primary-700"
+              className="text-sm text-primary hover:text-primary/80 transition-colors"
             >
               Forgot password?
             </Link>
@@ -200,7 +200,7 @@ export default function LoginPage() {
 
       <div className="text-center text-sm text-muted-foreground">
         Don't have an account?{' '}
-        <Link href="/signup" className="text-primary-600 hover:text-primary-700 font-medium">
+        <Link href="/signup" className="text-primary hover:text-primary/80 font-medium transition-colors">
           Sign up
         </Link>
       </div>
