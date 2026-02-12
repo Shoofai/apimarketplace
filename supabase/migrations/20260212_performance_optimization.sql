@@ -5,7 +5,7 @@ SELECT
   (SELECT COUNT(*) FROM api_subscriptions WHERE status = 'active') as active_subscriptions,
   (SELECT COUNT(*) FROM users) as total_users,
   (SELECT COUNT(*) FROM organizations) as total_organizations,
-  (SELECT COALESCE(SUM(total_amount), 0) FROM invoices WHERE status = 'paid' AND created_at > NOW() - INTERVAL '30 days') as revenue_30d,
+  (SELECT COALESCE(SUM(total), 0) FROM invoices WHERE status = 'paid' AND created_at > NOW() - INTERVAL '30 days') as revenue_30d,
   NOW() as last_updated;
 
 -- Create index on the materialized view
@@ -33,14 +33,14 @@ SELECT
   COUNT(DISTINCT s.id) as subscriber_count,
   COALESCE(AVG(r.rating), 0) as avg_rating,
   COUNT(DISTINCT r.id) as review_count,
-  COALESCE(SUM(ur.request_count), 0) as total_requests,
+  COALESCE(SUM(ur.total_calls), 0) as total_requests,
   a.created_at,
   NOW() as last_updated
 FROM apis a
 LEFT JOIN organizations o ON a.organization_id = o.id
 LEFT JOIN api_subscriptions s ON a.id = s.api_id AND s.status = 'active'
 LEFT JOIN api_reviews r ON a.id = r.api_id
-LEFT JOIN usage_records_daily ur ON a.id = ur.api_id AND ur.date > NOW() - INTERVAL '30 days'
+LEFT JOIN usage_records_daily ur ON a.id = ur.api_id AND ur.day > NOW() - INTERVAL '30 days'
 WHERE a.status = 'published'
 GROUP BY a.id, o.name, o.slug;
 
@@ -62,7 +62,7 @@ $$;
 -- Add performance tracking indexes
 CREATE INDEX IF NOT EXISTS idx_api_requests_log_created_at ON api_requests_log(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_api_requests_log_api_subscription ON api_requests_log(api_id, subscription_id, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_usage_records_daily_date ON usage_records_daily(date DESC, api_id);
+CREATE INDEX IF NOT EXISTS idx_usage_records_daily_date ON usage_records_daily(day DESC, api_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_status_created ON invoices(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, is_read, created_at DESC) WHERE is_read = false;
 
