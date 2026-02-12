@@ -1,4 +1,6 @@
 import { getFeatureFlag } from '@/lib/utils/feature-flags';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import Hero from '@/components/landing/Hero';
 import ValueProposition from '@/components/landing/ValueProposition';
 import ProblemStatement from '@/components/landing/ProblemStatement';
@@ -16,6 +18,14 @@ import { ArrowRight, Code, Zap, Shield, TrendingUp } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export default async function Home() {
+  // Check if user is logged in and redirect to dashboard
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (user) {
+    redirect('/dashboard');
+  }
+
   // Check if launch page is enabled
   const showLaunchPage = await getFeatureFlag('Launch Page');
 
@@ -57,10 +67,10 @@ export default async function Home() {
               <Link href="/marketplace" className="text-sm font-medium transition-colors hover:text-primary">
                 Marketplace
               </Link>
-              <Link href="/dashboard/playground" className="text-sm font-medium transition-colors hover:text-primary">
+              <Link href="/login" className="text-sm font-medium transition-colors hover:text-primary">
                 Playground
               </Link>
-              <Link href="/dashboard/sandbox" className="text-sm font-medium transition-colors hover:text-primary">
+              <Link href="/login" className="text-sm font-medium transition-colors hover:text-primary">
                 Sandbox
               </Link>
             </nav>
@@ -177,7 +187,7 @@ export default async function Home() {
               </div>
             </Link>
 
-            <Link href="/dashboard/playground">
+            <Link href="/login">
               <div className="p-6 bg-background border rounded-lg hover:shadow-lg transition-shadow cursor-pointer">
                 <h3 className="font-semibold text-lg mb-2">AI Playground</h3>
                 <p className="text-sm text-muted-foreground">
@@ -186,7 +196,7 @@ export default async function Home() {
               </div>
             </Link>
 
-            <Link href="/dashboard/sandbox">
+            <Link href="/login">
               <div className="p-6 bg-background border rounded-lg hover:shadow-lg transition-shadow cursor-pointer">
                 <h3 className="font-semibold text-lg mb-2">Test Console</h3>
                 <p className="text-sm text-muted-foreground">

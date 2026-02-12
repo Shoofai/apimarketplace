@@ -2,17 +2,26 @@ import type { Metadata } from 'next';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Link from 'next/link';
 import { ArrowLeft, Code2, Zap, Shield, TrendingUp } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Authentication - APIMarketplace Pro',
   description: 'Sign in or create an account',
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Redirect logged-in users to dashboard
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (user) {
+    redirect('/dashboard');
+  }
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding & Features */}
