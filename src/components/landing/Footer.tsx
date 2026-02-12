@@ -27,11 +27,10 @@ const footerLinks = {
     { name: 'Press Kit', href: '#press' },
   ],
   legal: [
-    { name: 'Privacy Policy', href: '#privacy' },
-    { name: 'Terms of Service', href: '#terms' },
-    { name: 'Cookie Policy', href: '#cookies' },
-    { name: 'Security', href: '#security' },
-    { name: 'Compliance', href: '#compliance' },
+    { name: 'Privacy Policy', href: '/legal/privacy' },
+    { name: 'Terms of Service', href: '/legal/terms' },
+    { name: 'Cookie Policy', href: '/legal/cookies' },
+    { name: 'Cookie Settings', href: '/legal/cookie-settings' },
   ],
 };
 
@@ -135,7 +134,7 @@ export default function Footer() {
               Legal
             </h3>
             <ul className="space-y-3">
-              {footerLinks.legal.slice(0, 2).map((link) => (
+              {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
