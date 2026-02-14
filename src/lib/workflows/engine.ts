@@ -80,8 +80,8 @@ export class WorkflowEngine {
         throw new Error('Workflow not found');
       }
 
-      const nodes: WorkflowNode[] = workflow.nodes || [];
-      const edges: WorkflowEdge[] = workflow.edges || [];
+      const nodes: WorkflowNode[] = (workflow.nodes as WorkflowNode[] | null) ?? [];
+      const edges: WorkflowEdge[] = (workflow.edges as WorkflowEdge[] | null) ?? [];
 
       // Topologically sort nodes
       const sortedNodes = this.topologicalSort(nodes, edges);
@@ -132,7 +132,7 @@ export class WorkflowEngine {
         .from('workflow_definitions')
         .update({
           last_executed_at: new Date().toISOString(),
-          execution_count: workflow.execution_count + 1,
+          execution_count: (workflow.execution_count ?? 0) + 1,
         })
         .eq('id', workflowId);
 

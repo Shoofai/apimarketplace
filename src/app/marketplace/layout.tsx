@@ -44,14 +44,21 @@ export default async function MarketplaceLayout({
     redirect('/login');
   }
 
+  const org = Array.isArray(userData.organizations) ? userData.organizations[0] : userData.organizations;
+  const userForNav = {
+    ...userData,
+    is_platform_admin: userData.is_platform_admin ?? false,
+    organizations: org ? { name: org.name, plan: org.plan ?? 'free', type: org.type } : undefined,
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation */}
-      <DashboardNav user={userData} />
+      <DashboardNav user={userForNav} />
 
       <div className="flex">
         {/* Sidebar */}
-        <DashboardSidebar user={userData} />
+        <DashboardSidebar user={userForNav} />
 
         {/* Main Content */}
         <main className="flex-1 p-6 lg:p-8">

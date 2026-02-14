@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,13 +19,31 @@ interface WorkflowNode {
   id: string;
   type: 'api_call' | 'transform' | 'condition' | 'delay';
   name: string;
-  config: any;
+  config: Record<string, unknown>;
+}
+
+interface ApiOption {
+  id: string;
+  name: string;
+  slug: string;
+  base_url: string;
 }
 
 export default function WorkflowBuilderPage() {
   const [workflow, setWorkflow] = useState<WorkflowNode[]>([]);
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [savedWorkflowId, setSavedWorkflowId] = useState<string | null>(null);
+  const [apis, setApis] = useState<ApiOption[]>([]);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [runLoading, setRunLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/apis?status=published')
+      .then((res) => res.ok ? res.json() : { apis: [] })
+      .then((data) => setApis(data.apis || []))
+      .catch(() => setApis([]));
+  }, []);
 
   function addNode(type: WorkflowNode['type']) {
     const newNode: WorkflowNode = {
@@ -42,56 +60,96 @@ export default function WorkflowBuilderPage() {
   }
 
   async function saveWorkflow() {
-    const response = await fetch('/api/workflows', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: workflowName,
-        nodes: workflow,
-      }),
-    });
-
-    if (response.ok) {
-      alert('Workflow saved!');
+    setSaveLoading(true);
+    try {
+      if (savedWorkflowId) {
+        const response = await fetch(`/api/workflows/${savedWorkflowId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: workflowName, nodes: workflow, edges: [] }),
+        });
+        if (response.ok) {
+          alert('Workflow updated!');
+        } else {
+          const data = await response.json();
+          alert(data?.error || 'Failed to update');
+        }
+      } else {
+        const response = await fetch('/api/workflows', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: workflowName,
+            nodes: workflow,
+            edges: [],
+          }),
+        });
+        const data = await response.json();
+        if (response.ok && data.workflow?.id) {
+          setSavedWorkflowId(data.workflow.id);
+          alert('Workflow saved!');
+        } else {
+          alert(data?.error || 'Failed to save');
+        }
+      }
+    } finally {
+      setSaveLoading(false);
     }
   }
 
   async function runWorkflow() {
-    const response = await fetch('/api/workflows/execute', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        workflow_id: 'temp',
-        nodes: workflow,
-      }),
-    });
-
-    if (response.ok) {
-      alert('Workflow started!');
+    if (!savedWorkflowId) {
+      alert('Save the workflow first, then run it.');
+      return;
+    }
+    setRunLoading(true);
+    try {
+      const response = await fetch(`/api/workflows/${savedWorkflowId}/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: {} }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Workflow ${data.result?.status ?? 'completed'}! Execution ID: ${data.result?.executionId ?? '—'}`);
+      } else {
+        const data = await response.json();
+        alert(data?.error || 'Execution failed');
+      }
+    } finally {
+      setRunLoading(false);
     }
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <Input
-            value={workflowName}
-            onChange={(e) => setWorkflowName(e.target.value)}
-            className="text-2xl font-bold border-0 px-0"
-          />
-          <p className="text-muted-foreground">Visual API workflow builder</p>
+          <h1 className="text-3xl font-bold">API Workflows</h1>
+          <p className="text-muted-foreground">Build and automate multi-step API integrations</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={saveWorkflow}>
+          <Button variant="outline" onClick={saveWorkflow} disabled={saveLoading}>
             <Save className="h-4 w-4 mr-2" />
-            Save
+            {saveLoading ? 'Saving…' : 'Save'}
           </Button>
-          <Button onClick={runWorkflow}>
+          <Button onClick={runWorkflow} disabled={runLoading}>
             <Play className="h-4 w-4 mr-2" />
-            Run
+            {runLoading ? 'Running…' : 'Run'}
           </Button>
         </div>
+      </div>
+
+      {/* Workflow Name */}
+      <div>
+        <Label>Workflow Name</Label>
+        <Input
+          value={workflowName}
+          onChange={(e) => setWorkflowName(e.target.value)}
+          className="max-w-md"
+          placeholder="Enter workflow name"
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-[250px_1fr_300px]">
@@ -244,23 +302,60 @@ export default function WorkflowBuilderPage() {
                         <>
                           <div>
                             <Label>API</Label>
-                            <Select>
+                            <Select
+                              value={(node.config?.apiId as string) ?? ''}
+                              onValueChange={(v) =>
+                                setWorkflow(
+                                  workflow.map((n) =>
+                                    n.id === selectedNode
+                                      ? { ...n, config: { ...n.config, apiId: v } }
+                                      : n
+                                  )
+                                )
+                              }
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="Select API" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="api1">Payment API</SelectItem>
-                                <SelectItem value="api2">User API</SelectItem>
+                                {apis.map((api) => (
+                                  <SelectItem key={api.id} value={api.id}>
+                                    {api.name}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>
                           <div>
                             <Label>Endpoint</Label>
-                            <Input placeholder="/users" />
+                            <Input
+                              placeholder="/users"
+                              value={(node.config?.endpoint as string) ?? ''}
+                              onChange={(e) =>
+                                setWorkflow(
+                                  workflow.map((n) =>
+                                    n.id === selectedNode
+                                      ? { ...n, config: { ...n.config, endpoint: e.target.value } }
+                                      : n
+                                  )
+                                )
+                              }
+                            />
                           </div>
                           <div>
                             <Label>Method</Label>
-                            <Select>
+                            <Select
+                              value={(node.config?.method as string) ?? 'GET'}
+                              onValueChange={(v) =>
+                                setWorkflow(
+                                  workflow.map((n) =>
+                                    n.id === selectedNode
+                                      ? { ...n, config: { ...n.config, method: v } }
+                                      : n
+                                  )
+                                )
+                              }
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="GET" />
                               </SelectTrigger>
@@ -277,18 +372,41 @@ export default function WorkflowBuilderPage() {
 
                       {node.type === 'delay' && (
                         <div>
-                          <Label>Delay (seconds)</Label>
-                          <Input type="number" placeholder="5" />
+                          <Label>Delay (ms)</Label>
+                          <Input
+                            type="number"
+                            placeholder="1000"
+                            value={((node.config?.delayMs as number) ?? 1000) || ''}
+                            onChange={(e) =>
+                              setWorkflow(
+                                workflow.map((n) =>
+                                  n.id === selectedNode
+                                    ? { ...n, config: { ...n.config, delayMs: Number(e.target.value) || 1000 } }
+                                    : n
+                                )
+                              )
+                            }
+                          />
                         </div>
                       )}
 
                       {node.type === 'condition' && (
-                        <>
-                          <div>
-                            <Label>Condition</Label>
-                            <Input placeholder="response.status === 200" />
-                          </div>
-                        </>
+                        <div>
+                          <Label>Condition</Label>
+                          <Input
+                            placeholder="response.status === 200"
+                            value={(node.config?.condition as string) ?? ''}
+                            onChange={(e) =>
+                              setWorkflow(
+                                workflow.map((n) =>
+                                  n.id === selectedNode
+                                    ? { ...n, config: { ...n.config, condition: e.target.value } }
+                                    : n
+                                )
+                              )
+                            }
+                          />
+                        </div>
                       )}
                     </>
                   );

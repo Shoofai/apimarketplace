@@ -20,8 +20,8 @@ export async function POST(req: Request) {
 
     const { data: userData } = await supabase
       .from('users')
-      .select('id, default_organization_id')
-      .eq('auth_id', user.id)
+      .select('id, current_organization_id')
+      .eq('id', user.id)
       .single();
 
     // Create deletion request with 30-day grace period
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       .from('data_deletion_requests')
       .insert({
         user_id: userData?.id,
-        organization_id: userData?.default_organization_id,
+        organization_id: userData?.current_organization_id,
         reason,
         status: 'grace_period',
         grace_period_ends_at: gracePeriodEndsAt.toISOString(),
@@ -53,46 +53,3 @@ export async function POST(req: Request) {
   }
 }
 
-/**
- * DELETE /api/gdpr/delete/[id]
- * Cancel deletion request during grace period
- */
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('id')
-      .eq('auth_id', user.id)
-      .single();
-
-    // Cancel the deletion request
-    const { error } = await supabase
-      .from('data_deletion_requests')
-      .update({ status: 'cancelled' })
-      .eq('id', params.id)
-      .eq('user_id', userData?.id)
-      .eq('status', 'grace_period');
-
-    if (error) {
-      throw error;
-    }
-
-    return NextResponse.json({
-      message: 'Account deletion cancelled successfully.',
-    });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}

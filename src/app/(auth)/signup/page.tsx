@@ -22,10 +22,12 @@ import { Separator } from '@/components/ui/separator';
 import { useSupabase } from '@/hooks/useSupabase';
 import { signupSchema, type SignupInput } from '@/lib/validations';
 import { generateSlug } from '@/lib/utils/slug';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 export default function SignupPage() {
   const router = useRouter();
   const supabase = useSupabase();
+  const platformName = usePlatformName();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -113,7 +115,7 @@ export default function SignupPage() {
       <div>
         <h2 className="text-3xl font-bold text-foreground">Create your account</h2>
         <p className="text-muted-foreground mt-2">
-          Get started with APIMarketplace Pro today
+          Get started with {platformName} today
         </p>
       </div>
 
@@ -266,11 +268,11 @@ export default function SignupPage() {
 
       <p className="text-xs text-center text-muted-foreground">
         By creating an account, you agree to our{' '}
-        <Link href="/terms" className="underline hover:text-foreground transition-colors">
+        <Link href="/legal/terms" className="underline hover:text-foreground transition-colors">
           Terms of Service
         </Link>{' '}
         and{' '}
-        <Link href="/privacy" className="underline hover:text-foreground transition-colors">
+        <Link href="/legal/privacy" className="underline hover:text-foreground transition-colors">
           Privacy Policy
         </Link>
       </p>

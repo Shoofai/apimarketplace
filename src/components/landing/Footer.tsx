@@ -1,30 +1,45 @@
 'use client';
 
 import { useState } from 'react';
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { Github, Twitter, Linkedin, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 const footerLinks = {
   product: [
-    { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'API Gateway', href: '#gateway' },
-    { name: 'Documentation', href: '#docs' },
-    { name: 'Changelog', href: '#changelog' },
+    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'API Directory', href: '/directory' },
+    { name: 'Documentation', href: '/docs' },
+    { name: 'API Status', href: '/status' },
   ],
-  resources: [
-    { name: 'Blog', href: '#blog' },
-    { name: 'Case Studies', href: '#case-studies' },
-    { name: 'API Reference', href: '#api-ref' },
-    { name: 'Status', href: '#status' },
-    { name: 'Support', href: '#support' },
+  forDevelopers: [
+    { name: 'Browse APIs', href: '/marketplace' },
+    { name: 'Compare APIs', href: '/marketplace/compare' },
+    { name: 'Collections', href: '/collections' },
+    { name: 'AI Playground', href: '/login', locked: true },
+    { name: 'Sandbox', href: '/login', locked: true },
+    { name: 'Integration Guides', href: '/docs' },
+  ],
+  forProviders: [
+    { name: 'List Your API', href: '/signup' },
+    { name: 'Monetization', href: '/pricing' },
+    { name: 'Referrals', href: '/login', locked: true },
+    { name: 'Affiliates', href: '/login', locked: true },
+    { name: 'Provider Resources', href: '/docs' },
   ],
   company: [
-    { name: 'About', href: '#about' },
-    { name: 'Careers', href: '#careers' },
-    { name: 'Contact', href: '#contact' },
-    { name: 'Partners', href: '#partners' },
-    { name: 'Press Kit', href: '#press' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Use Cases', href: '/use-cases' },
+    { name: 'Contact & Support', href: '/contact' },
+  ],
+  resources: [
+    { name: 'Help Center', href: '/docs' },
+    { name: 'Security & Compliance', href: '/security' },
+    { name: 'API Directory', href: '/directory' },
+    { name: 'Challenges', href: '/login', locked: true },
+    { name: 'Forum', href: '/login', locked: true },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/legal/privacy' },
@@ -35,6 +50,7 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const platformName = usePlatformName();
   const [email, setEmail] = useState('');
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -47,36 +63,36 @@ export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        {/* Top Section */}
-        <div className="mb-12 grid gap-8 lg:grid-cols-5">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <div className="mb-4 flex items-center gap-2">
+        {/* Row 1: Branding + Newsletter (full width) */}
+        <div className="mb-12 flex flex-col gap-6 border-b border-gray-200 pb-12 dark:border-gray-800 md:flex-row md:items-center md:justify-between md:gap-8">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
               <span className="text-2xl">🚀</span>
-              <span className="text-xl font-black text-gray-900 dark:text-white">APIMarketplace Pro</span>
+              <span className="text-xl font-black text-gray-900 dark:text-white">{platformName}</span>
             </div>
-            <p className="mb-6 max-w-md text-gray-600 dark:text-gray-400">
+            <p className="max-w-md text-gray-600 dark:text-gray-400">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs
               at scale.
             </p>
-
-            {/* Newsletter */}
-            <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-foreground placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-900 dark:placeholder:text-gray-400"
-                required
-              />
-              <Button type="submit" size="sm">
-                Subscribe
-              </Button>
-            </form>
           </div>
+          <form onSubmit={handleNewsletterSubmit} className="flex shrink-0 gap-2 md:max-w-sm md:flex-1">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-foreground placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-900 dark:placeholder:text-gray-400"
+              required
+            />
+            <Button type="submit" size="sm">
+              Subscribe
+            </Button>
+          </form>
+        </div>
 
-          {/* Links */}
+        {/* Row 2: Link columns (6 columns on lg) */}
+        <div className="mb-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
+          {/* Product */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
               Product
@@ -84,17 +100,81 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* For Developers */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
+              For Developers
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.forDevelopers.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex items-center gap-1.5 text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                  >
+                    {link.name}
+                    {'locked' in link && link.locked && (
+                      <Lock className="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-gray-500" aria-hidden />
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* For Providers */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
+              For Providers
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.forProviders.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex items-center gap-1.5 text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                  >
+                    {link.name}
+                    {'locked' in link && link.locked && (
+                      <Lock className="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-gray-500" aria-hidden />
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
+              Company
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.company.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
               Resources
@@ -102,56 +182,60 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
-                    className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                    className="inline-flex items-center gap-1.5 text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
                   >
                     {link.name}
-                  </a>
+                    {'locked' in link && link.locked && (
+                      <Lock className="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-gray-500" aria-hidden />
+                    )}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Legal */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
-              Company
-            </h3>
-            <ul className="mb-6 space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
               Legal
             </h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
+        {/* Trust signals */}
+        <div className="flex flex-wrap items-center justify-center gap-6 border-t border-gray-200 py-6 dark:border-gray-800">
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            10K+ APIs · 500K+ Developers
+          </span>
+          <span className="rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            SOC 2 Ready
+          </span>
+          <span className="rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            GDPR Compliant
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-500">
+            Payments powered by Stripe
+          </span>
+        </div>
+
         {/* Bottom Section */}
         <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-8 dark:border-gray-800 sm:flex-row">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            © {new Date().getFullYear()} APIMarketplace Pro. All rights reserved.
+            © {new Date().getFullYear()} {platformName}. All rights reserved.
           </p>
 
           {/* Social Icons */}

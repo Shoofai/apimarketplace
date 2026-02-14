@@ -69,7 +69,7 @@ export async function dispatchNotification(event: NotificationEvent): Promise<vo
       .eq('event_type', event.type)
       .maybeSingle();
 
-    const defaultChannels = NOTIFICATION_EVENTS[event.type as keyof typeof NOTIFICATION_EVENTS]?.channels || ['in_app'];
+    const defaultChannels: string[] = [...(NOTIFICATION_EVENTS[event.type as keyof typeof NOTIFICATION_EVENTS]?.channels ?? ['in_app'])];
 
     const emailEnabled = preferences?.email_enabled ?? defaultChannels.includes('email');
     const inAppEnabled = preferences?.in_app_enabled ?? defaultChannels.includes('in_app');

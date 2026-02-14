@@ -1,12 +1,23 @@
-import { createClient } from 'redis';
 import { logger } from '@/lib/utils/logger';
 
-let redisClient: ReturnType<typeof createClient> | null = null;
+interface RedisClientLike {
+  get(key: string): Promise<string | null>;
+  setEx(key: string, seconds: number, value: string): Promise<void>;
+  del(key: string | string[]): Promise<number>;
+  keys(pattern: string): Promise<string[]>;
+  exists(key: string): Promise<number>;
+  ping(): Promise<string>;
+  on(event: string, listener: (err: Error) => void): void;
+  connect(): Promise<void>;
+}
+
+let redisClient: RedisClientLike | null = null;
 
 /**
- * Get Redis client singleton
+ * Get Redis client singleton. Uses dynamic import so the optional redis package
+ * does not break the build when missing or unresolved.
  */
-export async function getRedisClient() {
+export async function getRedisClient(): Promise<RedisClientLike | null> {
   if (!process.env.REDIS_URL) {
     logger.warn('REDIS_URL not configured, caching disabled');
     return null;
@@ -17,17 +28,18 @@ export async function getRedisClient() {
   }
 
   try {
-    redisClient = createClient({
+    const { createClient } = await import('redis');
+    const client = createClient({
       url: process.env.REDIS_URL,
     });
 
-    redisClient.on('error', (err) => {
+    client.on('error', (err: Error) => {
       logger.error('Redis Client Error', { error: err });
     });
 
-    await redisClient.connect();
+    await client.connect();
     logger.info('Redis client connected');
-
+    redisClient = client as RedisClientLike;
     return redisClient;
   } catch (error) {
     logger.error('Failed to connect to Redis', { error });

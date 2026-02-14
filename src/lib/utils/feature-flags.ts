@@ -16,7 +16,7 @@ export async function getFeatureFlag(flagName: string): Promise<boolean> {
     return false;
   }
 
-  return data.enabled_globally;
+  return data.enabled_globally ?? false;
 }
 
 /**

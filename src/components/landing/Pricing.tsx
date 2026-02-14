@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -126,14 +127,14 @@ export default function Pricing() {
               transition={{ delay: index * 0.1 }}
             >
               <Card
-                className={`relative flex h-full flex-col p-8 ${
+                className={`relative flex h-full flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
                   tier.popular
-                    ? 'border-2 border-primary-500 shadow-xl dark:border-primary-400'
-                    : 'border border-gray-200 dark:border-gray-800'
+                    ? 'border-2 border-primary-500 shadow-xl ring-4 ring-primary-500/10 dark:border-primary-400 dark:ring-primary-400/10'
+                    : 'border border-gray-200 hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-700'
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 px-4 py-1 text-sm font-semibold text-white shadow-lg">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 px-6 py-2 text-sm font-bold tracking-wide text-white shadow-lg shadow-primary-500/30">
                     Most Popular
                   </div>
                 )}
@@ -185,9 +186,14 @@ export default function Pricing() {
                   variant={tier.popular ? 'gradient' : 'outline'}
                   size="lg"
                   className="w-full"
-                  onClick={() => handlePricingCTA(tier.name)}
+                  asChild
                 >
-                  {tier.cta}
+                  <Link
+                    href={tier.name === 'Enterprise' ? '/signup?plan=enterprise' : '/signup'}
+                    onClick={() => handlePricingCTA(tier.name)}
+                  >
+                    {tier.cta}
+                  </Link>
                 </Button>
               </Card>
             </motion.div>

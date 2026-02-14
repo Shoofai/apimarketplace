@@ -16,11 +16,11 @@ export async function POST() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get user's default organization
+    // Get user's current organization
     const { data: userData } = await supabase
       .from('users')
-      .select('default_organization_id')
-      .eq('auth_id', user.id)
+      .select('id, current_organization_id')
+      .eq('id', user.id)
       .single();
 
     // Create export request
@@ -28,7 +28,7 @@ export async function POST() {
       .from('data_export_requests')
       .insert({
         user_id: userData?.id,
-        organization_id: userData?.default_organization_id,
+        organization_id: userData?.current_organization_id,
         status: 'pending',
       })
       .select()
@@ -48,7 +48,7 @@ export async function POST() {
       },
       body: JSON.stringify({
         user_id: userData?.id,
-        organization_id: userData?.default_organization_id,
+        organization_id: userData?.current_organization_id,
         request_id: request.id,
       }),
     });
@@ -81,7 +81,7 @@ export async function GET() {
     const { data: userData } = await supabase
       .from('users')
       .select('id')
-      .eq('auth_id', user.id)
+      .eq('id', user.id)
       .single();
 
     const { data: requests } = await supabase

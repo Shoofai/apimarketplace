@@ -1,15 +1,17 @@
 'use client';
 
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 export default function Navbar() {
+  const platformName = usePlatformName();
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <span className="text-2xl">🚀</span>
-          <span className="font-heading text-xl font-bold">APIMarketplace Pro</span>
+          <span className="font-heading text-xl font-bold">{platformName}</span>
         </div>
 
         {/* Right side actions */}

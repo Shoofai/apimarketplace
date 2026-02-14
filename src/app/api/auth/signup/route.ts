@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateSlug } from '@/lib/utils/slug';
 import { logger } from '@/lib/utils/logger';
 import { ValidationError } from '@/lib/utils/errors';
+import { rateLimit, RATE_LIMITS } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
+  const rateLimited = rateLimit(request, RATE_LIMITS.auth);
+  if (rateLimited) return rateLimited;
+
   try {
     const body = await request.json();
     const { user_id, email, full_name, organization_name, organization_slug } = body;
@@ -13,11 +18,26 @@ export async function POST(request: Request) {
       throw new ValidationError('Missing required fields');
     }
 
-    const supabase = createAdminClient();
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (user.id !== user_id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    if (user.email !== email) {
+      return NextResponse.json({ error: 'Email does not match authenticated user' }, { status: 403 });
+    }
+
+    const admin = createAdminClient();
 
     // Start a transaction-like operation
     // 1. Create organization
-    const { data: org, error: orgError } = await supabase
+    const { data: org, error: orgError } = await admin
       .from('organizations')
       .insert({
         name: organization_name,
@@ -33,7 +53,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Create user record
-    const { error: userError } = await supabase.from('users').insert({
+    const { error: userError } = await admin.from('users').insert({
       id: user_id,
       email,
       full_name,
@@ -44,12 +64,12 @@ export async function POST(request: Request) {
     if (userError) {
       logger.error('Failed to create user record', { error: userError, user_id });
       // Rollback: delete organization
-      await supabase.from('organizations').delete().eq('id', org.id);
+      await admin.from('organizations').delete().eq('id', org.id);
       throw new Error('Failed to create user record');
     }
 
     // 3. Add user as owner of organization
-    const { error: memberError } = await supabase
+    const { error: memberError } = await admin
       .from('organization_members')
       .insert({
         organization_id: org.id,
@@ -60,13 +80,13 @@ export async function POST(request: Request) {
     if (memberError) {
       logger.error('Failed to add user as org member', { error: memberError, user_id });
       // Rollback: delete user and organization
-      await supabase.from('users').delete().eq('id', user_id);
-      await supabase.from('organizations').delete().eq('id', org.id);
+      await admin.from('users').delete().eq('id', user_id);
+      await admin.from('organizations').delete().eq('id', org.id);
       throw new Error('Failed to create organization membership');
     }
 
     // Log the signup
-    await supabase.from('audit_logs').insert({
+    await admin.from('audit_logs').insert({
       user_id,
       action: 'user.signed_up',
       resource_type: 'user',

@@ -50,7 +50,8 @@ export default async function MyAPIsPage() {
       organizations:current_organization_id (
         id,
         name,
-        type
+        type,
+        slug
       )
     `)
     .eq('id', user.id)
@@ -70,7 +71,7 @@ export default async function MyAPIsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -79,7 +80,7 @@ export default async function MyAPIsPage() {
             Manage and monitor your published APIs
           </p>
         </div>
-        <Link href="/dashboard/admin/apis/review">
+        <Link href="/dashboard/apis/publish">
           <Button size="lg" className="gap-2">
             <Plus className="h-5 w-5" />
             Publish New API
@@ -97,13 +98,13 @@ export default async function MyAPIsPage() {
 
       {/* APIs List */}
       <Suspense fallback={<APIsListSkeleton />}>
-        <APIsList orgId={org.id} />
+        <APIsList orgId={org.id} orgSlug={org.slug ?? 'api'} />
       </Suspense>
     </div>
   );
 }
 
-async function APIsList({ orgId }: { orgId: string }) {
+async function APIsList({ orgId, orgSlug }: { orgId: string; orgSlug: string }) {
   const supabase = await createClient();
 
   // Get APIs with subscriber counts
@@ -134,7 +135,7 @@ async function APIsList({ orgId }: { orgId: string }) {
           <p className="text-muted-foreground text-center mb-6 max-w-md">
             Get started by publishing your first API to the marketplace
           </p>
-          <Link href="/dashboard/admin/apis/review">
+          <Link href="/dashboard/apis/publish">
             <Button size="lg" className="gap-2">
               <Plus className="h-5 w-5" />
               Publish Your First API
@@ -164,6 +165,7 @@ async function APIsList({ orgId }: { orgId: string }) {
         <APICard
           key={api.id}
           api={api}
+          orgSlug={orgSlug}
           subscriberCount={subscriberMap[api.id] || 0}
         />
       ))}
@@ -171,7 +173,7 @@ async function APIsList({ orgId }: { orgId: string }) {
   );
 }
 
-function APICard({ api, subscriberCount }: { api: any; subscriberCount: number }) {
+function APICard({ api, orgSlug, subscriberCount }: { api: any; orgSlug: string; subscriberCount: number }) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
@@ -225,7 +227,7 @@ function APICard({ api, subscriberCount }: { api: any; subscriberCount: number }
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/docs/${api.slug}`}>
+                <Link href={`/docs/${orgSlug}/${api.slug}`}>
                   <FileText className="h-4 w-4 mr-2" />
                   Documentation
                 </Link>

@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Mail } from 'lucide-react';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
-export default function VerifyEmailPage() {
+export default async function VerifyEmailPage() {
+  const platformName = await getPlatformName();
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -25,7 +27,7 @@ export default function VerifyEmailPage() {
 
       <div className="space-y-4">
         <p className="text-sm text-center text-muted-foreground">
-          Once verified, you'll be able to sign in and start using APIMarketplace Pro.
+          Once verified, you'll be able to sign in and start using {platformName}.
         </p>
 
         <Button variant="outline" className="w-full" asChild>

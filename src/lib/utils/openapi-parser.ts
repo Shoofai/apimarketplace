@@ -115,16 +115,25 @@ export async function parseOpenApiSpec(
 
           if (typeof operation !== 'object' || operation === null) continue;
 
+          const op = operation as {
+            summary?: string;
+            description?: string;
+            parameters?: unknown[];
+            requestBody?: unknown;
+            responses?: Record<string, unknown>;
+            tags?: string[];
+            deprecated?: boolean;
+          };
           const endpoint: ParsedEndpoint = {
             method: method.toUpperCase(),
             path,
-            summary: operation.summary,
-            description: operation.description,
-            parameters: operation.parameters || [],
-            requestBody: operation.requestBody,
-            responses: operation.responses || {},
-            tags: operation.tags || [],
-            deprecated: operation.deprecated || false,
+            summary: op.summary,
+            description: op.description,
+            parameters: op.parameters || [],
+            requestBody: op.requestBody,
+            responses: op.responses || {},
+            tags: op.tags || [],
+            deprecated: op.deprecated || false,
           };
 
           endpoints.push(endpoint);
@@ -137,7 +146,7 @@ export async function parseOpenApiSpec(
     if (api.securitySchemes || api.securityDefinitions) {
       const schemes = api.securitySchemes || api.securityDefinitions;
       for (const [name, scheme] of Object.entries(schemes)) {
-        auth.push({ name, ...scheme });
+        auth.push({ name, ...(typeof scheme === 'object' && scheme !== null ? scheme : {}) });
       }
     }
 

@@ -19,6 +19,7 @@ import {
   Code2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { VersionSelector } from './VersionSelector';
 
 interface APIDetailPageProps {
   params: {
@@ -90,8 +91,46 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
     redirect('/dashboard/apis');
   }
 
+  // Fetch versions (api_versions or synthetic from apis for MVP)
+  const { data: apiVersions } = await supabase
+    .from('api_versions')
+    .select('id, version, changelog, is_default, status, created_at')
+    .eq('api_id', params.id)
+    .order('created_at', { ascending: false });
+
+  const versions =
+    apiVersions && apiVersions.length > 0
+      ? apiVersions.map((v) => ({
+          id: v.id,
+          version: v.version,
+          changelog: v.changelog,
+          is_default: v.is_default,
+          status: v.status,
+          created_at: v.created_at,
+        }))
+      : [
+          {
+            id: null as string | null,
+            version: (api as { version?: string }).version || '1.0.0',
+            changelog: null as string | null,
+            is_default: true as boolean | null,
+            status: 'active' as string | null,
+            created_at: api.updated_at,
+          },
+        ];
+
+  const currentVersion = versions.find((v) => v.is_default)?.version ?? versions[0]?.version ?? '1.0.0';
+
+  // Pricing plans (rate limits & quotas for provider view)
+  const { data: pricingPlans } = await supabase
+    .from('api_pricing_plans')
+    .select('id, name, included_calls, rate_limit_per_second, rate_limit_per_day, rate_limit_per_month')
+    .eq('api_id', params.id)
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link href="/dashboard/apis">
@@ -111,7 +150,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          <Link href={`/docs/${api.slug}`}>
+          <Link href={`/docs/${(api.organizations as { slug?: string })?.slug ?? 'api'}/${api.slug}`}>
             <Button variant="outline">
               <FileText className="h-4 w-4 mr-2" />
               Documentation
@@ -133,6 +172,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="versions">Versions</TabsTrigger>
           <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
@@ -148,7 +188,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
               <CardContent className="space-y-4">
                 <div>
                   <div className="text-sm text-muted-foreground mb-1">Version</div>
-                  <div className="font-medium">{api.version || '1.0.0'}</div>
+                  <VersionSelector versions={versions} currentVersion={currentVersion} />
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground mb-1">Status</div>
@@ -184,7 +224,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Link href={`/docs/${api.slug}`}>
+                <Link href={`/docs/${(api.organizations as { slug?: string })?.slug ?? 'api'}/${api.slug}`}>
                   <Button variant="outline" className="w-full justify-start">
                     <FileText className="h-4 w-4 mr-2" />
                     View Documentation
@@ -204,7 +244,102 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 </Link>
               </CardContent>
             </Card>
+
+            {pricingPlans && pricingPlans.length > 0 && (
+              <Card className="md:col-span-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Rate Limits & Quotas</CardTitle>
+                  <CardDescription>
+                    Limits per pricing plan (used by gateway)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-md border">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b bg-muted/50">
+                          <th className="text-left p-3 font-medium">Plan</th>
+                          <th className="text-left p-3 font-medium">Included calls</th>
+                          <th className="text-left p-3 font-medium">Rate limits</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pricingPlans.map((plan) => (
+                          <tr key={plan.id} className="border-b last:border-0">
+                            <td className="p-3 font-medium">{plan.name}</td>
+                            <td className="p-3 text-muted-foreground">
+                              {plan.included_calls != null ? plan.included_calls.toLocaleString() : '—'}
+                            </td>
+                            <td className="p-3 text-muted-foreground">
+                              {[
+                                plan.rate_limit_per_second && `${plan.rate_limit_per_second}/sec`,
+                                plan.rate_limit_per_day && `${plan.rate_limit_per_day}/day`,
+                                plan.rate_limit_per_month && `${plan.rate_limit_per_month}/month`,
+                              ]
+                                .filter(Boolean)
+                                .join(' • ') || '—'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="versions" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>API Versions</CardTitle>
+              <CardDescription>
+                Version history and changelog
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {versions.map((v) => (
+                  <div
+                    key={v.id ?? v.version}
+                    className="rounded-lg border p-4 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold">v{v.version}</span>
+                      <div className="flex items-center gap-2">
+                        {v.is_default && (
+                          <Badge variant="secondary">Default</Badge>
+                        )}
+                        <Badge variant={v.status === 'active' ? 'default' : 'outline'}>
+                          {v.status ?? 'active'}
+                        </Badge>
+                        {v.created_at && (
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(v.created_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {v.changelog && (
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {v.changelog}
+                      </p>
+                    )}
+                    {!v.changelog && (
+                      <p className="text-sm text-muted-foreground italic">
+                        No changelog for this version.
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="subscribers" className="space-y-6">

@@ -18,7 +18,7 @@ export default async function OrganizationManagementPage() {
   const { data: userData } = await supabase
     .from('users')
     .select('is_platform_admin')
-    .eq('auth_id', user.id)
+    .eq('id', user.id)
     .single();
 
   if (!userData?.is_platform_admin) {
@@ -47,7 +47,7 @@ export default async function OrganizationManagementPage() {
   const developerCount = organizations?.filter((o) => o.type === 'developer').length || 0;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Organization Management</h1>
         <p className="text-muted-foreground">Manage organizations and plans</p>

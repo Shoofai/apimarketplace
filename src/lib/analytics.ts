@@ -1,11 +1,44 @@
 import { createClient } from '@/lib/supabase/client';
 
+const CONSENT_PREFERENCES_KEY = 'cookie-preferences';
+const CONSENT_GIVEN_KEY = 'cookie-consent-given';
+
+export type ConsentPreferences = {
+  essential?: boolean;
+  functional?: boolean;
+  analytics?: boolean;
+  performance?: boolean;
+  marketing?: boolean;
+};
+
+/** Respect Do Not Track (DNT) — do not track when user has DNT enabled */
+function isDntEnabled(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  return navigator.doNotTrack === '1' || (typeof window !== 'undefined' && (window as unknown as { doNotTrack?: string }).doNotTrack === '1');
+}
+
+function hasAnalyticsConsent(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (isDntEnabled()) return false;
+  const given = localStorage.getItem(CONSENT_GIVEN_KEY);
+  if (!given) return false;
+  const raw = localStorage.getItem(CONSENT_PREFERENCES_KEY);
+  if (!raw) return false;
+  try {
+    const prefs: ConsentPreferences = JSON.parse(raw);
+    return prefs.analytics === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function trackPageView(data: {
   page_path: string;
   referrer?: string;
   scroll_depth?: number;
   time_on_page?: number;
 }) {
+  if (!hasAnalyticsConsent()) return;
   const supabase = createClient();
   const sessionId = getOrCreateSessionId();
 
@@ -24,6 +57,7 @@ export async function trackCTAClick(data: {
   cta_location: string;
   metadata?: any;
 }) {
+  if (!hasAnalyticsConsent()) return;
   const supabase = createClient();
   const sessionId = getOrCreateSessionId();
 
@@ -41,6 +75,7 @@ export async function trackFeatureDemo(data: {
   interaction_type: 'view' | 'hover' | 'click' | 'demo_open';
   duration_seconds?: number;
 }) {
+  if (!hasAnalyticsConsent()) return;
   const supabase = createClient();
   const sessionId = getOrCreateSessionId();
 

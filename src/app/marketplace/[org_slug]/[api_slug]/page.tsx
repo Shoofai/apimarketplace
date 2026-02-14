@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, Users, ExternalLink, Globe } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/formatting';
+import { APIDetailSubscribe, ChoosePlanButton } from '@/components/marketplace/APIDetailSubscribe';
+import { FavoriteButton } from '@/components/marketplace/FavoriteButton';
+import { ReviewForm } from '@/components/marketplace/ReviewForm';
+import { ReportButton } from '@/components/reports/ReportButton';
+import { getSimilarAPIs } from '@/lib/recommendations/engine';
+import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
+import Link from 'next/link';
 
 interface APIDetailPageProps {
   params: {
@@ -37,7 +44,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       `
       *,
       organization:organizations!apis_organization_id_fkey(
-        id, name, slug, logo_url, website
+        id, name, slug, logo_url, website, settings
       ),
       category:api_categories(name, slug),
       pricing_plans:api_pricing_plans(*),
@@ -57,6 +64,9 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
   const rating = api.avg_rating || 0;
   const reviewCount = api.total_reviews || 0;
+
+  const similarAPIs = await getSimilarAPIs(api.id, api.category_id ?? null, 4);
+  const visibleReviews = (api.reviews ?? []).filter((r: { hidden_at?: string | null }) => !r.hidden_at);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,7 +95,12 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-1">{api.name}</h1>
                   <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <span>by {api.organization.name}</span>
+                    <span>by {api.organization?.name ?? 'Unknown'}</span>
+                    {(api.organization as { settings?: { verified?: boolean } } | null)?.settings?.verified && (
+                      <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
+                        Verified provider
+                      </Badge>
+                    )}
                     {api.category && (
                       <>
                         <span>•</span>
@@ -94,7 +109,22 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                     )}
                   </div>
                 </div>
-                <Button size="lg">Subscribe</Button>
+                <div className="flex items-center gap-2">
+                  <FavoriteButton apiId={api.id} apiName={api.name} initialFavorited={false} />
+                  <APIDetailSubscribe
+                    apiId={api.id}
+                    apiName={api.name}
+                    plans={(api.pricing_plans ?? []).map((p: any) => ({
+                    id: p.id,
+                    name: p.name,
+                    price_monthly: p.price_monthly ?? 0,
+                    included_calls: p.included_calls,
+                    rate_limit_per_minute: p.rate_limit_per_minute,
+                    description: p.description,
+                    features: p.features,
+                  }))}
+                  />
+                </div>
               </div>
 
               <p className="text-gray-700 mb-4">{api.short_description}</p>
@@ -112,9 +142,9 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                   <Users className="w-5 h-5" />
                   <span>{api.total_subscribers || 0} subscribers</span>
                 </div>
-                {api.organization.website && (
+                {api.organization?.website && (
                   <a
-                    href={api.organization.website}
+                    href={api.organization?.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-blue-600 hover:underline"
@@ -140,6 +170,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="docs">Documentation</TabsTrigger>
             <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
+            <TabsTrigger value="status">Status</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -153,27 +184,70 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="text-sm text-gray-600 mb-1">Average Latency</div>
+              <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6 border">
+                <div className="text-sm text-muted-foreground mb-1">Average Latency</div>
                 <div className="text-2xl font-bold">
-                  {api.settings?.avg_latency_ms || 'N/A'}
-                  {api.settings?.avg_latency_ms && (
-                    <span className="text-sm text-gray-500 ml-1">ms</span>
+                  {api.settings?.avg_latency_ms ?? 'N/A'}
+                  {api.settings?.avg_latency_ms != null && (
+                    <span className="text-sm text-muted-foreground ml-1">ms</span>
                   )}
                 </div>
               </div>
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="text-sm text-gray-600 mb-1">Uptime</div>
+              <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6 border">
+                <div className="text-sm text-muted-foreground mb-1">Uptime</div>
                 <div className="text-2xl font-bold">
-                  {api.settings?.uptime_percentage || '99.9'}%
+                  {api.settings?.uptime_percentage ?? '99.9'}%
                 </div>
               </div>
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="text-sm text-gray-600 mb-1">Total Requests</div>
+              <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6 border">
+                <div className="text-sm text-muted-foreground mb-1">Total Requests</div>
                 <div className="text-2xl font-bold">
-                  {(api.settings?.total_requests || 0).toLocaleString()}
+                  {(api.settings?.total_requests ?? 0).toLocaleString()}
                 </div>
               </div>
+            </div>
+
+            {/* SLA & guarantees */}
+            <div className="mt-6 rounded-lg border bg-white dark:bg-card p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">SLA & guarantees</h3>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <dt className="text-muted-foreground font-medium">Uptime SLA</dt>
+                  <dd className="font-semibold mt-0.5">
+                    {(api.settings as { sla_uptime?: number } | null)?.sla_uptime ?? 99.9}%
+                  </dd>
+                  <dd className="text-muted-foreground text-xs mt-0.5">Monthly availability target</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground font-medium">Response time</dt>
+                  <dd className="font-semibold mt-0.5">
+                    p99 &lt; {(api.settings as { sla_response_ms?: number } | null)?.sla_response_ms ?? 500}ms
+                  </dd>
+                  <dd className="text-muted-foreground text-xs mt-0.5">Target latency guarantee</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground font-medium">Support</dt>
+                  <dd className="font-semibold mt-0.5">
+                    {(api.settings as { support_level?: string } | null)?.support_level ?? 'Standard'}
+                  </dd>
+                  <dd className="text-muted-foreground text-xs mt-0.5">Support level</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground font-medium">Credits</dt>
+                  <dd className="font-semibold mt-0.5">
+                    {(api.settings as { sla_credits?: string } | null)?.sla_credits ?? 'Service credits if SLA is missed'}
+                  </dd>
+                  <dd className="text-muted-foreground text-xs mt-0.5">SLA breach remedy</dd>
+                </div>
+              </dl>
+              <p className="text-xs text-muted-foreground mt-4">
+                See status page for live uptime and incident history.
+              </p>
+              <Button variant="outline" size="sm" className="mt-2" asChild>
+                <Link href={`/marketplace/${params.org_slug}/${params.api_slug}/status`}>
+                  View status page
+                </Link>
+              </Button>
             </div>
           </TabsContent>
 
@@ -245,7 +319,20 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                         <li key={i}>✓ {feature}</li>
                       ))}
                     </ul>
-                    <Button className="w-full">Choose Plan</Button>
+                    <ChoosePlanButton
+                        apiId={api.id}
+                        apiName={api.name}
+                        plans={(api.pricing_plans ?? []).map((p: any) => ({
+                          id: p.id,
+                          name: p.name,
+                          price_monthly: p.price_monthly ?? 0,
+                          included_calls: p.included_calls,
+                          rate_limit_per_minute: p.rate_limit_per_minute,
+                          description: p.description,
+                          features: p.features,
+                        }))}
+                        planId={plan.id}
+                      />
                   </div>
                 ))
               ) : (
@@ -274,41 +361,68 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
           {/* Reviews Tab */}
           <TabsContent value="reviews">
-            <div className="space-y-4">
-              {api.reviews && api.reviews.length > 0 ? (
-                api.reviews.map((review: any) => (
-                  <div key={review.id} className="bg-white rounded-lg shadow-sm p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-medium">{review.user?.full_name || 'Anonymous'}</span>
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-4 h-4 ${
-                                  i < review.rating
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'text-gray-300'
-                                }`}
-                              />
-                            ))}
+            <div className="space-y-6">
+              <ReviewForm apiId={api.id} />
+              <div className="space-y-4">
+                {visibleReviews.length > 0 ? (
+                  visibleReviews.map((review: { id: string; user?: { full_name?: string }; rating: number; body?: string | null; title?: string | null }) => (
+                    <div key={review.id} className="bg-white dark:bg-card rounded-lg shadow-sm p-6 border">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-full bg-muted flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-medium">{review.user?.full_name || 'Anonymous'}</span>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 ${
+                                    i < review.rating
+                                      ? 'fill-yellow-400 text-yellow-400'
+                                      : 'text-gray-300 dark:text-muted-foreground/40'
+                                  }`}
+                                />
+                              ))}
+                            </div>
                           </div>
+                          {review.title && (
+                            <p className="font-medium text-foreground mb-1">{review.title}</p>
+                          )}
+                          <p className="text-muted-foreground">{review.body || '—'}</p>
                         </div>
-                        <p className="text-gray-700">{review.comment}</p>
+                        <ReportButton resourceType="api_review" resourceId={review.id} />
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="bg-white dark:bg-card rounded-lg border p-12 text-center text-muted-foreground">
+                    No reviews yet. Be the first to review this API!
                   </div>
-                ))
-              ) : (
-                <div className="bg-white rounded-lg shadow-sm p-12 text-center text-gray-500">
-                  No reviews yet. Be the first to review this API!
-                </div>
-              )}
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="status" className="space-y-6">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <p className="text-gray-700 mb-4">
+                View uptime, latency, and incident history for this API.
+              </p>
+              <Button asChild>
+                <Link href={`/marketplace/${params.org_slug}/${params.api_slug}/status`}>
+                  Open status page
+                </Link>
+              </Button>
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Similar APIs */}
+        {similarAPIs.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t bg-white mt-8">
+            <RecommendedAPIs apis={similarAPIs} title="Similar APIs" />
+          </div>
+        )}
       </div>
     </div>
   );

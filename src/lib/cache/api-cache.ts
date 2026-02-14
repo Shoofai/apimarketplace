@@ -20,7 +20,12 @@ export async function searchAPIsWithCache(params: {
   }
 
   // Fetch from database
-  const result = await searchAPIs(params);
+  const result = await searchAPIs(params.query ?? '', {
+    category: params.category,
+    sort: params.sortBy as 'popular' | 'rating' | 'newest' | 'price_asc' | 'price_desc' | undefined,
+    page: params.page,
+    limit: params.limit,
+  });
 
   // Cache for 5 minutes
   await cache.set(cacheKey, result, 300);

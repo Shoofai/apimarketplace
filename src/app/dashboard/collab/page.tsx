@@ -83,7 +83,7 @@ export default function CollaborativeTestingPage() {
       .channel(`collab_session:${sessionId}`)
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
-        const users = Object.values(state).flat() as Participant[];
+        const users = Object.values(state).flat() as unknown as Participant[];
         setParticipants(users);
       })
       .on('presence', { event: 'join' }, ({ newPresences }) => {
@@ -184,13 +184,13 @@ export default function CollaborativeTestingPage() {
 
   if (!session) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold">Collaborative API Testing</h1>
           <p className="text-muted-foreground">Test APIs together in real-time</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 max-w-2xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Start New Session</CardTitle>
@@ -231,7 +231,7 @@ export default function CollaborativeTestingPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-4">
+    <div className="space-y-8">
       {/* Header */}
       <Card>
         <CardHeader>

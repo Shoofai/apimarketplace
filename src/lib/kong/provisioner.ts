@@ -210,7 +210,7 @@ export class RouteProvisioner {
       const rateLimitPlugin = plugins.find((p) => p.name === 'rate-limiting');
       if (rateLimitPlugin) {
         await this.kong.updatePlugin(rateLimitPlugin.id, {
-          minute: api.settings?.rate_limit_per_minute || 100,
+          minute: (api.settings as { rate_limit_per_minute?: number } | null)?.rate_limit_per_minute || 100,
         });
       }
 

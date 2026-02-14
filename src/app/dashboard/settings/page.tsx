@@ -13,6 +13,7 @@ import {
   Shield,
   Lock,
   ChevronRight,
+  Cookie,
 } from 'lucide-react';
 
 export default async function SettingsPage() {
@@ -86,7 +87,7 @@ export default async function SettingsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
@@ -137,31 +138,76 @@ export default async function SettingsPage() {
             Common settings tasks
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <Link href="/dashboard/settings/profile">
-            <Button variant="outline" className="w-full justify-start">
-              <User className="h-4 w-4 mr-2" />
-              Update Profile Information
-            </Button>
-          </Link>
-          <Link href="/dashboard/settings/api-keys">
-            <Button variant="outline" className="w-full justify-start">
-              <Key className="h-4 w-4 mr-2" />
-              Generate New API Key
-            </Button>
-          </Link>
-          <Link href="/dashboard/settings/billing">
-            <Button variant="outline" className="w-full justify-start">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Update Payment Method
-            </Button>
-          </Link>
-          <Link href="/dashboard/settings/security">
-            <Button variant="outline" className="w-full justify-start">
-              <Lock className="h-4 w-4 mr-2" />
-              Enable Two-Factor Authentication
-            </Button>
-          </Link>
+        <CardContent className="space-y-6">
+          <div>
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">Account</h4>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Link href="/dashboard/settings/profile">
+                <Button variant="outline" className="w-full justify-start">
+                  <User className="h-4 w-4 mr-2" />
+                  Update Profile
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings/organization">
+                <Button variant="outline" className="w-full justify-start">
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Organization Settings
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">Billing & Security</h4>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Link href="/dashboard/settings/billing">
+                <Button variant="outline" className="w-full justify-start">
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Update Payment Method
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings/security">
+                <Button variant="outline" className="w-full justify-start">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Two-Factor Authentication
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">Integrations & Privacy</h4>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Link href="/dashboard/settings/api-keys">
+                <Button variant="outline" className="w-full justify-start">
+                  <Key className="h-4 w-4 mr-2" />
+                  Generate API Key
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings/notifications">
+                <Button variant="outline" className="w-full justify-start">
+                  <Bell className="h-4 w-4 mr-2" />
+                  Notifications
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings/webhooks">
+                <Button variant="outline" className="w-full justify-start">
+                  <Webhook className="h-4 w-4 mr-2" />
+                  Webhooks
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings/privacy">
+                <Button variant="outline" className="w-full justify-start">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Privacy & Data
+                </Button>
+              </Link>
+              <Link href="/legal/cookie-settings">
+                <Button variant="outline" className="w-full justify-start">
+                  <Cookie className="h-4 w-4 mr-2" />
+                  Cookie Preferences
+                </Button>
+              </Link>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

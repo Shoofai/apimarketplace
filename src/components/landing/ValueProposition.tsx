@@ -99,7 +99,7 @@ export default function ValueProposition() {
                   className="grid gap-8 lg:grid-cols-2"
                 >
                   {/* Left: Benefits */}
-                  <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+                  <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg ring-1 ring-gray-200/50 dark:border-gray-800 dark:bg-gray-900 dark:ring-gray-800/50">
                     <h3 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">{content.title}</h3>
                     <p className="mb-8 text-lg leading-relaxed text-gray-600 dark:text-gray-300">{content.subtitle}</p>
 
@@ -127,12 +127,25 @@ export default function ValueProposition() {
                       ))}
                     </div>
 
-                    {/* Placeholder for visual mockup */}
-                    <div className="flex flex-1 items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-800">
-                      <div className="text-center">
-                        <div className="mb-2 text-4xl">📊</div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Visual mockup / diagram</p>
+                    {/* Code snippet: API integration example */}
+                    <div className="flex flex-1 flex-col rounded-2xl border border-gray-200 bg-gray-900 p-4 shadow-lg dark:border-gray-700">
+                      <div className="mb-3 flex items-center gap-2 border-b border-gray-700 pb-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+                        <span className="ml-2 text-xs text-gray-500">integration.js</span>
                       </div>
+                      <pre className="overflow-x-auto text-sm leading-relaxed text-gray-100">
+                        <code>{`// One SDK, any API – generated in 2 min
+const client = await apiMarketplace
+  .getClient('stripe', 'v1');
+
+const balance = await client
+  .get('/v1/balance');
+
+// Usage metered automatically
+// Billing handled for you`}</code>
+                      </pre>
                     </div>
                   </div>
                 </motion.div>

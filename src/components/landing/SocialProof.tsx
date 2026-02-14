@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { Star, Quote } from 'lucide-react';
 import { Counter } from '@/components/ui/counter';
 import { Card } from '@/components/ui/card';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 const testimonials = [
   {
@@ -58,6 +59,7 @@ const caseStudies = [
 export default function SocialProof() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const platformName = usePlatformName();
 
   return (
     <section ref={ref} className="bg-white py-24 dark:bg-gray-950 sm:py-32">
@@ -73,7 +75,7 @@ export default function SocialProof() {
           </h2>
           <p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-600 dark:text-gray-300">
             From solo developers to Fortune 500 companies, everyone builds better on
-            APIMarketplace Pro.
+            {platformName}.
           </p>
         </motion.div>
 
@@ -102,19 +104,23 @@ export default function SocialProof() {
           className="mb-16 grid gap-8 md:grid-cols-3"
         >
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="relative p-6 dark:border-gray-800 dark:bg-gray-900">
-              <Quote className="absolute right-4 top-4 h-8 w-8 text-primary-200 dark:text-primary-800" />
-              <div className="mb-4 flex text-yellow-400 dark:text-yellow-500">
+            <Card key={index} className="relative h-full p-8 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+              <Quote className="absolute right-6 top-6 h-10 w-10 text-primary-100 dark:text-primary-900/50" />
+              <div className="mb-6 flex text-yellow-400 dark:text-yellow-500">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
+                  <Star key={i} className="h-5 w-5 fill-current" />
                 ))}
               </div>
-              <p className="mb-6 text-gray-700 dark:text-gray-300">{testimonial.quote}</p>
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">{testimonial.avatar}</div>
+              <blockquote className="mb-8 text-lg font-medium leading-relaxed text-gray-900 dark:text-gray-100">
+                &ldquo;{testimonial.quote}&rdquo;
+              </blockquote>
+              <div className="mt-auto flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-2xl dark:bg-gray-800">
+                  {testimonial.avatar}
+                </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">{testimonial.author}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</div>
+                  <div className="font-bold text-gray-900 dark:text-white">{testimonial.author}</div>
+                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{testimonial.role}</div>
                 </div>
               </div>
             </Card>

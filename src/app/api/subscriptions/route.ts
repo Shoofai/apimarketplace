@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-<parameter name="requireAuth } from '@/lib/auth/middleware';
+import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
 import { generateApiKey, hashApiKey } from '@/lib/utils/api-key';
 import { logger } from '@/lib/utils/logger';

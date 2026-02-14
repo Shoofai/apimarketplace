@@ -3,11 +3,16 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import DashboardNav from '@/components/dashboard/DashboardNav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
-export const metadata = {
-  title: 'Dashboard | APIMarketplace Pro',
-  description: 'Manage your APIs, subscriptions, and analytics',
-};
+export async function generateMetadata() {
+  const name = await getPlatformName();
+  return {
+    title: `Dashboard | ${name}`,
+    description: 'Manage your APIs, subscriptions, and analytics',
+  };
+}
 
 export default async function DashboardLayout({
   children,
@@ -49,20 +54,28 @@ export default async function DashboardLayout({
     redirect('/login');
   }
 
+  const org = Array.isArray(userData.organizations) ? userData.organizations[0] : userData.organizations;
+  const userForNav = {
+    ...userData,
+    is_platform_admin: userData.is_platform_admin ?? false,
+    organizations: org ? { name: org.name, plan: org.plan ?? 'free', type: org.type } : undefined,
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation */}
-      <DashboardNav user={userData} />
+      <DashboardNav user={userForNav} />
 
       <div className="flex">
         {/* Sidebar */}
-        <DashboardSidebar user={userData} />
+        <DashboardSidebar user={userForNav} />
 
         {/* Main Content */}
         <main className="flex-1 p-6 lg:p-8">
           {children}
         </main>
       </div>
+      <FloatingQuickActions user={userForNav} />
     </div>
   );
 }

@@ -32,11 +32,11 @@ async function getMonthlyUsage(subscriptionId: string, month: Date): Promise<Usa
     return { total_calls: 0, successful_calls: 0, failed_calls: 0 };
   }
 
-  return data.reduce(
+  return data.reduce<UsageData>(
     (acc, record) => ({
-      total_calls: acc.total_calls + record.total_calls,
-      successful_calls: acc.successful_calls + record.successful_calls,
-      failed_calls: acc.failed_calls + record.failed_calls,
+      total_calls: acc.total_calls + (record.total_calls ?? 0),
+      successful_calls: acc.successful_calls + (record.successful_calls ?? 0),
+      failed_calls: acc.failed_calls + (record.failed_calls ?? 0),
     }),
     { total_calls: 0, successful_calls: 0, failed_calls: 0 }
   );
@@ -259,15 +259,16 @@ export async function createStripeInvoice(invoiceId: string) {
     });
 
     // Add line items
-    for (const item of invoice.line_items || []) {
+    const lineItems = (invoice.line_items || []) as unknown as Array<{ description?: string | null; quantity?: number | null; unit_price?: number | null }>;
+    for (const item of lineItems) {
       await stripe.invoiceItems.create({
-        customer: billingAccount.stripe_customer_id,
+        customer: billingAccount.stripe_customer_id!,
         invoice: stripeInvoice.id,
-        description: item.description,
-        quantity: item.quantity,
-        unit_amount: Math.round(item.unit_price * 100), // Convert to cents
+        description: item.description ?? undefined,
+        quantity: item.quantity ?? 1,
+        unit_amount_decimal: String(Math.round((item.unit_price ?? 0) * 100)),
         currency: 'usd',
-      });
+      } as Parameters<typeof stripe.invoiceItems.create>[0]);
     }
 
     // Finalize the invoice

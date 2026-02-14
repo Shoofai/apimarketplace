@@ -4,11 +4,15 @@ import Link from 'next/link';
 import { ArrowLeft, Code2, Zap, Shield, TrendingUp } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
-export const metadata: Metadata = {
-  title: 'Authentication - APIMarketplace Pro',
-  description: 'Sign in or create an account',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const name = await getPlatformName();
+  return {
+    title: `Authentication - ${name}`,
+    description: 'Sign in or create an account',
+  };
+}
 
 export default async function AuthLayout({
   children,
@@ -22,6 +26,7 @@ export default async function AuthLayout({
   if (user) {
     redirect('/dashboard');
   }
+  const platformName = await getPlatformName();
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding & Features */}
@@ -49,7 +54,7 @@ export default async function AuthLayout({
                 <span className="text-2xl">🚀</span>
               </div>
               <h1 className="text-3xl font-bold text-white dark:text-foreground">
-                APIMarketplace Pro
+                {platformName}
               </h1>
             </div>
             <p className="text-lg text-white/90 dark:text-muted-foreground max-w-md">
@@ -135,7 +140,7 @@ export default async function AuthLayout({
           <div className="lg:hidden mb-8 text-center">
             <div className="inline-flex items-center gap-2 mb-2">
               <span className="text-2xl">🚀</span>
-              <h1 className="text-2xl font-bold">APIMarketplace Pro</h1>
+              <h1 className="text-2xl font-bold">{platformName}</h1>
             </div>
             <p className="text-sm text-muted-foreground">
               Enterprise API Marketplace & Governance

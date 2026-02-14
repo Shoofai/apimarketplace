@@ -3,13 +3,14 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Webhook, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { AddWebhookForm } from './AddWebhookForm';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
 export default async function WebhookManagementPage() {
   const supabase = await createClient();
+  const platformName = await getPlatformName();
 
   const {
     data: { user },
@@ -22,11 +23,11 @@ export default async function WebhookManagementPage() {
   // Get user's organization
   const { data: userData } = await supabase
     .from('users')
-    .select('default_organization_id')
-    .eq('auth_id', user.id)
+    .select('current_organization_id')
+    .eq('id', user.id)
     .single();
 
-  if (!userData?.default_organization_id) {
+  if (!userData?.current_organization_id) {
     redirect('/dashboard');
   }
 
@@ -34,11 +35,11 @@ export default async function WebhookManagementPage() {
   const { data: endpoints } = await supabase
     .from('webhook_endpoints')
     .select('*')
-    .eq('organization_id', userData.default_organization_id)
+    .eq('organization_id', userData.current_organization_id)
     .order('created_at', { ascending: false });
 
   return (
-    <div className="container mx-auto p-6 space-y-6 max-w-4xl">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Webhook Management</h1>
         <p className="text-muted-foreground">Configure webhook endpoints for event notifications</p>
@@ -53,34 +54,7 @@ export default async function WebhookManagementPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action="/api/webhooks/endpoints" method="POST" className="space-y-4">
-            <div>
-              <Label htmlFor="url">Endpoint URL</Label>
-              <Input
-                id="url"
-                name="url"
-                type="url"
-                placeholder="https://your-domain.com/webhooks"
-                required
-              />
-              <p className="text-xs text-muted-foreground mt-1">Must be HTTPS</p>
-            </div>
-
-            <div>
-              <Label htmlFor="events">Events</Label>
-              <Textarea
-                id="events"
-                name="events"
-                placeholder="billing.invoice_created, usage.quota_80, api.status_changed"
-                rows={3}
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Comma-separated list of event types to subscribe to
-              </p>
-            </div>
-
-            <Button type="submit">Add Endpoint</Button>
-          </form>
+          <AddWebhookForm />
         </CardContent>
       </Card>
 
@@ -167,7 +141,7 @@ export default async function WebhookManagementPage() {
           <p className="text-sm">
             All webhook requests include an HMAC-SHA256 signature in the{' '}
             <code className="bg-muted px-1 py-0.5 rounded">X-Webhook-Signature</code> header.
-            Verify this signature to ensure the request came from APIMarketplace.
+            Verify this signature to ensure the request came from {platformName}.
           </p>
           <div>
             <Label>Example Verification (Node.js)</Label>

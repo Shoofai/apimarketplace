@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, Trash2, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { CancelDeletionButton } from '@/components/privacy/CancelDeletionButton';
 
 export default async function PrivacySettingsPage() {
   const supabase = await createClient();
@@ -20,7 +22,7 @@ export default async function PrivacySettingsPage() {
   const { data: userData } = await supabase
     .from('users')
     .select('id')
-    .eq('auth_id', user.id)
+    .eq('id', user.id)
     .single();
 
   const { data: exportRequests } = await supabase
@@ -38,7 +40,7 @@ export default async function PrivacySettingsPage() {
     .maybeSingle();
 
   return (
-    <div className="container mx-auto p-6 space-y-6 max-w-4xl">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Privacy & Data</h1>
         <p className="text-muted-foreground">Manage your data and privacy settings</p>
@@ -59,9 +61,7 @@ export default async function PrivacySettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form action="/api/gdpr/delete" method="DELETE">
-              <Button variant="destructive">Cancel Deletion</Button>
-            </form>
+            <CancelDeletionButton requestId={deletionRequest.id} />
           </CardContent>
         </Card>
       )}
@@ -176,7 +176,9 @@ export default async function PrivacySettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline">Manage Cookie Settings</Button>
+          <Button variant="outline" asChild>
+            <Link href="/legal/cookie-settings">Manage Cookie Settings</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>

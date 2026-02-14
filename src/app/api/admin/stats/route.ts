@@ -19,7 +19,7 @@ export async function GET() {
       { count: totalOrgs },
       { count: activeSubscriptions },
       { data: revenueData },
-      { data: apiCallsData },
+      { count: apiCallsCount },
     ] = await Promise.all([
       // Total APIs
       supabase.from('apis').select('*', { count: 'exact', head: true }),
@@ -86,7 +86,7 @@ export async function GET() {
         activeUsers,
         totalOrgs: totalOrgs || 0,
         apiCalls: {
-          last24h: apiCallsData?.length || 0,
+          last24h: apiCallsCount ?? 0,
         },
       },
     });

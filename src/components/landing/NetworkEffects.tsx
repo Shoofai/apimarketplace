@@ -4,10 +4,12 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { Counter } from '@/components/ui/counter';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 export default function NetworkEffects() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const platformName = usePlatformName();
 
   return (
     <section ref={ref} className="bg-gradient-to-br from-primary-900 to-accent-900 py-24 sm:py-32">
@@ -35,13 +37,13 @@ export default function NetworkEffects() {
           className="mb-16"
         >
           <div className="mx-auto max-w-4xl">
-            <div className="relative aspect-square rounded-2xl border border-white/20 bg-white/5 p-8 backdrop-blur-sm">
+            <div className="relative aspect-square rounded-full border border-white/10 bg-white/5 p-12 backdrop-blur-md shadow-2xl ring-1 ring-white/20">
               {/* Center Circle */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full bg-gradient-to-br from-accent-400 to-primary-400 text-center shadow-glow">
-                  <TrendingUp className="mb-1 h-8 w-8 text-white" />
-                  <span className="text-sm font-bold text-white">Growth</span>
-                  <span className="text-xs text-white/80">Flywheel</span>
+                <div className="relative flex h-40 w-40 flex-col items-center justify-center rounded-full bg-gradient-to-br from-accent-500 to-primary-600 text-center shadow-[0_0_40px_-10px_rgba(124,58,237,0.5)] ring-4 ring-white/10">
+                  <TrendingUp className="mb-2 h-10 w-10 text-white" />
+                  <span className="text-lg font-bold text-white">Growth</span>
+                  <span className="text-sm text-white/90">Flywheel</span>
                 </div>
               </div>
 
@@ -49,25 +51,25 @@ export default function NetworkEffects() {
               <div className="grid h-full grid-cols-2 grid-rows-2 gap-4">
                 {/* Top Left */}
                 <div className="flex items-start justify-start">
-                  <div className="max-w-xs rounded-xl border border-accent-400/30 bg-accent-500/10 p-4 backdrop-blur-sm">
-                    <div className="mb-1 text-2xl font-black text-white">1</div>
-                    <p className="text-sm font-medium text-white">More API Providers Join</p>
+                  <div className="max-w-xs rounded-2xl border border-accent-400/30 bg-accent-500/10 p-6 backdrop-blur-md transition-transform hover:scale-105">
+                    <div className="mb-2 text-3xl font-black text-accent-300">1</div>
+                    <p className="text-base font-semibold text-white">More API Providers Join</p>
                   </div>
                 </div>
 
                 {/* Top Right */}
                 <div className="flex items-start justify-end">
-                  <div className="max-w-xs rounded-xl border border-blue-400/30 bg-blue-500/10 p-4 backdrop-blur-sm">
-                    <div className="mb-1 text-2xl font-black text-white">2</div>
-                    <p className="text-sm font-medium text-white">More Developers Discover APIs</p>
+                  <div className="max-w-xs rounded-2xl border border-blue-400/30 bg-blue-500/10 p-6 backdrop-blur-md transition-transform hover:scale-105">
+                    <div className="mb-2 text-3xl font-black text-blue-300">2</div>
+                    <p className="text-base font-semibold text-white">More Developers Discover APIs</p>
                   </div>
                 </div>
 
                 {/* Bottom Left */}
                 <div className="flex items-end justify-start">
-                  <div className="max-w-xs rounded-xl border border-green-400/30 bg-green-500/10 p-4 backdrop-blur-sm">
-                    <div className="mb-1 text-2xl font-black text-white">4</div>
-                    <p className="text-sm font-medium text-white">
+                  <div className="max-w-xs rounded-2xl border border-green-400/30 bg-green-500/10 p-6 backdrop-blur-md transition-transform hover:scale-105">
+                    <div className="mb-2 text-3xl font-black text-green-300">4</div>
+                    <p className="text-base font-semibold text-white">
                       Higher Revenue Attracts More Providers
                     </p>
                   </div>
@@ -75,9 +77,9 @@ export default function NetworkEffects() {
 
                 {/* Bottom Right */}
                 <div className="flex items-end justify-end">
-                  <div className="max-w-xs rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-4 backdrop-blur-sm">
-                    <div className="mb-1 text-2xl font-black text-white">3</div>
-                    <p className="text-sm font-medium text-white">More Integrations = More Revenue</p>
+                  <div className="max-w-xs rounded-2xl border border-yellow-400/30 bg-yellow-500/10 p-6 backdrop-blur-md transition-transform hover:scale-105">
+                    <div className="mb-2 text-3xl font-black text-yellow-300">3</div>
+                    <p className="text-base font-semibold text-white">More Integrations = More Revenue</p>
                   </div>
                 </div>
               </div>
@@ -101,45 +103,46 @@ export default function NetworkEffects() {
           className="grid gap-8 md:grid-cols-2"
         >
           {/* Traditional Marketplaces */}
-          <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 backdrop-blur-sm">
-            <h3 className="mb-4 text-2xl font-semibold text-white">Traditional Marketplaces</h3>
-            <p className="mb-6 leading-relaxed text-blue-100">Linear growth. Every new customer costs money.</p>
-            <div className="space-y-3 text-sm text-blue-200">
-              <div className="flex items-center gap-2">
-                <span className="text-red-400">✗</span>
+          <div className="rounded-3xl border border-red-500/20 bg-red-500/5 p-10 backdrop-blur-sm transition-colors hover:bg-red-500/10">
+            <h3 className="mb-4 text-2xl font-bold text-white">Traditional Marketplaces</h3>
+            <p className="mb-8 text-lg leading-relaxed text-blue-100/80">Linear growth. Every new customer costs money.</p>
+            <div className="space-y-4 text-base text-blue-100">
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/20 text-red-400">✗</div>
                 <span>Manual API listings</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-red-400">✗</span>
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/20 text-red-400">✗</div>
                 <span>Custom integration every time</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-red-400">✗</span>
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/20 text-red-400">✗</div>
                 <span>High customer acquisition cost</span>
               </div>
             </div>
-            <div className="mt-6 text-3xl font-black text-red-400">+10% monthly growth</div>
+            <div className="mt-8 text-4xl font-black text-red-400">+10% monthly growth</div>
           </div>
 
-          {/* APIMarketplace Pro */}
-          <div className="rounded-2xl border border-green-500/30 bg-green-500/5 p-8 backdrop-blur-sm">
-            <h3 className="mb-4 text-2xl font-semibold text-white">APIMarketplace Pro</h3>
-            <p className="mb-6 leading-relaxed text-blue-100">Exponential growth. Network effects do the work.</p>
-            <div className="space-y-3 text-sm text-blue-200">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
+          {/* Platform name */}
+          <div className="relative overflow-hidden rounded-3xl border border-green-500/30 bg-green-500/10 p-10 backdrop-blur-sm ring-1 ring-green-500/50 transition-colors hover:bg-green-500/15">
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-green-500/20 blur-3xl" />
+            <h3 className="mb-4 text-2xl font-bold text-white">{platformName}</h3>
+            <p className="mb-8 text-lg leading-relaxed text-blue-100/80">Exponential growth. Network effects do the work.</p>
+            <div className="space-y-4 text-base text-blue-100">
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400">✓</div>
                 <span>AI auto-generates everything</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400">✓</div>
                 <span>Universal SDK works for all APIs</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
+              <div className="flex items-center gap-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400">✓</div>
                 <span>Viral referral mechanics built-in</span>
               </div>
             </div>
-            <div className="mt-6 text-3xl font-black text-green-400">
+            <div className="mt-8 text-4xl font-black text-green-400">
               <Counter end={50} suffix="% monthly growth" />
             </div>
           </div>

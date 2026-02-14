@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { ProfileForm } from './ProfileForm';
 
 export default async function ProfileSettingsPage() {
   const supabase = await createClient();
@@ -27,7 +28,7 @@ export default async function ProfileSettingsPage() {
     .single();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Back Button */}
       <Link href="/dashboard/settings">
         <Button variant="ghost" size="sm" className="gap-2">
@@ -80,14 +81,7 @@ export default async function ProfileSettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
-            <Input
-              id="fullName"
-              defaultValue={userData?.full_name || ''}
-              placeholder="John Doe"
-            />
-          </div>
+          <ProfileForm initialFullName={userData?.full_name || ''} />
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
             <Input
@@ -101,8 +95,6 @@ export default async function ProfileSettingsPage() {
               Contact support to change your email address
             </p>
           </div>
-          <Separator />
-          <Button>Save Changes</Button>
         </CardContent>
       </Card>
 

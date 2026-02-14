@@ -28,12 +28,13 @@ interface Sprint {
   };
 }
 
-const PHASES = [
-  { name: 'Phase 1: Foundation', sprints: 4 },
-  { name: 'Phase 2: Core Marketplace', sprints: 8 },
-  { name: 'Phase 3: Killer Features', sprints: 5 },
-  { name: 'Phase 4: Advanced Features', sprints: 5 },
-  { name: 'Phase 5: Operations & Launch', sprints: 6 },
+// Phase ranges by sprint_number (so totals are correct even if DB phase field differs)
+const PHASES: { name: string; count: number; start: number; end: number }[] = [
+  { name: 'Phase 1: Foundation', count: 4, start: 1, end: 4 },
+  { name: 'Phase 2: Core Marketplace', count: 8, start: 5, end: 12 },
+  { name: 'Phase 3: Killer Features', count: 5, start: 13, end: 17 },
+  { name: 'Phase 4: Advanced Features', count: 5, start: 18, end: 22 },
+  { name: 'Phase 5: Operations & Launch', count: 6, start: 23, end: 28 },
 ];
 
 export function TrackerOverview() {
@@ -92,11 +93,13 @@ export function TrackerOverview() {
   const completedSprints = sprints.filter((s) => s.status === 'completed').length;
   const overallProgress = Math.round((completedSprints / totalSprints) * 100);
 
-  // Group sprints by phase
-  const sprintsByPhase = PHASES.map((phase) => ({
-    ...phase,
-    sprints: sprints.filter((s) => s.phase === phase.name),
-  }));
+  // Group sprints by phase (by sprint_number so totals match regardless of DB phase field)
+  const sprintsByPhase = PHASES.map((phase) => {
+    const phaseSprints = sprints.filter(
+      (s) => s.sprint_number >= phase.start && s.sprint_number <= phase.end
+    );
+    return { ...phase, sprints: phaseSprints };
+  });
 
   return (
     <div className="space-y-6">
@@ -122,7 +125,9 @@ export function TrackerOverview() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {sprintsByPhase.map((phase) => {
           const phaseCompleted = phase.sprints.filter((s) => s.status === 'completed').length;
-          const phaseProgress = Math.round((phaseCompleted / phase.sprints.length) * 100);
+          const phaseTotal = phase.sprints.length;
+          const phaseProgress =
+            phaseTotal > 0 ? Math.round((phaseCompleted / phaseTotal) * 100) : 0;
 
           return (
             <Card key={phase.name}>
@@ -133,7 +138,7 @@ export function TrackerOverview() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span>
-                      {phaseCompleted}/{phase.sprints.length} sprints
+                      {phaseCompleted}/{phaseTotal} sprints
                     </span>
                     <span className="text-muted-foreground">{phaseProgress}%</span>
                   </div>
@@ -148,7 +153,7 @@ export function TrackerOverview() {
       {/* Sprint List */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">All Sprints</h3>
-        <div className="grid gap-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sprints.map((sprint) => (
             <div
               key={sprint.id}

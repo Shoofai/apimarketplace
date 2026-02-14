@@ -1,20 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Flag } from 'lucide-react';
-
-async function toggleFlag(flagName: string, isEnabled: boolean) {
-  'use server';
-  const supabase = await createClient();
-
-  await supabase
-    .from('feature_flags')
-    .update({ enabled_globally: isEnabled })
-    .eq('name', flagName);
-}
+import { FeatureFlagRow } from './FeatureFlagRow';
 
 export default async function FeatureFlagsPage() {
   const supabase = await createClient();
@@ -30,7 +18,7 @@ export default async function FeatureFlagsPage() {
   const { data: userData } = await supabase
     .from('users')
     .select('is_platform_admin')
-    .eq('auth_id', user.id)
+    .eq('id', user.id)
     .single();
 
   if (!userData?.is_platform_admin) {
@@ -44,7 +32,7 @@ export default async function FeatureFlagsPage() {
     .order('name');
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Feature Flags</h1>
         <p className="text-muted-foreground">Control platform features and behavior</p>
@@ -63,40 +51,7 @@ export default async function FeatureFlagsPage() {
         <CardContent>
           <div className="space-y-6">
             {flags?.map((flag) => (
-              <form key={flag.id} action={async (formData: FormData) => {
-                'use server';
-                const isChecked = formData.get(flag.name) === 'on';
-                await toggleFlag(flag.name, isChecked);
-              }}>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Label htmlFor={flag.name} className="text-base font-medium">
-                        {flag.name}
-                      </Label>
-                      <Badge variant={flag.enabled_globally ? 'default' : 'secondary'}>
-                        {flag.enabled_globally ? 'Enabled' : 'Disabled'}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{flag.description}</p>
-                  </div>
-                  <div className="ml-4">
-                    <Switch
-                      id={flag.name}
-                      name={flag.name}
-                      defaultChecked={flag.enabled_globally}
-                      onCheckedChange={async (checked) => {
-                        await fetch(`/api/admin/feature-flags/${encodeURIComponent(flag.name)}`, {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ is_enabled: checked }),
-                        });
-                        window.location.reload();
-                      }}
-                    />
-                  </div>
-                </div>
-              </form>
+              <FeatureFlagRow key={flag.id} flag={flag} />
             ))}
           </div>
 

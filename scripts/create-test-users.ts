@@ -1,5 +1,5 @@
 /**
- * Script to create all test users for APIMarketplace Pro
+ * Script to create all test users for KineticAPI
  * 
  * Usage:
  *   npx tsx scripts/create-test-users.ts
@@ -73,7 +73,7 @@ const TEST_USERS: TestUser[] = [
     email: 'admin@apimarketplace.pro',
     password: 'TestPass123!',
     full_name: 'Platform Admin',
-    organization_name: 'APIMarketplace Platform',
+    organization_name: 'KineticAPI Platform',
     organization_slug: 'apimarketplace-platform',
     organization_id: '00000000-0000-0000-0000-000000000000',
     organization_type: 'both',

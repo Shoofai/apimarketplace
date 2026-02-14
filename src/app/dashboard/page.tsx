@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { getRecommendations } from '@/lib/recommendations/engine';
+import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
+import { DashboardOnboarding } from '@/components/onboarding/DashboardOnboarding';
 import {
   Activity,
   Box,
@@ -63,8 +66,11 @@ export default async function DashboardPage() {
   const isProvider = org?.type === 'provider' || org?.type === 'both';
   const isConsumer = org?.type === 'consumer' || org?.type === 'both';
 
+  const recommendations = isConsumer ? await getRecommendations(6) : [];
+
   return (
     <div className="space-y-8">
+      <DashboardOnboarding />
       {/* Welcome Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -260,6 +266,19 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {/* Recommended for you (consumers) */}
+      {isConsumer && recommendations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recommended for You</CardTitle>
+            <CardDescription>APIs you might like based on your subscriptions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RecommendedAPIs apis={recommendations} title="" />
+          </CardContent>
+        </Card>
+      )}
+
       {/* Overview Stats */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
@@ -286,6 +305,10 @@ export default async function DashboardPage() {
   );
 }
 
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+}
+
 async function DashboardStats({
   userId,
   orgId,
@@ -296,16 +319,50 @@ async function DashboardStats({
   isProvider: boolean;
 }) {
   const supabase = await createClient();
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  // Get subscription count
-  const { count: subscriptionCount } = await supabase
+  // Get subscription count and IDs for org
+  const { data: subscriptions, count: subscriptionCount } = await supabase
     .from('api_subscriptions')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact' })
     .eq('organization_id', orgId)
     .eq('status', 'active');
+  const subscriptionIds = (subscriptions ?? []).map((s) => s.id);
 
-  // Get published APIs count (if provider)
+  // API calls (30d) and success rate for consumers
+  let apiCalls30d = 0;
+  let successRate = 100;
+  if (!isProvider && subscriptionIds.length > 0) {
+    const { data: requests } = await supabase
+      .from('api_requests_log')
+      .select('status_code')
+      .in('subscription_id', subscriptionIds)
+      .gte('created_at', thirtyDaysAgo);
+    if (requests?.length) {
+      apiCalls30d = requests.length;
+      const success = requests.filter((r) => r.status_code >= 200 && r.status_code < 300).length;
+      successRate = Math.round((success / requests.length) * 100);
+    }
+  }
+
+  // Monthly spend (invoices for org, last 30d)
+  let monthlySpend = 0;
+  try {
+    const { data: invoices } = await supabase
+      .from('invoices')
+      .select('total_amount, total')
+      .eq('organization_id', orgId)
+      .gte('created_at', thirtyDaysAgo)
+      .eq('status', 'paid');
+    monthlySpend = (invoices ?? []).reduce((sum, inv) => sum + Number((inv as any).total_amount ?? (inv as any).total ?? 0), 0);
+  } catch {
+    // table or columns may not exist
+  }
+
+  // Get published APIs count, provider revenue, and total subscribers (provider)
   let publishedAPIsCount = 0;
+  let providerRevenue = 0;
+  let totalSubscribers = 0;
   if (isProvider) {
     const { count } = await supabase
       .from('apis')
@@ -313,15 +370,26 @@ async function DashboardStats({
       .eq('organization_id', orgId)
       .eq('status', 'published');
     publishedAPIsCount = count || 0;
+    const { data: apiIds } = await supabase.from('apis').select('id').eq('organization_id', orgId);
+    const ids = (apiIds ?? []).map((a) => a.id);
+    if (ids.length > 0) {
+      const { data: rev } = await supabase
+        .from('invoices')
+        .select('total_amount, total')
+        .in('api_id', ids)
+        .gte('created_at', thirtyDaysAgo)
+        .eq('status', 'paid');
+      providerRevenue = (rev ?? []).reduce((sum, r) => sum + Number((r as any).total_amount ?? (r as any).total ?? 0), 0);
+      const { count: subCount } = await supabase
+        .from('api_subscriptions')
+        .select('*', { count: 'exact', head: true })
+        .in('api_id', ids)
+        .eq('status', 'active');
+      totalSubscribers = subCount ?? 0;
+    }
   }
 
-  // Mock data for trends (would be calculated from historical data)
-  const mockTrends = {
-    apis: { value: 0, isPositive: true },
-    subscribers: { value: 0, isPositive: true },
-    revenue: { value: 0, isPositive: true },
-    calls: { value: 0, isPositive: true },
-  };
+  const mockTrends = { value: 0, isPositive: true };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -337,13 +405,13 @@ async function DashboardStats({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold">{publishedAPIsCount}</div>
-                <div className="flex items-center gap-1 text-xs text-success">
-                  <TrendingUp className="h-3 w-3" />
-                  <span>+{mockTrends.apis.value}%</span>
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl font-bold">{publishedAPIsCount}</div>
+                  <div className="flex items-center gap-1 text-xs text-success">
+                    <TrendingUp className="h-3 w-3" />
+                    <span>+{mockTrends.value}%</span>
+                  </div>
                 </div>
-              </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Active in marketplace
               </p>
@@ -361,10 +429,10 @@ async function DashboardStats({
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold">0</div>
+                <div className="text-3xl font-bold">{totalSubscribers}</div>
                 <div className="flex items-center gap-1 text-xs text-success">
                   <TrendingUp className="h-3 w-3" />
-                  <span>+{mockTrends.subscribers.value}%</span>
+                  <span>+{mockTrends.value}%</span>
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
@@ -376,7 +444,7 @@ async function DashboardStats({
           <Card className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Monthly Revenue
+                Revenue (30d)
               </CardTitle>
               <div className="p-2 rounded-lg bg-primary/10 text-primary">
                 <DollarSign className="h-4 w-4" />
@@ -384,14 +452,14 @@ async function DashboardStats({
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold">$0</div>
+                <div className="text-3xl font-bold">{formatCurrency(providerRevenue)}</div>
                 <div className="flex items-center gap-1 text-xs text-success">
                   <TrendingUp className="h-3 w-3" />
-                  <span>+{mockTrends.revenue.value}%</span>
+                  <span>+{mockTrends.value}%</span>
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                vs. last month
+                Last 30 days
               </p>
             </CardContent>
           </Card>
@@ -401,7 +469,7 @@ async function DashboardStats({
       <Card className="hover:shadow-md transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            {isProvider ? 'API Calls' : 'Active Subscriptions'}
+            {isProvider ? 'API Calls (30d)' : 'Active Subscriptions'}
           </CardTitle>
           <div className="p-2 rounded-lg bg-primary/10 text-primary">
             <Activity className="h-4 w-4" />
@@ -410,18 +478,52 @@ async function DashboardStats({
         <CardContent>
           <div className="flex items-baseline gap-2">
             <div className="text-3xl font-bold">
-              {isProvider ? '0' : subscriptionCount || 0}
+              {isProvider ? '—' : (subscriptionCount ?? 0)}
             </div>
-            <div className="flex items-center gap-1 text-xs text-success">
-              <TrendingUp className="h-3 w-3" />
-              <span>+{mockTrends.calls.value}%</span>
-            </div>
+            {!isProvider && apiCalls30d > 0 && (
+              <div className="text-xs text-muted-foreground">
+                {apiCalls30d.toLocaleString()} calls
+              </div>
+            )}
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            {isProvider ? 'This month' : 'Current subscriptions'}
+            {isProvider ? 'Via gateway' : 'Current subscriptions'}
           </p>
         </CardContent>
       </Card>
+
+      {!isProvider && (
+        <>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Monthly Spend
+              </CardTitle>
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <DollarSign className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{formatCurrency(monthlySpend)}</div>
+              <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Success Rate
+              </CardTitle>
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <CheckCircle className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{successRate}%</div>
+              <p className="text-xs text-muted-foreground mt-2">API calls (30d)</p>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

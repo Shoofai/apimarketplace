@@ -3,5 +3,15 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/process-gdpr-deletions",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/process-retention",
+      "schedule": "0 3 * * 0"
+    }
+  ]
 }

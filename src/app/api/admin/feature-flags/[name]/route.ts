@@ -25,7 +25,7 @@ export async function PATCH(
     const { data: userData } = await supabase
       .from('users')
       .select('is_platform_admin')
-      .eq('auth_id', user.id)
+      .eq('id', user.id)
       .single();
 
     if (!userData?.is_platform_admin) {

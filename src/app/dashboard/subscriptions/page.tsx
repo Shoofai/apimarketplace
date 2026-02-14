@@ -54,7 +54,7 @@ export default async function SubscriptionsPage() {
   const org = userData.organizations as any;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -95,7 +95,7 @@ export default async function SubscriptionsPage() {
 async function SubscriptionsList({ orgId }: { orgId: string }) {
   const supabase = await createClient();
 
-  // Get active subscriptions
+  // Get active subscriptions with pricing plan (for rate limits and quota)
   const { data: subscriptions } = await supabase
     .from('api_subscriptions')
     .select(`
@@ -104,6 +104,15 @@ async function SubscriptionsList({ orgId }: { orgId: string }) {
       status,
       created_at,
       updated_at,
+      calls_this_month,
+      pricing_plan:pricing_plan_id (
+        id,
+        name,
+        included_calls,
+        rate_limit_per_second,
+        rate_limit_per_day,
+        rate_limit_per_month
+      ),
       api:api_id (
         id,
         name,
@@ -160,7 +169,7 @@ async function SubscriptionsList({ orgId }: { orgId: string }) {
         <SubscriptionCard
           key={subscription.id}
           subscription={subscription}
-          totalCalls={usageMap[subscription.id] || 0}
+          totalCalls={usageMap[subscription.id] ?? (subscription as any).calls_this_month ?? 0}
         />
       ))}
     </div>
@@ -185,23 +194,27 @@ function SubscriptionCard({ subscription, totalCalls }: { subscription: any; tot
     }
   };
 
-  const getPlanLimits = (plan: string) => {
-    switch (plan) {
-      case 'free':
-        return { calls: 1000, name: 'Free' };
-      case 'basic':
-        return { calls: 10000, name: 'Basic' };
-      case 'pro':
-        return { calls: 100000, name: 'Pro' };
-      case 'enterprise':
-        return { calls: 1000000, name: 'Enterprise' };
-      default:
-        return { calls: 1000, name: 'Free' };
-    }
+  const pricingPlan = subscription.pricing_plan as {
+    name?: string;
+    included_calls?: number | null;
+    rate_limit_per_second?: number | null;
+    rate_limit_per_day?: number | null;
+    rate_limit_per_month?: number | null;
+  } | null;
+  const includedCalls = pricingPlan?.included_calls ?? 1000;
+  const limits = {
+    calls: includedCalls,
+    name: pricingPlan?.name ?? subscription.plan ?? 'Free',
   };
-
-  const limits = getPlanLimits(subscription.plan);
-  const usagePercent = Math.min((totalCalls / limits.calls) * 100, 100);
+  const usagePercent =
+    limits.calls > 0 ? Math.min((totalCalls / limits.calls) * 100, 100) : 0;
+  const rateLimitDesc = [
+    pricingPlan?.rate_limit_per_second && `${pricingPlan.rate_limit_per_second}/sec`,
+    pricingPlan?.rate_limit_per_day && `${pricingPlan.rate_limit_per_day}/day`,
+    pricingPlan?.rate_limit_per_month && `${pricingPlan.rate_limit_per_month}/month`,
+  ]
+    .filter(Boolean)
+    .join(' • ') || 'Standard limits';
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -233,21 +246,28 @@ function SubscriptionCard({ subscription, totalCalls }: { subscription: any; tot
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Usage Stats */}
+        {/* Usage Stats & Rate Limits */}
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">API Calls This Month</span>
             <span className="font-medium">
-              {totalCalls.toLocaleString()} / {limits.calls.toLocaleString()}
+              {totalCalls.toLocaleString()} / {limits.calls === 0 ? '∞' : limits.calls.toLocaleString()}
             </span>
           </div>
-          <Progress value={usagePercent} className="h-2" />
-          {usagePercent > 80 && (
-            <div className="flex items-center gap-2 text-xs text-warning">
-              <AlertCircle className="h-3 w-3" />
-              <span>Approaching limit - consider upgrading your plan</span>
-            </div>
+          {limits.calls > 0 && (
+            <>
+              <Progress value={usagePercent} className="h-2" />
+              {usagePercent > 80 && (
+                <div className="flex items-center gap-2 text-xs text-warning">
+                  <AlertCircle className="h-3 w-3" />
+                  <span>Approaching limit - consider upgrading your plan</span>
+                </div>
+              )}
+            </>
           )}
+          <div className="text-xs text-muted-foreground">
+            Rate limit: {rateLimitDesc}
+          </div>
         </div>
 
         {/* Quick Actions */}

@@ -19,8 +19,8 @@ export default async function NotificationPreferencesPage() {
 
   const { data: userData } = await supabase
     .from('users')
-    .select('id, default_organization_id')
-    .eq('auth_id', user.id)
+    .select('id, current_organization_id')
+    .eq('id', user.id)
     .single();
 
   if (!userData) {
@@ -32,7 +32,7 @@ export default async function NotificationPreferencesPage() {
     .from('notification_preferences')
     .select('*')
     .eq('user_id', userData.id)
-    .eq('organization_id', userData.default_organization_id);
+    .eq('organization_id', userData.current_organization_id);
 
   // Group events by category
   const eventsByCategory = {
@@ -61,7 +61,7 @@ export default async function NotificationPreferencesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6 max-w-5xl">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Notification Preferences</h1>
         <p className="text-muted-foreground">

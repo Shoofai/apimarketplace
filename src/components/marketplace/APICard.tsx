@@ -2,8 +2,10 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Star, Users, TrendingUp } from 'lucide-react';
+import { Star, Users } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/formatting';
+import { CompareButton } from '@/components/marketplace/CompareButton';
+import { FavoriteButton } from '@/components/marketplace/FavoriteButton';
 
 interface APICardProps {
   api: {
@@ -19,7 +21,7 @@ interface APICardProps {
       name: string;
       slug: string;
       logo_url: string | null;
-    };
+    } | null;
     category: {
       name: string;
       slug: string;
@@ -59,11 +61,15 @@ export function APICard({ api }: APICardProps) {
               <h3 className="text-lg font-semibold text-gray-900 truncate">
                 {api.name}
               </h3>
-              <p className="text-sm text-gray-500">by {api.organization.name}</p>
+              <p className="text-sm text-gray-500">by {api.organization?.name ?? 'Unknown'}</p>
             </div>
-            {api.category && (
-              <Badge variant="secondary">{api.category.name}</Badge>
-            )}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <FavoriteButton apiId={api.id} apiName={api.name} />
+              <CompareButton apiId={api.id} apiName={api.name} />
+              {api.category?.name && (
+                <Badge variant="secondary">{api.category.name}</Badge>
+              )}
+            </div>
           </div>
 
           <p className="text-sm text-gray-600 line-clamp-2 mb-4">
@@ -112,7 +118,7 @@ export function APICard({ api }: APICardProps) {
             </div>
 
             <Button asChild size="sm">
-              <Link href={`/marketplace/${api.organization.slug}/${api.slug}`}>
+              <Link href={`/marketplace/${api.organization?.slug ?? 'api'}/${api.slug}`}>
                 View API
               </Link>
             </Button>

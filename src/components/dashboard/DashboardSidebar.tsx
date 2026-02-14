@@ -16,8 +16,21 @@ import {
   Globe,
   TestTube2,
   Layers,
+  Database,
+  Sparkles,
+  Heart,
+  TrendingDown,
+  FolderOpen,
+  Trophy,
+  MessageSquare,
+  Gift,
+  DollarSign,
+  Shield,
+  Gauge,
+  Palette,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface DashboardSidebarProps {
   user: {
@@ -72,9 +85,56 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       consumerOnly: true,
     },
     {
+      title: 'My Favorites',
+      href: '/dashboard/favorites',
+      icon: Heart,
+      consumerOnly: true,
+    },
+    {
+      title: 'Collections',
+      href: '/dashboard/collections',
+      icon: FolderOpen,
+      consumerOnly: true,
+    },
+    {
+      title: 'Challenges',
+      href: '/dashboard/challenges',
+      icon: Trophy,
+      consumerOnly: true,
+    },
+    {
+      title: 'Forum',
+      href: '/dashboard/forum',
+      icon: MessageSquare,
+      consumerOnly: true,
+    },
+    {
+      title: 'Referrals',
+      href: '/dashboard/referrals',
+      icon: Gift,
+      consumerOnly: true,
+    },
+    {
       title: 'Analytics',
       href: '/dashboard/analytics',
       icon: BarChart3,
+    },
+    {
+      title: 'Cost Intelligence',
+      href: '/dashboard/cost-intelligence',
+      icon: TrendingDown,
+    },
+    {
+      title: 'Provider Analytics',
+      href: '/dashboard/provider/analytics',
+      icon: BarChart3,
+      providerOnly: true,
+    },
+    {
+      title: 'Affiliates',
+      href: '/dashboard/provider/affiliates',
+      icon: DollarSign,
+      providerOnly: true,
     },
     {
       title: 'AI Playground',
@@ -120,6 +180,18 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       adminOnly: true,
     },
     {
+      title: 'Moderation',
+      href: '/dashboard/admin/moderation',
+      icon: Shield,
+      adminOnly: true,
+    },
+    {
+      title: 'Provider verification',
+      href: '/dashboard/admin/verification',
+      icon: Users,
+      adminOnly: true,
+    },
+    {
       title: 'Users',
       href: '/dashboard/admin/users',
       icon: Users,
@@ -132,15 +204,39 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       adminOnly: true,
     },
     {
+      title: 'Platform settings',
+      href: '/dashboard/admin/platform-settings',
+      icon: Palette,
+      adminOnly: true,
+    },
+    {
       title: 'Feature Flags',
       href: '/dashboard/admin/feature-flags',
       icon: Settings,
       adminOnly: true,
     },
     {
+      title: 'Demo & Data',
+      href: '/dashboard/admin/demo',
+      icon: Database,
+      adminOnly: true,
+    },
+    {
       title: 'Implementation Tracker',
       href: '/dashboard/admin/tracker',
       icon: BarChart3,
+      adminOnly: true,
+    },
+    {
+      title: 'Security',
+      href: '/dashboard/admin/security',
+      icon: Shield,
+      adminOnly: true,
+    },
+    {
+      title: 'Performance',
+      href: '/dashboard/admin/performance',
+      icon: Gauge,
       adminOnly: true,
     },
   ];
@@ -163,7 +259,11 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
           </div>
           <div className="space-y-1">
             {filteredNavItems.map((item) => {
-              const isActive = pathname === item.href || (pathname !== '/dashboard' && pathname.startsWith(item.href + '/'));
+              const matches = pathname === item.href || pathname.startsWith(item.href + '/');
+              const hasDeeperMatch = filteredNavItems.some(
+                (other) => other.href.length > item.href.length && (pathname === other.href || pathname.startsWith(other.href + '/'))
+              );
+              const isActive = matches && !hasDeeperMatch;
               const Icon = item.icon;
 
               return (
@@ -208,7 +308,11 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
             </div>
             <div className="space-y-1">
               {adminItems.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                const matches = pathname === item.href || pathname.startsWith(item.href + '/');
+                const hasDeeperMatch = adminItems.some(
+                  (other) => other.href.length > item.href.length && (pathname === other.href || pathname.startsWith(other.href + '/'))
+                );
+                const isActive = matches && !hasDeeperMatch;
                 const Icon = item.icon;
 
                 return (

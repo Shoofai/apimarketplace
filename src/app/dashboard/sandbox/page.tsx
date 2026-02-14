@@ -1,14 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { RequestBuilder, ResponseViewer } from '@/components/features/sandbox/RequestBuilder';
 import { Button } from '@/components/ui/button';
 import { Share2, History } from 'lucide-react';
 
 export default function SandboxPage() {
+  const searchParams = useSearchParams();
+  const apiId = searchParams.get('api');
   const [response, setResponse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
+  const [initialRequest, setInitialRequest] = useState<{ url?: string; method?: string; subscriptionId?: string } | undefined>();
+
+  useEffect(() => {
+    if (!apiId) return;
+    fetch(`/api/apis/${apiId}`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.api?.base_url) {
+          setInitialRequest({ url: data.api.base_url, method: 'GET' });
+        }
+      })
+      .catch(() => {});
+  }, [apiId]);
 
   const handleSendRequest = async (request: any) => {
     setIsLoading(true);
@@ -24,12 +40,9 @@ export default function SandboxPage() {
       const data = await res.json();
       const latency = Date.now() - startTime;
 
-      const responseData = {
-        status: res.status,
-        data,
-        headers: Object.fromEntries(res.headers.entries()),
-        latency,
-      };
+      const responseData = data.status != null
+        ? { status: data.status, data: data.body, headers: data.headers || {}, latency: data.latency ?? latency }
+        : { status: res.status, data, headers: Object.fromEntries(res.headers.entries()), latency };
 
       setResponse(responseData);
       setHistory([{ request, response: responseData, timestamp: new Date() }, ...history]);
@@ -46,72 +59,70 @@ export default function SandboxPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">API Testing Console</h1>
-            <p className="text-gray-600">Test API endpoints with a powerful request builder</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline">
-              <History className="w-4 h-4 mr-2" />
-              History
-            </Button>
-            <Button variant="outline">
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
-          </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">API Testing Console</h1>
+          <p className="text-muted-foreground">Test API endpoints with a powerful request builder</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <History className="w-4 h-4 mr-2" />
+            History
+          </Button>
+          <Button variant="outline">
+            <Share2 className="w-4 h-4 mr-2" />
+            Share
+          </Button>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Request Builder */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Request</h2>
+          <RequestBuilder onSend={handleSendRequest} isLoading={isLoading} initialRequest={initialRequest} />
         </div>
 
-        {/* Main content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Request Builder */}
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Request</h2>
-            <RequestBuilder onSend={handleSendRequest} isLoading={isLoading} />
-          </div>
-
-          {/* Response Viewer */}
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Response</h2>
-            <ResponseViewer response={response} isLoading={isLoading} />
-          </div>
+        {/* Response Viewer */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Response</h2>
+          <ResponseViewer response={response} isLoading={isLoading} />
         </div>
+      </div>
 
-        {/* Request History */}
-        {history.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold mb-3">Recent Requests</h2>
-            <div className="space-y-2">
-              {history.slice(0, 5).map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-white p-4 rounded-lg border hover:border-blue-500 cursor-pointer transition"
-                  onClick={() => setResponse(item.response)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-sm font-semibold">{item.request.method}</span>
-                      <span className="text-sm text-gray-600">{item.request.url}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className={`text-sm ${item.response.status >= 200 && item.response.status < 300 ? 'text-green-600' : 'text-red-600'}`}>
-                        {item.response.status}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {new Date(item.timestamp).toLocaleTimeString()}
-                      </span>
-                    </div>
+      {/* Request History */}
+      {history.length > 0 && (
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Recent Requests</h2>
+          <div className="space-y-2">
+            {history.slice(0, 5).map((item, i) => (
+              <div
+                key={i}
+                className="bg-card p-4 rounded-lg border hover:border-primary cursor-pointer transition"
+                onClick={() => setResponse(item.response)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-sm font-semibold">{item.request.method}</span>
+                    <span className="text-sm text-muted-foreground">{item.request.url}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-sm ${item.response.status >= 200 && item.response.status < 300 ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>
+                      {item.response.status}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(item.timestamp).toLocaleTimeString()}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

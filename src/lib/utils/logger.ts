@@ -1,15 +1,22 @@
 import pino from 'pino';
 
+type LogContext = Record<string, unknown>;
+
 /**
- * Logger instance using Pino.
- * Configured for development (pretty printing) and production (JSON).
- * 
- * Usage:
- * - logger.info('Message', { context })
- * - logger.error('Error occurred', { error })
- * - logger.debug('Debug info', { data })
+ * Logger interface that accepts (message, context) for all levels.
+ * Pino uses (obj, msg?) for merging; we expose (msg, context?) for consistency.
  */
-export const logger = pino({
+export interface AppLogger {
+  trace(msg: string, context?: LogContext): void;
+  debug(msg: string, context?: LogContext): void;
+  info(msg: string, context?: LogContext): void;
+  warn(msg: string, context?: LogContext): void;
+  error(msg: string, context?: LogContext): void;
+  fatal(msg: string, context?: LogContext): void;
+  child(bindings: Record<string, unknown>): AppLogger;
+}
+
+const pinoLogger = pino({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   transport:
     process.env.NODE_ENV !== 'production'
@@ -31,6 +38,37 @@ export const logger = pino({
     env: process.env.NODE_ENV,
   },
 });
+
+function wrapPino(log: pino.Logger): AppLogger {
+  const logWithContext = (level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal') =>
+    (msg: string, context?: LogContext) => {
+      if (context && Object.keys(context).length > 0) {
+        log[level]({ ...context, msg });
+      } else {
+        log[level](msg);
+      }
+    };
+  return {
+    trace: logWithContext('trace'),
+    debug: logWithContext('debug'),
+    info: logWithContext('info'),
+    warn: logWithContext('warn'),
+    error: logWithContext('error'),
+    fatal: logWithContext('fatal'),
+    child: (bindings) => wrapPino(log.child(bindings)),
+  };
+}
+
+/**
+ * Logger instance using Pino.
+ * Configured for development (pretty printing) and production (JSON).
+ *
+ * Usage:
+ * - logger.info('Message', { context })
+ * - logger.error('Error occurred', { error })
+ * - logger.debug('Debug info', { data })
+ */
+export const logger: AppLogger = wrapPino(pinoLogger);
 
 /**
  * Creates a child logger with additional context.

@@ -22,7 +22,7 @@ export const updateOrganizationSchema = z.object({
 export const updateUserProfileSchema = z.object({
   full_name: z.string().min(2).max(100).optional(),
   avatar_url: z.string().url().optional().or(z.literal('')),
-  preferences: z.record(z.any()).optional(),
+  preferences: z.record(z.string(), z.any()).optional(),
 });
 
 // Auth schemas
@@ -121,7 +121,7 @@ export const createProviderProfileSchema = z.object({
   support_email: z.string().email().optional().or(z.literal('')),
   support_url: z.string().url().optional().or(z.literal('')),
   documentation_url: z.string().url().optional().or(z.literal('')),
-  social_links: z.record(z.string().url()).optional(),
+  social_links: z.record(z.string(), z.string().url()).optional(),
 });
 
 export const updateProviderProfileSchema = createProviderProfileSchema.partial();
@@ -131,6 +131,18 @@ export const createReviewSchema = z.object({
   rating: z.number().int().min(1).max(5, 'Rating must be between 1 and 5'),
   title: z.string().max(100).optional(),
   body: z.string().max(2000).optional(),
+});
+
+// Forum post schema
+export const createForumPostSchema = z.object({
+  body: z.string().min(1, 'Body is required').max(10000, 'Body must be at most 10000 characters'),
+});
+
+// Content report schema (moderation)
+export const createReportSchema = z.object({
+  resource_type: z.enum(['forum_topic', 'forum_post', 'api_review']),
+  resource_id: z.string().uuid(),
+  reason: z.string().max(1000).optional(),
 });
 
 // Type exports for convenience
@@ -146,3 +158,4 @@ export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
 export type CreateApiKeyInput = z.infer<typeof createApiKeySchema>;
 export type CreateProviderProfileInput = z.infer<typeof createProviderProfileSchema>;
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
+export type CreateReportInput = z.infer<typeof createReportSchema>;

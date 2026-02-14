@@ -20,7 +20,7 @@ export default async function APIReviewQueuePage() {
   const { data: userData } = await supabase
     .from('users')
     .select('is_platform_admin')
-    .eq('auth_id', user.id)
+    .eq('id', user.id)
     .single();
 
   if (!userData?.is_platform_admin) {
@@ -45,7 +45,7 @@ export default async function APIReviewQueuePage() {
   const draftCount = reviewAPIs?.filter((api) => api.status === 'draft').length || 0;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">API Review Queue</h1>

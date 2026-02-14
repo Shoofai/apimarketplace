@@ -9,6 +9,7 @@ import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { OrgForm } from './OrgForm';
 
 export default async function OrganizationSettingsPage() {
   const supabase = await createClient();
@@ -39,7 +40,7 @@ export default async function OrganizationSettingsPage() {
   const org = userData?.organizations as any;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Back Button */}
       <Link href="/dashboard/settings">
         <Button variant="ghost" size="sm" className="gap-2">
@@ -65,25 +66,7 @@ export default async function OrganizationSettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="orgName">Organization Name</Label>
-            <Input
-              id="orgName"
-              defaultValue={org?.name || ''}
-              placeholder="Acme Inc"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="orgSlug">Organization Slug</Label>
-            <Input
-              id="orgSlug"
-              defaultValue={org?.slug || ''}
-              placeholder="acme-inc"
-            />
-            <p className="text-xs text-muted-foreground">
-              Used in your organization's URL
-            </p>
-          </div>
+          <OrgForm initialName={org?.name || ''} initialSlug={org?.slug || ''} />
           <div className="space-y-2">
             <Label htmlFor="orgType">Organization Type</Label>
             <Input
@@ -95,8 +78,6 @@ export default async function OrganizationSettingsPage() {
               Contact support to change organization type
             </p>
           </div>
-          <Separator />
-          <Button>Save Changes</Button>
         </CardContent>
       </Card>
 

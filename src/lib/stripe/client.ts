@@ -10,10 +10,10 @@ if (!process.env.STRIPE_SECRET_KEY) {
  * @see https://stripe.com/docs/api
  */
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2024-11-20.acacia' as Stripe.LatestApiVersion,
   typescript: true,
   appInfo: {
-    name: 'APIMarketplace Pro',
+    name: 'apinergy',
     version: '1.0.0',
   },
 });

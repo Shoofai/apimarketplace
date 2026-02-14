@@ -76,7 +76,7 @@ async function deliverWebhook(deliveryId: string): Promise<void> {
         'X-Webhook-ID': delivery.payload.id,
         'X-Webhook-Timestamp': timestamp,
         'X-Webhook-Signature': signature,
-        'User-Agent': 'APIMarketplace-Webhooks/1.0',
+        'User-Agent': 'apinergy-Webhooks/1.0',
       },
       body,
       signal: AbortSignal.timeout(10000), // 10 second timeout

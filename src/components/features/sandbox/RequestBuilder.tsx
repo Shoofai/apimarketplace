@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,17 +14,23 @@ import { Textarea } from '@/components/ui/textarea';
 interface RequestBuilderProps {
   onSend: (request: any) => void;
   isLoading?: boolean;
+  initialRequest?: { url?: string; method?: string; subscriptionId?: string };
 }
 
-export function RequestBuilder({ onSend, isLoading }: RequestBuilderProps) {
-  const [method, setMethod] = useState('GET');
-  const [url, setUrl] = useState('');
+export function RequestBuilder({ onSend, isLoading, initialRequest }: RequestBuilderProps) {
+  const [method, setMethod] = useState(initialRequest?.method || 'GET');
+  const [url, setUrl] = useState(initialRequest?.url || '');
   const [headers, setHeaders] = useState<Array<{ key: string; value: string }>>([
     { key: 'Content-Type', value: 'application/json' },
   ]);
   const [params, setParams] = useState<Array<{ key: string; value: string }>>([]);
   const [body, setBody] = useState('');
   const [auth, setAuth] = useState({ type: 'none', value: '' });
+
+  useEffect(() => {
+    if (initialRequest?.url) setUrl(initialRequest.url);
+    if (initialRequest?.method) setMethod(initialRequest.method);
+  }, [initialRequest?.url, initialRequest?.method]);
 
   const handleSend = () => {
     const request = {
@@ -234,7 +240,7 @@ export function ResponseViewer({ response, isLoading }: ResponseViewerProps) {
     return (
       <Card className="p-6">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
         </div>
       </Card>
     );
@@ -243,7 +249,7 @@ export function ResponseViewer({ response, isLoading }: ResponseViewerProps) {
   if (!response) {
     return (
       <Card className="p-6">
-        <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+        <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
           <p>Send a request to see the response</p>
         </div>
       </Card>
@@ -265,7 +271,7 @@ export function ResponseViewer({ response, isLoading }: ResponseViewerProps) {
             >
               {response.status}
             </Badge>
-            <div className="flex items-center gap-1 text-sm text-gray-600">
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               {response.latency}ms
             </div>
@@ -292,7 +298,7 @@ export function ResponseViewer({ response, isLoading }: ResponseViewerProps) {
           </TabsList>
 
           <TabsContent value="body">
-            <pre className="bg-gray-50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
+            <pre className="bg-muted/50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
               {JSON.stringify(response.data, null, 2)}
             </pre>
           </TabsContent>
@@ -300,9 +306,9 @@ export function ResponseViewer({ response, isLoading }: ResponseViewerProps) {
           <TabsContent value="headers">
             <div className="space-y-2">
               {Object.entries(response.headers || {}).map(([key, value]) => (
-                <div key={key} className="flex justify-between text-sm border-b pb-2">
+                <div key={key} className="flex justify-between text-sm border-b border-border pb-2">
                   <span className="font-medium">{key}:</span>
-                  <span className="text-gray-600">{value as string}</span>
+                  <span className="text-muted-foreground">{value as string}</span>
                 </div>
               ))}
             </div>

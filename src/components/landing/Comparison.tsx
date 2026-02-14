@@ -3,10 +3,11 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Check, X, Zap } from 'lucide-react';
+import { usePlatformName } from '@/contexts/PlatformNameContext';
 
-const competitors = [
+const competitorList = (platformName: string) => [
   {
-    name: 'APIMarketplace Pro',
+    name: platformName,
     logo: '🚀',
     isUs: true,
   },
@@ -118,6 +119,8 @@ const features = [
 export default function Comparison() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const platformName = usePlatformName();
+  const competitors = competitorList(platformName);
 
   return (
     <section ref={ref} className="bg-white py-24 dark:bg-gray-950 sm:py-32">
@@ -143,18 +146,18 @@ export default function Comparison() {
           transition={{ delay: 0.2 }}
           className="overflow-x-auto"
         >
-          <table className="w-full min-w-[800px] border-collapse">
+          <table className="w-full min-w-[800px] border-collapse rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
             {/* Header */}
             <thead>
-              <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                <th className="pb-4 pr-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-400">
+              <tr className="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/50">
+                <th className="p-6 text-left text-sm font-semibold text-gray-600 dark:text-gray-400">
                   Feature
                 </th>
                 {competitors.map((competitor) => (
-                  <th key={competitor.name} className="px-4 pb-4 text-center">
+                  <th key={competitor.name} className={`p-6 text-center ${competitor.isUs ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''}`}>
                     <div
                       className={`flex flex-col items-center ${
-                        competitor.isUs ? 'rounded-lg border-2 border-primary-500 bg-primary-50 p-3' : ''
+                        competitor.isUs ? 'scale-110 rounded-xl border-2 border-primary-500 bg-white p-4 shadow-lg ring-4 ring-primary-500/10 dark:bg-gray-900' : ''
                       }`}
                     >
                       <div className="mb-1 text-3xl">{competitor.logo}</div>
@@ -182,38 +185,40 @@ export default function Comparison() {
               {features.map((feature, index) => (
                 <tr
                   key={feature.name}
-                  className={`border-b border-gray-100 dark:border-gray-800 ${index % 2 === 0 ? 'bg-gray-50/50 dark:bg-gray-900/50' : ''}`}
+                  className={`border-b border-gray-100 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50 ${index % 2 === 0 ? 'bg-gray-50/30 dark:bg-gray-900/30' : ''}`}
                 >
-                  <td className="py-4 pr-4 text-sm font-medium text-gray-900 dark:text-gray-100">{feature.name}</td>
-                  <td className="bg-primary-50/50 px-4 py-4 text-center dark:bg-primary-950/30">
+                  <td className="p-6 text-sm font-medium text-gray-900 dark:text-gray-100">{feature.name}</td>
+                  <td className="bg-primary-50/30 p-6 text-center dark:bg-primary-900/10">
                     {feature.apimp ? (
-                      <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
+                      <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                        <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="px-4 py-4 text-center">
+                  <td className="p-6 text-center">
                     {feature.rapidapi ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="px-4 py-4 text-center">
+                  <td className="p-6 text-center">
                     {feature.stripe ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="px-4 py-4 text-center">
+                  <td className="p-6 text-center">
                     {feature.postman ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="px-4 py-4 text-center">
+                  <td className="p-6 text-center">
                     {feature.kong ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (

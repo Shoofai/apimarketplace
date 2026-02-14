@@ -6,6 +6,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // Don't bundle redis; use Node require at runtime (optional dependency)
+    serverComponentsExternalPackages: ['redis'],
   },
 
   // Image optimization
@@ -30,6 +32,10 @@ const nextConfig = {
 
   // Bundle analyzer (set ANALYZE=true to enable)
   webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push('redis');
+    }
     if (process.env.ANALYZE === 'true') {
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
       config.plugins.push(

@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import Link from 'next/link';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackCTAClick } from '@/lib/analytics';
@@ -18,12 +19,12 @@ export default function FinalCTA() {
   };
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-gradient-hero py-24 sm:py-32">
+    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 py-24 sm:py-32">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-glow opacity-50" />
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/grid.svg)' }} />
-      </div>
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-transparent to-transparent" />
+      <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-accent-500/20 blur-3xl" />
+      <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-primary-500/20 blur-3xl" />
 
       {/* Content */}
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
@@ -34,7 +35,7 @@ export default function FinalCTA() {
         >
           {/* Badge */}
           <div className="flex justify-center">
-            <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
+            <span className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20">
               ⚡ Join 10,000+ API providers already scaling
             </span>
           </div>
@@ -56,20 +57,24 @@ export default function FinalCTA() {
             <Button
               variant="gradient"
               size="xl"
-              onClick={() => handleCTAClick('final_start_free_trial')}
-              className="group bg-white text-primary-900 shadow-glow-purple hover:bg-gray-50"
+              asChild
+              className="group h-14 bg-white px-8 text-lg text-primary-900 shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] transition-all hover:scale-105 hover:bg-gray-50 hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.7)]"
             >
-              Start Free Trial
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <Link href="/signup" onClick={() => handleCTAClick('final_start_free_trial')}>
+                Get Started Free
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
             <Button
               variant="outline"
               size="xl"
-              onClick={() => handleCTAClick('final_book_demo')}
-              className="border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+              asChild
+              className="h-14 border-white/20 bg-white/5 px-8 text-lg text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:text-white"
             >
-              <Calendar className="mr-2 h-5 w-5" />
-              Book Enterprise Demo
+              <Link href="/marketplace" onClick={() => handleCTAClick('final_book_demo')}>
+                <Calendar className="mr-2 h-5 w-5" />
+                Browse APIs
+              </Link>
             </Button>
           </div>
 

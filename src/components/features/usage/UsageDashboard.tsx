@@ -1,6 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
+import type { DeveloperAnalytics } from '@/lib/analytics/developer';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -45,14 +48,14 @@ function MetricCard({ title, value, change, icon }: MetricCardProps) {
     <Card className="p-6">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-600 mb-1">{title}</p>
+          <p className="text-sm text-muted-foreground mb-1">{title}</p>
           <p className="text-3xl font-bold">{value}</p>
-          <div className={`flex items-center gap-1 mt-2 text-sm ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`flex items-center gap-1 mt-2 text-sm ${isPositive ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>
             {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             <span>{Math.abs(change)}% vs last period</span>
           </div>
         </div>
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-primary/10 rounded-lg">
           {icon}
         </div>
       </div>
@@ -61,19 +64,34 @@ function MetricCard({ title, value, change, icon }: MetricCardProps) {
 }
 
 interface UsageDashboardProps {
-  subscriptionId: string;
+  subscriptionId?: string;
+  /** When provided, metrics and time series use real data; other charts keep placeholders. */
+  data?: DeveloperAnalytics | null;
 }
 
-export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
-  // Mock data - replace with actual API calls
+export function UsageDashboard({ subscriptionId, data }: UsageDashboardProps) {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Get theme-aware colors
+  const isDark = mounted ? (resolvedTheme === 'dark' || theme === 'dark') : false;
+  const textColor = isDark ? 'rgb(226, 232, 240)' : 'rgb(51, 65, 85)';
+  const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.2)';
+  const primaryColor = isDark ? 'rgb(167, 139, 250)' : 'rgb(139, 92, 246)';
+  const primaryBg = isDark ? 'rgba(167, 139, 250, 0.2)' : 'rgba(139, 92, 246, 0.1)';
+
   const apiCallsData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: data?.timeSeries?.labels ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
         label: 'API Calls',
-        data: [1200, 1900, 1500, 2100, 1800, 2400, 2200],
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        data: data?.timeSeries?.values ?? [1200, 1900, 1500, 2100, 1800, 2400, 2200],
+        borderColor: primaryColor,
+        backgroundColor: primaryBg,
         fill: true,
         tension: 0.4,
       },
@@ -86,9 +104,9 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
       {
         data: [8500, 450, 50],
         backgroundColor: [
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(251, 191, 36, 0.8)',
-          'rgba(239, 68, 68, 0.8)',
+          isDark ? 'rgba(74, 222, 128, 0.8)' : 'rgba(34, 197, 94, 0.8)',
+          isDark ? 'rgba(251, 191, 36, 0.8)' : 'rgba(234, 179, 8, 0.8)',
+          isDark ? 'rgba(248, 113, 113, 0.8)' : 'rgba(239, 68, 68, 0.8)',
         ],
         borderWidth: 0,
       },
@@ -101,7 +119,7 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
       {
         label: 'Request Count',
         data: [3200, 4100, 1800, 700, 200],
-        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+        backgroundColor: primaryColor,
       },
     ],
   };
@@ -112,7 +130,7 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
       {
         label: 'Requests',
         data: [3200, 2800, 1900, 1200, 900],
-        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+        backgroundColor: primaryColor,
       },
     ],
   };
@@ -124,9 +142,69 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
       legend: {
         display: true,
         position: 'bottom' as const,
+        labels: {
+          color: textColor,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: isDark ? 'rgb(30, 41, 59)' : 'rgb(255, 255, 255)',
+        titleColor: textColor,
+        bodyColor: textColor,
+        borderColor: gridColor,
+        borderWidth: 1,
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: textColor,
+        },
+        grid: {
+          color: gridColor,
+        },
+      },
+      y: {
+        ticks: {
+          color: textColor,
+        },
+        grid: {
+          color: gridColor,
+        },
       },
     },
   };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom' as const,
+        labels: {
+          color: textColor,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: isDark ? 'rgb(30, 41, 59)' : 'rgb(255, 255, 255)',
+        titleColor: textColor,
+        bodyColor: textColor,
+        borderColor: gridColor,
+        borderWidth: 1,
+      },
+    },
+  };
+
+  const apiCalls = data?.apiCalls ?? 12543;
+  const successRate = data?.successRate ?? 94.5;
+  const avgLatencyMs = data?.avgLatencyMs ?? 142;
+  const monthlySpend = data?.monthlySpend ?? 47.85;
 
   return (
     <div className="space-y-6">
@@ -134,26 +212,26 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <MetricCard
           title="Total API Calls"
-          value="12,543"
-          change={12.5}
+          value={apiCalls.toLocaleString()}
+          change={data ? 0 : 12.5}
           icon={<Activity className="w-6 h-6 text-blue-600" />}
         />
         <MetricCard
           title="Success Rate"
-          value="94.5%"
-          change={2.3}
+          value={`${successRate}%`}
+          change={data ? 0 : 2.3}
           icon={<TrendingUp className="w-6 h-6 text-green-600" />}
         />
         <MetricCard
           title="Avg Latency"
-          value="142ms"
-          change={-5.2}
+          value={avgLatencyMs != null ? `${avgLatencyMs}ms` : '—'}
+          change={data ? 0 : -5.2}
           icon={<Activity className="w-6 h-6 text-purple-600" />}
         />
         <MetricCard
           title="Monthly Cost"
-          value="$47.85"
-          change={8.1}
+          value={`$${monthlySpend.toFixed(2)}`}
+          change={data ? 0 : 8.1}
           icon={<DollarSign className="w-6 h-6 text-orange-600" />}
         />
       </div>
@@ -171,7 +249,7 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Status Code Distribution</h3>
           <div className="h-64">
-            <Doughnut data={statusCodeData} options={chartOptions} />
+            <Doughnut data={statusCodeData} options={doughnutOptions} />
           </div>
         </Card>
 
@@ -197,8 +275,8 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
         <h3 className="text-lg font-semibold mb-4">Detailed Usage</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b">
-              <tr className="text-left text-sm text-gray-600">
+            <thead className="border-b border-border">
+              <tr className="text-left text-sm text-muted-foreground">
                 <th className="pb-3">Endpoint</th>
                 <th className="pb-3">Method</th>
                 <th className="pb-3">Calls</th>
@@ -207,7 +285,7 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
                 <th className="pb-3">Last Called</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-border">
               {[
                 { endpoint: '/users', method: 'GET', calls: 3200, latency: 125, success: 98.2, last: '2 min ago' },
                 { endpoint: '/posts', method: 'GET', calls: 2800, latency: 156, success: 95.1, last: '5 min ago' },
@@ -218,18 +296,18 @@ export function UsageDashboard({ subscriptionId }: UsageDashboardProps) {
                 <tr key={i} className="text-sm">
                   <td className="py-3 font-mono">{row.endpoint}</td>
                   <td className="py-3">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold">
+                    <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-semibold">
                       {row.method}
                     </span>
                   </td>
                   <td className="py-3">{row.calls.toLocaleString()}</td>
                   <td className="py-3">{row.latency}ms</td>
                   <td className="py-3">
-                    <span className={`${row.success >= 95 ? 'text-green-600' : 'text-yellow-600'}`}>
+                    <span className={`${row.success >= 95 ? 'text-green-600 dark:text-green-500' : 'text-yellow-600 dark:text-yellow-500'}`}>
                       {row.success}%
                     </span>
                   </td>
-                  <td className="py-3 text-gray-600">{row.last}</td>
+                  <td className="py-3 text-muted-foreground">{row.last}</td>
                 </tr>
               ))}
             </tbody>

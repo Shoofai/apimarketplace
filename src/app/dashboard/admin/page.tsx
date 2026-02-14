@@ -10,8 +10,13 @@ import {
   Building2,
   Activity,
   CheckCircle,
+  Heart,
+  Shield,
+  Gauge,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -28,7 +33,7 @@ export default async function AdminDashboardPage() {
   const { data: userData } = await supabase
     .from('users')
     .select('is_platform_admin')
-    .eq('auth_id', user.id)
+    .eq('id', user.id)
     .single();
 
   if (!userData?.is_platform_admin) {
@@ -36,10 +41,32 @@ export default async function AdminDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">Platform operations and analytics</p>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Platform operations and analytics</p>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/dashboard/admin/health">
+            <Button variant="outline" className="gap-2">
+              <Heart className="h-4 w-4" />
+              System Health
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/security">
+            <Button variant="outline" className="gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/performance">
+            <Button variant="outline" className="gap-2">
+              <Gauge className="h-4 w-4" />
+              Performance
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Suspense fallback={<KPIsSkeleton />}>
@@ -162,7 +189,7 @@ async function RecentActivity() {
               <div className="flex-1">
                 <p className="font-medium">{api.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {api.organizations?.name} • {api.status}
+                  {(Array.isArray(api.organizations) ? api.organizations[0] : api.organizations)?.name} • {api.status}
                 </p>
               </div>
               <p className="text-sm text-muted-foreground">

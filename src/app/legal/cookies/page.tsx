@@ -1,13 +1,18 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
-export const metadata = {
-  title: 'Cookie Policy | APIMarketplace Pro',
-  description: 'Learn about how we use cookies and similar technologies',
-};
+export async function generateMetadata() {
+  const name = await getPlatformName();
+  return {
+    title: `Cookie Policy | ${name}`,
+    description: 'Learn about how we use cookies and similar technologies',
+  };
+}
 
-export default function CookiePolicyPage() {
+export default async function CookiePolicyPage() {
+  const platformName = await getPlatformName();
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -40,7 +45,7 @@ export default function CookiePolicyPage() {
 
           <h2>Introduction</h2>
           <p>
-            This Cookie Policy explains how APIMarketplace Pro ("we," "us," or "our") uses cookies and similar technologies when you visit our website and use our services. This policy should be read together with our <Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+            This Cookie Policy explains how {platformName} (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) uses cookies and similar technologies when you visit our website and use our services. This policy should be read together with our <Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
           </p>
 
           <h2>What Are Cookies?</h2>
@@ -190,13 +195,16 @@ export default function CookiePolicyPage() {
                   <td className="p-3">1 year</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-3"><code>cookie-consent</code></td>
+                  <td className="p-3"><code>cookie-preferences</code> (localStorage)</td>
                   <td className="p-3">Consent preferences</td>
-                  <td className="p-3">1 year</td>
+                  <td className="p-3">Until cleared</td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Note: Cookie consent choices are stored in your browser&apos;s local storage, not as a cookie, and are used to control whether we store analytics data.
+          </p>
 
           <h2>How to Control Cookies</h2>
           

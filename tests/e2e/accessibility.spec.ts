@@ -27,6 +27,14 @@ test.describe('Accessibility', () => {
     });
   });
 
+  test('signup page should have no accessibility violations', async ({ page }) => {
+    await page.goto('/signup');
+    await injectAxe(page);
+    await checkA11y(page, undefined, {
+      detailedReport: true,
+    });
+  });
+
   test('should have proper heading hierarchy', async ({ page }) => {
     await page.goto('/');
     

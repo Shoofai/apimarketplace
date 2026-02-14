@@ -67,20 +67,75 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
     setIsLoading(true);
 
     try {
-      // Mock AI response for now - in production, call Claude API
-      const mockResponse = generateMockResponse(input, selectedLanguage, mode, apiSpec);
+      const endpoint =
+        mode === 'generate'
+          ? '/api/ai/playground'
+          : mode === 'explain'
+            ? '/api/ai/explain'
+            : '/api/ai/debug';
 
-      setTimeout(() => {
-        const assistantMessage: Message = {
-          role: 'assistant',
-          content: mockResponse,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
+      const body =
+        mode === 'generate'
+          ? { apiId: apiId || undefined, userPrompt: input, language: selectedLanguage, sessionId: `session-${Date.now()}` }
+          : mode === 'explain'
+            ? { code: input, language: selectedLanguage }
+            : { code: input, error: 'User reported issue', language: selectedLanguage };
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData.error || res.statusText || 'Request failed';
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: `Error: ${errMsg}`, timestamp: new Date() },
+        ]);
         setIsLoading(false);
-      }, 1500);
+        return;
+      }
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      if (reader) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: '', timestamp: new Date() }]);
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          accumulated += decoder.decode(value, { stream: true });
+          setMessages((prev) => {
+            const next = [...prev];
+            const lastIdx = next.length - 1;
+            if (lastIdx >= 0 && next[lastIdx].role === 'assistant') {
+              next[lastIdx] = { ...next[lastIdx], content: accumulated };
+            }
+            return next;
+          });
+        }
+      }
+
+      if (!accumulated) {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: 'No response received.', timestamp: new Date() },
+        ]);
+      }
     } catch (error) {
       console.error('Error:', error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: `Failed to get response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -118,7 +173,7 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
         <CardContent className="p-4">
           <div className="flex items-center gap-4 flex-wrap">
             <Select value={mode} onValueChange={(v: any) => setMode(v)}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-[11rem] min-w-[11rem]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -144,7 +199,7 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
             </Select>
 
             <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-[11rem] min-w-[11rem]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -337,21 +392,6 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
       </Card>
     </div>
   );
-}
-
-function generateMockResponse(
-  prompt: string,
-  language: string,
-  mode: string,
-  apiSpec?: any
-): string {
-  if (mode === 'generate') {
-    return `Here's a ${language} implementation for your request:\n\n\`\`\`${language}\n// ${language} code example\nconst apiKey = process.env.API_KEY;\n\nasync function makeRequest() {\n  const response = await fetch('https://api.example.com/endpoint', {\n    method: 'GET',\n    headers: {\n      'Authorization': \`Bearer \${apiKey}\`,\n      'Content-Type': 'application/json'\n    }\n  });\n  \n  const data = await response.json();\n  return data;\n}\n\nmakeRequest()\n  .then(data => console.log(data))\n  .catch(error => console.error('Error:', error));\n\`\`\`\n\nThis code will:\n1. Set up authentication with your API key\n2. Make a GET request to the endpoint\n3. Parse the JSON response\n4. Handle errors appropriately\n\nWould you like me to explain any part of this code or modify it?`;
-  } else if (mode === 'explain') {
-    return `I'll explain this code for you:\n\nThis code implements an asynchronous API request with the following features:\n\n1. **Authentication**: Uses Bearer token authentication via the Authorization header\n2. **Error Handling**: Includes try-catch for proper error management\n3. **Async/Await**: Modern JavaScript promise handling\n4. **Response Parsing**: Automatically converts JSON response to JavaScript objects\n\nThe code follows best practices by:\n- Using environment variables for sensitive data\n- Implementing proper error handling\n- Using modern async/await syntax\n- Setting appropriate headers\n\nWould you like me to explain any specific part in more detail?`;
-  } else {
-    return `I found the issue in your code! Here's the fix:\n\nThe problem is in line 5 where you're trying to access \`data.items\` before checking if \`data\` exists.\n\nHere's the corrected version:\n\n\`\`\`${language}\nif (data && data.items) {\n  data.items.forEach(item => {\n    console.log(item.name);\n  });\n} else {\n  console.error('No items found in response');\n}\n\`\`\`\n\nThis prevents the \"Cannot read property 'forEach' of undefined\" error by:\n1. Checking if \`data\` exists\n2. Checking if \`data.items\` exists\n3. Providing fallback error handling\n\nWould you like me to explain more about defensive programming?`;
-  }
 }
 
 function getExamplePrompts(mode: string, language: string): string[] {

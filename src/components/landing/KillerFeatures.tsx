@@ -182,8 +182,8 @@ export default function KillerFeatures() {
                     onClick={() => handleFeatureInteraction(feature.id, feature.name, 'demo_open')}
                   >
                     <Card
-                      className={`group relative cursor-pointer overflow-hidden p-6 transition-all hover:shadow-xl ${
-                        hoveredFeature === feature.id ? 'border-primary-400 dark:border-primary-500' : ''
+                      className={`group relative h-full cursor-pointer overflow-hidden border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900 ${
+                        hoveredFeature === feature.id ? 'border-primary-400 ring-1 ring-primary-400 dark:border-primary-500 dark:ring-primary-500' : ''
                       }`}
                     >
                       {/* Gradient Background on Hover */}
@@ -194,12 +194,12 @@ export default function KillerFeatures() {
                       {/* Content */}
                       <div className="relative">
                         <div
-                          className={`mb-4 inline-flex rounded-lg bg-gradient-to-br ${feature.color} p-3 text-white`}
+                          className={`mb-6 inline-flex rounded-xl bg-gradient-to-br ${feature.color} p-3.5 text-white shadow-md`}
                         >
                           <Icon className="h-6 w-6" />
                         </div>
-                        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{feature.name}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
+                        <h3 className="mb-3 text-xl font-bold text-gray-900 dark:text-white">{feature.name}</h3>
+                        <p className="text-base leading-relaxed text-gray-600 dark:text-gray-400">{feature.description}</p>
 
                         {/* Hover indicator */}
                         <div className="mt-4 flex items-center text-sm font-medium text-primary-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-primary-400">

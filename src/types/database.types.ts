@@ -376,6 +376,7 @@ export type Database = {
           logo_url: string | null
           long_description: string | null
           name: string
+          short_description: string | null
           openapi_raw: string | null
           openapi_spec: Json | null
           organization_id: string
@@ -401,6 +402,7 @@ export type Database = {
           logo_url?: string | null
           long_description?: string | null
           name: string
+          short_description?: string | null
           openapi_raw?: string | null
           openapi_spec?: Json | null
           organization_id: string
@@ -426,6 +428,7 @@ export type Database = {
           logo_url?: string | null
           long_description?: string | null
           name?: string
+          short_description?: string | null
           openapi_raw?: string | null
           openapi_spec?: Json | null
           organization_id?: string
@@ -1134,6 +1137,8 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          is_platform_admin: boolean | null
+          last_active_at: string | null
           onboarding_completed: boolean | null
           preferences: Json | null
           updated_at: string | null
@@ -1145,6 +1150,8 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          is_platform_admin?: boolean | null
+          last_active_at?: string | null
           onboarding_completed?: boolean | null
           preferences?: Json | null
           updated_at?: string | null
@@ -1156,6 +1163,8 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          is_platform_admin?: boolean | null
+          last_active_at?: string | null
           onboarding_completed?: boolean | null
           preferences?: Json | null
           updated_at?: string | null
@@ -1201,6 +1210,162 @@ export type Database = {
           referral_source?: string | null
           role?: string | null
         }
+        Relationships: []
+      }
+      ai_usage_tracking: {
+        Row: {
+          id: string
+          feature: string
+          user_id: string
+          organization_id: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          feature: string
+          user_id: string
+          organization_id?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          feature?: string
+          user_id?: string
+          organization_id?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          event_type: string
+          channel: string
+          email_enabled: boolean | null
+          in_app_enabled: boolean | null
+          webhook_enabled: boolean | null
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          event_type: string
+          is_read: boolean | null
+          created_at: string | null
+        }
+        Insert: { [key: string]: unknown }
+        Update: { is_read?: boolean; [key: string]: unknown }
+        Relationships: []
+      }
+      webhook_endpoints: {
+        Row: {
+          id: string
+          url: string
+          user_id: string
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      webhook_deliveries: {
+        Row: {
+          id: string
+          webhook_endpoint_id: string
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      usage_records_daily: {
+        Row: {
+          id: string
+          total_calls: number | null
+          successful_calls: number | null
+          failed_calls: number | null
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          id: string
+          organization_id: string
+          stripe_customer_id: string | null
+          billing_period_start: string | null
+          billing_period_end: string | null
+          status: string
+          total_amount: number | null
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      invoice_line_items: {
+        Row: {
+          id: string
+          invoice_id: string
+          description: string | null
+          quantity: number | null
+          unit_price: number | null
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      billing_accounts: {
+        Row: {
+          id: string
+          organization_id: string
+          stripe_customer_id: string | null
+          billing_period_start: string | null
+          billing_period_end: string | null
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      workflow_definitions: {
+        Row: {
+          id: string
+          organization_id: string
+          nodes: Json | null
+          edges: Json | null
+          execution_count: number | null
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      workflow_executions: {
+        Row: {
+          id: string
+          workflow_definition_id: string
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
+        Relationships: []
+      }
+      workflow_step_results: {
+        Row: {
+          id: string
+          [key: string]: unknown
+        }
+        Insert: { [key: string]: unknown }
+        Update: { [key: string]: unknown }
         Relationships: []
       }
     }

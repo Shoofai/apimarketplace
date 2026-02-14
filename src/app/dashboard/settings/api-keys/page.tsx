@@ -29,7 +29,7 @@ export default async function APIKeysPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Back Button */}
       <Link href="/dashboard/settings">
         <Button variant="ghost" size="sm" className="gap-2">

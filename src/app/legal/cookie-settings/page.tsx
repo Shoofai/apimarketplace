@@ -42,8 +42,22 @@ export default function CookieSettingsPage() {
     }
   }, []);
 
+  const logConsent = async (prefs: CookiePreferences) => {
+    try {
+      await fetch('/api/gdpr/consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consent_preferences: prefs }),
+      });
+    } catch {
+      // Non-blocking
+    }
+  };
+
   const handleSave = () => {
     localStorage.setItem('cookie-preferences', JSON.stringify(preferences));
+    localStorage.setItem('cookie-consent-given', 'true');
+    logConsent(preferences);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
 
@@ -61,6 +75,8 @@ export default function CookieSettingsPage() {
     };
     setPreferences(allEnabled);
     localStorage.setItem('cookie-preferences', JSON.stringify(allEnabled));
+    localStorage.setItem('cookie-consent-given', 'true');
+    logConsent(allEnabled);
     setSaved(true);
     setTimeout(() => {
       window.location.reload();
@@ -77,6 +93,8 @@ export default function CookieSettingsPage() {
     };
     setPreferences(essentialOnly);
     localStorage.setItem('cookie-preferences', JSON.stringify(essentialOnly));
+    localStorage.setItem('cookie-consent-given', 'true');
+    logConsent(essentialOnly);
     setSaved(true);
     setTimeout(() => {
       window.location.reload();
@@ -236,7 +254,7 @@ export default function CookieSettingsPage() {
                   <li>Error and performance metrics</li>
                 </ul>
                 <p className="text-xs mt-3">
-                  <strong>Provider:</strong> Google Analytics (anonymized)
+                  <strong>Provider:</strong> First-party analytics (stored in our platform; no third-party analytics)
                 </p>
               </div>
             </CardContent>

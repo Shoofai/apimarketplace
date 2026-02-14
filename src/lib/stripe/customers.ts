@@ -1,3 +1,4 @@
+import type Stripe from 'stripe';
 import { stripe } from './client';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
