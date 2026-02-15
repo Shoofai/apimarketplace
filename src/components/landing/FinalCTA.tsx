@@ -41,14 +41,14 @@ export default function FinalCTA() {
           </div>
 
           {/* Headline */}
-          <h2 className="font-heading text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h2 className="section-heading leading-[1.15] text-white">
             Ready to 10X Your
             <br />
             API Business?
           </h2>
 
           {/* Subheadline */}
-          <p className="mx-auto max-w-2xl text-xl leading-relaxed text-blue-100">
+          <p className="section-subheading mx-auto max-w-2xl text-blue-100">
             Start monetizing your APIs today. No credit card required. Free forever for developers.
           </p>
 

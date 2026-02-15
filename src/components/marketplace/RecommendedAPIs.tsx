@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { APICard } from '@/components/marketplace/APICard';
-import type { RecommendedAPI } from '@/lib/recommendations/engine';
+import type { RecommendedAPI } from '@/lib/recommendations/types';
 
 interface RecommendedAPIsProps {
   apis: RecommendedAPI[];

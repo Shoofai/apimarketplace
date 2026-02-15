@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Shield } from 'lucide-react';
 import { SecurityDashboard } from './SecurityDashboard';
 
 export default async function AdminSecurityPage() {
@@ -35,7 +35,10 @@ export default async function AdminSecurityPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Security Monitoring</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Shield className="h-8 w-8" />
+            Security Monitoring
+          </h1>
           <p className="text-muted-foreground">
             Real-time security metrics and threat detection
           </p>

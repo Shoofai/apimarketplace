@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Box, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function APIReviewQueuePage() {
@@ -48,7 +48,10 @@ export default async function APIReviewQueuePage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">API Review Queue</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Box className="h-8 w-8" />
+            API Review Queue
+          </h1>
           <p className="text-muted-foreground">Review and approve API submissions</p>
         </div>
         <div className="flex gap-2">

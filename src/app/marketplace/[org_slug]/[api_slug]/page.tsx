@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, Users, ExternalLink, Globe } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/formatting';
 import { APIDetailSubscribe, ChoosePlanButton } from '@/components/marketplace/APIDetailSubscribe';
+import { ClaimButton } from '@/components/marketplace/ClaimButton';
 import { FavoriteButton } from '@/components/marketplace/FavoriteButton';
 import { ReviewForm } from '@/components/marketplace/ReviewForm';
 import { ReportButton } from '@/components/reports/ReportButton';
@@ -55,7 +56,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
     `
     )
     .eq('slug', params.api_slug)
-    .eq('status', 'published')
+    .in('status', ['published', 'unclaimed'])
     .single();
 
   if (error || !api) {
@@ -111,19 +112,23 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <FavoriteButton apiId={api.id} apiName={api.name} initialFavorited={false} />
-                  <APIDetailSubscribe
-                    apiId={api.id}
-                    apiName={api.name}
-                    plans={(api.pricing_plans ?? []).map((p: any) => ({
-                    id: p.id,
-                    name: p.name,
-                    price_monthly: p.price_monthly ?? 0,
-                    included_calls: p.included_calls,
-                    rate_limit_per_minute: p.rate_limit_per_minute,
-                    description: p.description,
-                    features: p.features,
-                  }))}
-                  />
+                  {api.status === 'unclaimed' ? (
+                    <ClaimButton apiId={api.id} apiName={api.name} redirectUrl={`/marketplace/${params.org_slug}/${params.api_slug}`} />
+                  ) : (
+                    <APIDetailSubscribe
+                      apiId={api.id}
+                      apiName={api.name}
+                      plans={(api.pricing_plans ?? []).map((p: any) => ({
+                        id: p.id,
+                        name: p.name,
+                        price_monthly: p.price_monthly ?? 0,
+                        included_calls: p.included_calls,
+                        rate_limit_per_minute: p.rate_limit_per_minute,
+                        description: p.description,
+                        features: p.features,
+                      }))}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -142,9 +147,20 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                   <Users className="w-5 h-5" />
                   <span>{api.total_subscribers || 0} subscribers</span>
                 </div>
+                {(api as { original_url?: string | null }).original_url && (
+                  <a
+                    href={(api as { original_url?: string | null }).original_url!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-blue-600 hover:underline"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Official Documentation
+                  </a>
+                )}
                 {api.organization?.website && (
                   <a
-                    href={api.organization?.website}
+                    href={(api.organization as { website?: string }).website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-blue-600 hover:underline"
@@ -167,7 +183,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             <TabsTrigger value="endpoints">
               Endpoints ({api.endpoints?.length || 0})
             </TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+            {api.status !== 'unclaimed' && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
             <TabsTrigger value="docs">Documentation</TabsTrigger>
             <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
             <TabsTrigger value="status">Status</TabsTrigger>
@@ -289,7 +305,8 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             </div>
           </TabsContent>
 
-          {/* Pricing Tab */}
+          {/* Pricing Tab - hidden for unclaimed APIs */}
+          {api.status !== 'unclaimed' && (
           <TabsContent value="pricing">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {api.pricing_plans && api.pricing_plans.length > 0 ? (
@@ -342,17 +359,29 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
               )}
             </div>
           </TabsContent>
+          )}
 
           {/* Documentation Tab */}
           <TabsContent value="docs">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-semibold mb-4">API Documentation</h2>
               <p className="text-gray-600 mb-4">
-                Complete API documentation is available after subscribing.
+                {(api as { original_url?: string | null }).original_url
+                  ? 'Official documentation for this API is available at the link below.'
+                  : 'Complete API documentation is available after subscribing.'}
               </p>
               <Button asChild>
-                <a href={`/docs/${params.org_slug}/${params.api_slug}`}>
-                  View Full Documentation
+                <a
+                  href={
+                    (api as { original_url?: string | null }).original_url ??
+                    `/docs/${params.org_slug}/${params.api_slug}`
+                  }
+                  target={(api as { original_url?: string | null }).original_url ? '_blank' : undefined}
+                  rel={(api as { original_url?: string | null }).original_url ? 'noopener noreferrer' : undefined}
+                >
+                  {(api as { original_url?: string | null }).original_url
+                    ? 'Official Documentation'
+                    : 'View Full Documentation'}
                   <ExternalLink className="w-4 h-4 ml-2" />
                 </a>
               </Button>

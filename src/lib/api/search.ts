@@ -53,7 +53,7 @@ export async function searchAPIs(
     `,
       { count: 'exact' }
     )
-    .eq('status', 'published')
+    .in('status', ['published', 'unclaimed'])
     .eq('visibility', 'public');
 
   // Full-text search using pg_trgm similarity
@@ -150,7 +150,7 @@ export async function getFeaturedAPIs(limit: number = 6) {
       category:api_categories(name, slug)
     `
     )
-    .eq('status', 'published')
+    .in('status', ['published', 'unclaimed'])
     .eq('visibility', 'public')
     .order('total_subscribers', { ascending: false })
     .limit(limit);

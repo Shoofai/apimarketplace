@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { Shield } from 'lucide-react';
 import { ModerationReportList } from './ModerationReportList';
 
 export default async function ModerationPage() {
@@ -18,7 +19,10 @@ export default async function ModerationPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Moderation</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Shield className="h-8 w-8" />
+          Moderation
+        </h1>
         <p className="text-muted-foreground">Content reports for forum posts and API reviews</p>
       </div>
       <ModerationReportList />

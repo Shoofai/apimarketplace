@@ -1,19 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
+import type { RecommendedAPI } from './types';
 
-export interface RecommendedAPI {
-  id: string;
-  name: string;
-  slug: string;
-  short_description: string | null;
-  logo_url: string | null;
-  avg_rating: number | null;
-  total_reviews: number | null;
-  total_subscribers: number | null;
-  organization: { name: string; slug: string; logo_url: string | null } | null;
-  category: { name: string; slug: string } | null;
-  minPrice?: number;
-  maxPrice?: number;
-}
+export type { RecommendedAPI } from './types';
 
 /**
  * Get personalized API recommendations for the current user:

@@ -79,20 +79,21 @@ const config: Config = {
   		},
   		fontFamily: {
   			sans: [
-  				'var(--font-inter)',
+  				'var(--font-sans)',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif'
   			],
   			heading: [
   				'var(--font-space-grotesk)',
-  				'var(--font-inter)',
+  				'var(--font-sans)',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif'
   			],
   			mono: [
-  				'Fira Code',
+  				'var(--font-mono)',
+  				'ui-monospace',
   				'Monaco',
   				'Consolas',
   				'monospace'
@@ -220,7 +221,16 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    (() => {
+      try {
+        return require('@tailwindcss/typography');
+      } catch {
+        return () => {};
+      }
+    })(),
+  ],
 };
 
 export default config;

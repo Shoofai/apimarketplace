@@ -97,7 +97,7 @@ export async function POST(req: Request) {
 
   if (body.action === 'load') {
     try {
-      const result = await seedDemoData(admin);
+      const result = await seedDemoData(admin, user.id);
       return NextResponse.json({
         message: 'Demo data loaded',
         org_id: result.orgId,

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { SearchResult } from '@/lib/api/search';
-import type { RecommendedAPI } from '@/lib/recommendations/engine';
+import type { RecommendedAPI } from '@/lib/recommendations/types';
 
 type Category = { id: string; name: string; slug: string };
 

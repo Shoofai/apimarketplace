@@ -75,7 +75,10 @@ export default async function MyAPIsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My APIs</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Box className="h-8 w-8" />
+            My APIs
+          </h1>
           <p className="text-muted-foreground">
             Manage and monitor your published APIs
           </p>

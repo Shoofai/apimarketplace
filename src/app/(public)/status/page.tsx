@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { getPlatformName } from '@/lib/settings/platform-name';
+import { PageHero } from '@/components/landing/PageHero';
 
 export async function generateMetadata() {
   const name = await getPlatformName();
@@ -54,37 +55,29 @@ export default async function StatusPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
-        </div>
-      </header>
-
+      <PageHero
+        title="API Status"
+        subtitle={`Current status of ${platformName} platform services. This page updates automatically.`}
+      />
       <main className="container mx-auto px-4 py-12 max-w-2xl">
         <div className="prose prose-slate dark:prose-invert max-w-none">
-          <h1>API Status</h1>
-          <p className="text-lg text-muted-foreground">
-            Current status of {platformName} platform services. This page updates automatically.
-          </p>
-
           <div className="not-prose my-8">
-            <div className="rounded-lg border border-border bg-card p-6">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Overall Status</h2>
-              <div className="flex items-center gap-3">
+            <div className={`rounded-xl border-2 p-6 ${
+              overallStatus === 'ok'
+                ? 'border-green-500/30 bg-green-500/5 dark:bg-green-500/10'
+                : overallStatus === 'error'
+                ? 'border-red-500/30 bg-red-500/5 dark:bg-red-500/10'
+                : 'border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10'
+            }`}>
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <StatusBadge status={overallStatus} />
                 <span className="text-sm text-muted-foreground">
-                  Last checked: {health.timestamp ? new Date(health.timestamp).toLocaleString() : '—'}
+                  Last updated: {health.timestamp ? new Date(health.timestamp).toLocaleString() : '—'}
                 </span>
               </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-foreground mt-8 mb-4">Services</h2>
+            <h2 className="text-lg font-semibold text-foreground mt-8 mb-4">Core platform</h2>
             <ul className="space-y-3">
               <li className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
                 <span className="font-medium text-foreground">Database</span>
@@ -94,13 +87,18 @@ export default async function StatusPage() {
                 <span className="font-medium text-foreground">Cache (Redis)</span>
                 <StatusBadge status={services.redis?.status || 'unknown'} />
               </li>
-              {services.kong !== undefined && (
-                <li className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
-                  <span className="font-medium text-foreground">API Gateway</span>
-                  <StatusBadge status={services.kong?.status || 'unknown'} />
-                </li>
-              )}
             </ul>
+            {services.kong !== undefined && (
+              <>
+                <h2 className="text-lg font-semibold text-foreground mt-8 mb-4">Gateway</h2>
+                <ul className="space-y-3">
+                  <li className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+                    <span className="font-medium text-foreground">API Gateway</span>
+                    <StatusBadge status={services.kong?.status || 'unknown'} />
+                  </li>
+                </ul>
+              </>
+            )}
           </div>
 
           <p className="text-sm text-muted-foreground">

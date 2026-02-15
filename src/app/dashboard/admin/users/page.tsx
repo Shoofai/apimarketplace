@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UserCircle, Search, Shield, Clock } from 'lucide-react';
+import { UserCircle, Search, Shield, Clock, Users } from 'lucide-react';
 import Link from 'next/link';
 
 const PAGE_SIZE = 25;
@@ -78,7 +78,10 @@ export default async function UserManagementPage({
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Users className="h-8 w-8" />
+            User Management
+          </h1>
           <p className="text-muted-foreground">Manage platform users and permissions</p>
         </div>
       </div>
@@ -206,8 +209,8 @@ export default async function UserManagementPage({
                           )}
                         </td>
                         <td className="p-3">
-                          {u.last_active_at &&
-                          new Date(u.last_active_at).getTime() > now - 24 * 60 * 60 * 1000 ? (
+                          {u.updated_at &&
+                          new Date(u.updated_at).getTime() > now - 24 * 60 * 60 * 1000 ? (
                             <Badge variant="outline" className="text-xs">
                               <Clock className="h-3 w-3 mr-1 inline" />
                               Active

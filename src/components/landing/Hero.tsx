@@ -1,14 +1,35 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Counter } from '@/components/ui/counter';
 import { trackCTAClick } from '@/lib/analytics';
 import { fadeIn, slideUp, staggerContainer } from '@/lib/animations';
+import { APIConstellation } from './APIConstellation';
+import { DemoModal } from './DemoModal';
+import { HeroQuiz } from './HeroQuiz';
+import LiveActivityTicker from './LiveActivityTicker';
+import { MagneticButton } from './MagneticButton';
+import { Sparkline } from './Sparkline';
 
 export default function Hero() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0, y: 0 });
+  }, []);
+
   const handleCTAClick = async (ctaType: string) => {
     await trackCTAClick({
       cta_type: ctaType,
@@ -17,7 +38,11 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-hero dark:bg-gradient-to-br dark:from-gray-900 dark:via-primary-900/30 dark:to-accent-900/30">
+    <section
+      className="relative min-h-screen overflow-hidden bg-gradient-hero dark:bg-gradient-to-br dark:from-gray-900 dark:via-primary-900/30 dark:to-accent-900/30"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Animated Background Grid */}
       <div className="absolute inset-0 opacity-[0.15]">
         <div
@@ -31,6 +56,9 @@ export default function Hero() {
 
       {/* Gradient Glow */}
       <div className="absolute inset-0 bg-gradient-glow" />
+
+      {/* API Constellation Background */}
+      <APIConstellation mouseX={mousePos.x} mouseY={mousePos.y} />
 
       {/* Content */}
       <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-24 sm:px-6 lg:px-8">
@@ -70,29 +98,37 @@ export default function Hero() {
 
           {/* CTAs */}
           <motion.div variants={slideUp} className="mb-4 flex flex-col gap-4 sm:flex-row sm:gap-6">
-            <Button
-              variant="gradient"
-              size="xl"
-              asChild
-              className="group shadow-glow"
-            >
-              <Link href="/signup" onClick={() => handleCTAClick('start_free_trial')}>
-                Get Started Free
+            <MagneticButton>
+              <Button
+                variant="gradient"
+                size="xl"
+                className="group shadow-glow transition-shadow hover:shadow-lg"
+                onClick={() => {
+                  setQuizOpen(true);
+                  handleCTAClick('start_building_quiz');
+                }}
+              >
+                Start Building
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="xl"
-              asChild
-              className="border-white/20 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
-            >
-              <Link href="/marketplace" onClick={() => handleCTAClick('watch_demo')}>
+              </Button>
+            </MagneticButton>
+            <MagneticButton>
+              <Button
+                variant="outline"
+                size="xl"
+                className="border-white/20 bg-white/10 text-white backdrop-blur-sm transition-shadow hover:bg-white/20 hover:shadow-lg"
+                onClick={() => {
+                  setDemoOpen(true);
+                  handleCTAClick('watch_demo');
+                }}
+              >
                 <Play className="mr-2 h-5 w-5" />
-                Browse APIs
-              </Link>
-            </Button>
+                Watch 2-min Demo
+              </Button>
+            </MagneticButton>
           </motion.div>
+          <HeroQuiz open={quizOpen} onOpenChange={setQuizOpen} />
+          <DemoModal open={demoOpen} onOpenChange={setDemoOpen} />
           <motion.p variants={slideUp} className="mb-16 text-sm text-blue-200/90">
             No credit card required · Free tier included · Start building in minutes
           </motion.p>
@@ -100,26 +136,52 @@ export default function Hero() {
           {/* Stats Bar */}
           <motion.div
             variants={fadeIn}
-            className="grid w-full max-w-4xl grid-cols-1 gap-8 rounded-2xl border-2 border-white/20 bg-white/10 px-8 py-10 shadow-xl backdrop-blur-xl sm:grid-cols-3 dark:border-white/10 dark:bg-white/5"
+            className="grid w-full max-w-4xl grid-cols-1 gap-8 rounded-2xl border-2 border-white/20 bg-white/10 px-8 py-10 shadow-xl backdrop-blur-xl transition-shadow hover:shadow-2xl sm:grid-cols-3 dark:border-white/10 dark:bg-white/5"
           >
-            <div className="text-center">
-              <div className="mb-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                <Counter end={10000} suffix="+" />
+            <div className="group flex flex-col items-center text-center">
+              <div className="mb-2 flex items-center justify-center gap-3">
+                <div className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                  <Counter end={10000} suffix="+" />
+                </div>
+                <Sparkline
+                  data={[20, 35, 42, 55, 48, 70, 85, 90]}
+                  className="h-5 w-12 text-primary-300"
+                  strokeColor="currentColor"
+                />
               </div>
               <div className="text-sm font-semibold uppercase tracking-wider text-blue-200/90">APIs Listed</div>
             </div>
-            <div className="text-center">
-              <div className="mb-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                <Counter end={500000} suffix="+" />
+            <div className="group flex flex-col items-center text-center">
+              <div className="mb-2 flex items-center justify-center gap-3">
+                <div className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                  <Counter end={500000} suffix="+" />
+                </div>
+                <Sparkline
+                  data={[15, 28, 38, 52, 65, 75, 82, 95]}
+                  className="h-5 w-12 text-primary-300"
+                  strokeColor="currentColor"
+                />
               </div>
               <div className="text-sm font-semibold uppercase tracking-wider text-blue-200/90">Active Developers</div>
             </div>
-            <div className="text-center">
-              <div className="mb-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                <Counter end={100} prefix="$" suffix="M+" />
+            <div className="group flex flex-col items-center text-center">
+              <div className="mb-2 flex items-center justify-center gap-3">
+                <div className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                  <Counter end={100} prefix="$" suffix="M+" />
+                </div>
+                <Sparkline
+                  data={[22, 40, 55, 68, 72, 88, 92, 98]}
+                  className="h-5 w-12 text-primary-300"
+                  strokeColor="currentColor"
+                />
               </div>
               <div className="text-sm font-semibold uppercase tracking-wider text-blue-200/90">Revenue Processed</div>
             </div>
+          </motion.div>
+
+          {/* Live Activity Ticker */}
+          <motion.div variants={fadeIn} className="mx-auto mt-8 w-full max-w-2xl">
+            <LiveActivityTicker variant="hero" />
           </motion.div>
 
           {/* Scroll Indicator */}

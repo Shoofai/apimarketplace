@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Users, TrendingUp, Activity, Download, RefreshCw } from 'lucide-react';
+import { BarChart3, DollarSign, Users, TrendingUp, Activity, Download, RefreshCw } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import type { ProviderAnalytics } from '@/lib/analytics/provider';
 
@@ -125,7 +125,10 @@ export default function ProviderAnalyticsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Provider Analytics</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <BarChart3 className="h-8 w-8" />
+            Provider Analytics
+          </h1>
           <p className="text-muted-foreground">Monitor your API performance and revenue</p>
         </div>
           <div className="flex gap-2">

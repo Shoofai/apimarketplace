@@ -3,7 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building2, Tag, Calendar } from 'lucide-react';
+import { ArrowLeft, Building2, Tag, Calendar, Box } from 'lucide-react';
 import Link from 'next/link';
 import { APIReviewActions } from './APIReviewActions';
 
@@ -62,7 +62,10 @@ export default async function APIReviewDetailPage({
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Review API</h1>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Box className="h-8 w-8" />
+              Review API
+            </h1>
             <p className="text-muted-foreground">Approve or reject API submission</p>
           </div>
         </div>

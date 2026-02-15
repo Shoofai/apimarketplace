@@ -12,11 +12,13 @@ interface APICardProps {
     id: string;
     name: string;
     slug: string;
-    short_description: string | null;
+    short_description?: string | null;
+    description?: string | null;
     logo_url: string | null;
     avg_rating: number | null;
     total_reviews: number | null;
     total_subscribers: number | null;
+    status?: string | null;
     organization: {
       name: string;
       slug: string;
@@ -35,6 +37,8 @@ export function APICard({ api }: APICardProps) {
   const rating = api.avg_rating || 0;
   const reviewCount = api.total_reviews || 0;
   const subscriberCount = api.total_subscribers || 0;
+  const isUnclaimed = api.status === 'unclaimed';
+  const isClaimPending = api.status === 'claim_pending';
 
   return (
     <Card className="p-6 hover:shadow-lg transition-shadow">
@@ -66,14 +70,16 @@ export function APICard({ api }: APICardProps) {
             <div className="flex items-center gap-2 flex-shrink-0">
               <FavoriteButton apiId={api.id} apiName={api.name} />
               <CompareButton apiId={api.id} apiName={api.name} />
-              {api.category?.name && (
+              {isUnclaimed && <Badge variant="default">Claim this API</Badge>}
+              {isClaimPending && <Badge variant="secondary">Claim Pending</Badge>}
+              {!isUnclaimed && !isClaimPending && api.category?.name && (
                 <Badge variant="secondary">{api.category.name}</Badge>
               )}
             </div>
           </div>
 
           <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-            {api.short_description || 'No description available'}
+            {api.short_description ?? api.description ?? 'No description available'}
           </p>
 
           {/* Stats */}
@@ -101,7 +107,9 @@ export function APICard({ api }: APICardProps) {
           {/* Pricing and CTA */}
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              {api.minPrice !== undefined ? (
+              {isUnclaimed || isClaimPending ? (
+                <span className="text-gray-500">Available to claim</span>
+              ) : api.minPrice !== undefined ? (
                 <span className="font-semibold text-gray-900">
                   {api.minPrice === 0 ? (
                     'Free tier available'
@@ -117,9 +125,9 @@ export function APICard({ api }: APICardProps) {
               )}
             </div>
 
-            <Button asChild size="sm">
+            <Button asChild size="sm" variant={isUnclaimed ? 'default' : undefined}>
               <Link href={`/marketplace/${api.organization?.slug ?? 'api'}/${api.slug}`}>
-                View API
+                {isUnclaimed ? 'Claim this API' : isClaimPending ? 'Claim Pending' : 'View API'}
               </Link>
             </Button>
           </div>

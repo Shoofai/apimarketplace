@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { RequestBuilder, ResponseViewer } from '@/components/features/sandbox/RequestBuilder';
 import { Button } from '@/components/ui/button';
-import { Share2, History } from 'lucide-react';
+import { Share2, History, TestTube2 } from 'lucide-react';
 
 export default function SandboxPage() {
   const searchParams = useSearchParams();
@@ -63,7 +63,10 @@ export default function SandboxPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">API Testing Console</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <TestTube2 className="h-8 w-8" />
+            API Testing Console
+          </h1>
           <p className="text-muted-foreground">Test API endpoints with a powerful request builder</p>
         </div>
         <div className="flex gap-2">

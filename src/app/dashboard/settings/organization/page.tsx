@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Building2 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -51,7 +51,10 @@ export default async function OrganizationSettingsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Organization Settings</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Building2 className="h-8 w-8" />
+          Organization Settings
+        </h1>
         <p className="text-muted-foreground">
           Manage your organization details and team members
         </p>

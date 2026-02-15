@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Trash2, AlertTriangle } from 'lucide-react';
+import { Download, Trash2, AlertTriangle, Shield } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { CancelDeletionButton } from '@/components/privacy/CancelDeletionButton';
 
@@ -42,7 +42,10 @@ export default async function PrivacySettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Privacy & Data</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Shield className="h-8 w-8" />
+          Privacy & Data
+        </h1>
         <p className="text-muted-foreground">Manage your data and privacy settings</p>
       </div>
 

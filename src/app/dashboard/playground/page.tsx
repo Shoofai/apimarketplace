@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { Zap } from 'lucide-react';
 import { AIPlayground } from '@/components/features/playground/AIPlayground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,7 +35,10 @@ export default async function PlaygroundPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">AI Code Playground</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Zap className="h-8 w-8" />
+          AI Code Playground
+        </h1>
         <p className="text-muted-foreground">
           Generate code, get explanations, and debug with AI assistance
         </p>

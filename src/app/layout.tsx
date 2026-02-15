@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Plus_Jakarta_Sans, Space_Grotesk, Fira_Code } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { PlatformNameProvider } from '@/contexts/PlatformNameContext';
 import { getPlatformName } from '@/lib/settings/platform-name';
 import './globals.css';
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-sans',
   weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
@@ -17,6 +17,12 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-space-grotesk',
   weight: ['500', '600', '700'],
+  display: 'swap',
+});
+
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -51,7 +57,7 @@ export default async function RootLayout({
 }) {
   const platformName = await getPlatformName();
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${plusJakarta.variable} ${spaceGrotesk.variable} ${firaCode.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"

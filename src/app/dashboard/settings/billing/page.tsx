@@ -44,7 +44,10 @@ export default async function BillingPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Billing & Subscription</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <CreditCard className="h-8 w-8" />
+          Billing & Subscription
+        </h1>
         <p className="text-muted-foreground">
           Manage your subscription and payment methods
         </p>

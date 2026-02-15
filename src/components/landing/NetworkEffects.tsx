@@ -20,7 +20,7 @@ export default function NetworkEffects() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-4 font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h2 className="section-heading mb-6 text-white">
             Network Effects That Compound Daily
           </h2>
           <p className="mx-auto max-w-3xl text-xl leading-relaxed text-blue-100">

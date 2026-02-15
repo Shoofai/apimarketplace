@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trophy } from 'lucide-react';
 import { SubmitChallengeForm } from './SubmitChallengeForm';
 
 export default async function ChallengeDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,7 +34,10 @@ export default async function ChallengeDetailPage({ params }: { params: Promise<
         <Link href="/dashboard/challenges"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
       </Button>
       <div>
-        <h1 className="text-3xl font-bold">{(challenge as { title: string }).title}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Trophy className="h-8 w-8" />
+          {(challenge as { title: string }).title}
+        </h1>
         {(challenge as { description?: string }).description && (
           <p className="text-muted-foreground mt-2 whitespace-pre-wrap">{(challenge as { description: string }).description}</p>
         )}

@@ -15,7 +15,10 @@ export default async function ProviderAffiliatesPage() {
   if (!orgId) {
     return (
       <div>
-        <h1 className="text-3xl font-bold">Affiliate program</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <DollarSign className="h-8 w-8" />
+          Affiliate program
+        </h1>
         <p className="text-muted-foreground">Select an organization to manage affiliate links.</p>
       </div>
     );

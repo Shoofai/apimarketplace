@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Users, Copy, Check, Share2, MessageSquare } from 'lucide-react';
+import { Users, Copy, Check, Share2, MessageSquare, Code2 } from 'lucide-react';
 import { RequestBuilder, ResponseViewer } from '@/components/features/sandbox/RequestBuilder';
 
 interface Participant {
@@ -186,7 +186,10 @@ export default function CollaborativeTestingPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Collaborative API Testing</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Code2 className="h-8 w-8" />
+          Collaborative API Testing
+        </h1>
           <p className="text-muted-foreground">Test APIs together in real-time</p>
         </div>
 

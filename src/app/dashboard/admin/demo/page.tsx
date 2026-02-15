@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Database } from 'lucide-react';
 import { DemoDataSwitch } from './DemoDataSwitch';
 
 export default async function AdminDemoPage() {
@@ -27,7 +27,10 @@ export default async function AdminDemoPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Demo and Data</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Database className="h-8 w-8" />
+            Demo and Data
+          </h1>
           <p className="text-muted-foreground">
             Enable demo mode and load sample data for dashboards
           </p>

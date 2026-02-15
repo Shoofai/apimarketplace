@@ -27,6 +27,8 @@ export const API_STATUSES = {
   PUBLISHED: 'published',
   DEPRECATED: 'deprecated',
   SUSPENDED: 'suspended',
+  UNCLAIMED: 'unclaimed',
+  CLAIM_PENDING: 'claim_pending',
 } as const;
 
 export type ApiStatus = (typeof API_STATUSES)[keyof typeof API_STATUSES];
@@ -189,6 +191,7 @@ export const AUDIT_ACTIONS = {
   API_PUBLISHED: 'api.published',
   API_DEPRECATED: 'api.deprecated',
   API_SUSPENDED: 'api.suspended',
+  API_CLAIM_REQUESTED: 'api.claim_requested',
   
   // Subscription actions
   SUBSCRIPTION_CREATED: 'subscription.created',

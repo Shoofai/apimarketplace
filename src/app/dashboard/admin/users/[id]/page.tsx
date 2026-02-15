@@ -4,7 +4,7 @@ import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { UserCircle, Shield, Clock, Building2, ArrowLeft } from 'lucide-react';
+import { UserCircle, Shield, Clock, Building2, ArrowLeft, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function AdminUserDetailPage({
@@ -52,8 +52,8 @@ export default async function AdminUserDetailPage({
   const displayName = user.full_name ?? user.email;
   const now = Date.now();
   const isActive24h =
-    user.last_active_at &&
-    new Date(user.last_active_at).getTime() > now - 24 * 60 * 60 * 1000;
+    user.updated_at &&
+    new Date(user.updated_at).getTime() > now - 24 * 60 * 60 * 1000;
 
   return (
     <div className="space-y-8">
@@ -64,7 +64,10 @@ export default async function AdminUserDetailPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">User Details</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Users className="h-8 w-8" />
+            User Details
+          </h1>
           <p className="text-muted-foreground">View and manage user information</p>
         </div>
       </div>
@@ -106,10 +109,10 @@ export default async function AdminUserDetailPage({
             <h3 className="text-sm font-medium text-muted-foreground mb-1">Joined</h3>
             <p>{user.created_at ? new Date(user.created_at).toLocaleDateString() : '—'}</p>
           </div>
-          {user.last_active_at && (
+          {user.updated_at && (
             <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-1">Last active</h3>
-              <p>{new Date(user.last_active_at).toLocaleString()}</p>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Last updated</h3>
+              <p>{new Date(user.updated_at).toLocaleString()}</p>
             </div>
           )}
 

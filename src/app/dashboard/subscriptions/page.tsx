@@ -11,6 +11,7 @@ import {
   ExternalLink,
   Code2,
   FileText,
+  Layers,
   Settings,
   TrendingUp,
   Zap,
@@ -58,7 +59,10 @@ export default async function SubscriptionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My Subscriptions</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Layers className="h-8 w-8" />
+            My Subscriptions
+          </h1>
           <p className="text-muted-foreground">
             Manage your API subscriptions and usage
           </p>

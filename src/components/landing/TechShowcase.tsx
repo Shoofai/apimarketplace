@@ -119,10 +119,10 @@ export default function TechShowcase() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h2 className="section-heading mb-6 text-white">
             Built with Modern Tech
           </h2>
-          <p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-300 dark:text-gray-400">
+          <p className="section-subheading mx-auto max-w-3xl text-gray-300 dark:text-gray-400">
             Production-grade infrastructure. Enterprise security. Developer-friendly APIs.
           </p>
         </motion.div>

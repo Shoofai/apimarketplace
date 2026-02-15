@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Plus, Copy, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Copy, Eye, EyeOff, Trash2, Key } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 
@@ -41,7 +41,10 @@ export default async function APIKeysPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">API Keys</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Key className="h-8 w-8" />
+            API Keys
+          </h1>
           <p className="text-muted-foreground">
             Manage API keys for authentication
           </p>

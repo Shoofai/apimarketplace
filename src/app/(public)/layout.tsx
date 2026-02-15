@@ -1,4 +1,5 @@
 import { PublicNav } from '@/components/landing/PublicNav';
+import Footer from '@/components/landing/Footer';
 
 export default function PublicLayout({
   children,
@@ -9,6 +10,7 @@ export default function PublicLayout({
     <div className="min-h-screen">
       <PublicNav />
       <div className="pt-16">{children}</div>
+      <Footer />
     </div>
   );
 }

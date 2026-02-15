@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Play, Save, Plus, Trash2, Settings } from 'lucide-react';
+import { Play, Save, Plus, Trash2, Settings, Workflow } from 'lucide-react';
 
 interface WorkflowNode {
   id: string;
@@ -126,7 +126,10 @@ export default function WorkflowBuilderPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">API Workflows</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Workflow className="h-8 w-8" />
+            API Workflows
+          </h1>
           <p className="text-muted-foreground">Build and automate multi-step API integrations</p>
         </div>
         <div className="flex gap-2">

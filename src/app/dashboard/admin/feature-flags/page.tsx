@@ -34,7 +34,10 @@ export default async function FeatureFlagsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Feature Flags</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Flag className="h-8 w-8" />
+          Feature Flags
+        </h1>
         <p className="text-muted-foreground">Control platform features and behavior</p>
       </div>
 

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Activity } from 'lucide-react';
 import { HealthDashboard } from './HealthDashboard';
 
 export default async function AdminHealthPage() {
@@ -35,7 +35,10 @@ export default async function AdminHealthPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">System Health</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Activity className="h-8 w-8" />
+            System Health
+          </h1>
           <p className="text-muted-foreground">
             Database, Redis, and Kong gateway status
           </p>

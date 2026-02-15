@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { APICard } from '@/components/marketplace/APICard';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FolderOpen } from 'lucide-react';
 import { CollectionActions } from './CollectionActions';
 import { RemoveFromCollectionButton } from './RemoveFromCollectionButton';
 
@@ -59,7 +59,10 @@ export default async function CollectionDetailPage({ params }: { params: Promise
           <Link href="/dashboard/collections"><ArrowLeft className="h-4 w-4" /></Link>
         </Button>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold">{(collection as { name: string }).name}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <FolderOpen className="h-8 w-8" />
+            {(collection as { name: string }).name}
+          </h1>
           {(collection as { description?: string }).description && (
             <p className="text-muted-foreground mt-1">{(collection as { description: string }).description}</p>
           )}

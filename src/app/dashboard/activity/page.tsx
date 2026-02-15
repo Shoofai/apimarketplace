@@ -81,7 +81,10 @@ export default async function ActivityPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Activity</h1>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Activity className="h-8 w-8" />
+              Activity
+            </h1>
             <p className="text-muted-foreground">
               Your recent activity across the platform
             </p>

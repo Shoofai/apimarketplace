@@ -49,7 +49,10 @@ export default async function OrganizationManagementPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Organization Management</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Building2 className="h-8 w-8" />
+          Organization Management
+        </h1>
         <p className="text-muted-foreground">Manage organizations and plans</p>
       </div>
 

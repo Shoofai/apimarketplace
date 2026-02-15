@@ -44,6 +44,9 @@ const footerLinks = {
   legal: [
     { name: 'Privacy Policy', href: '/legal/privacy' },
     { name: 'Terms of Service', href: '/legal/terms' },
+    { name: 'Acceptable Use', href: '/legal/acceptable-use' },
+    { name: 'Service Level Agreement', href: '/legal/sla' },
+    { name: 'Data Processing Agreement', href: '/legal/dpa' },
     { name: 'Cookie Policy', href: '/legal/cookies' },
     { name: 'Cookie Settings', href: '/legal/cookie-settings' },
   ],
@@ -68,7 +71,7 @@ export default function Footer() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🚀</span>
-              <span className="text-xl font-black text-gray-900 dark:text-white">{platformName}</span>
+              <span className="font-heading text-xl font-bold tracking-tight text-gray-900 dark:text-white">{platformName}</span>
             </div>
             <p className="max-w-md text-gray-600 dark:text-gray-400">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs
@@ -261,13 +264,13 @@ export default function Footer() {
             >
               <Linkedin className="h-5 w-5" />
             </a>
-            <a
-              href="mailto:hello@apimarketplace.pro"
+            <Link
+              href="/contact?source=footer&category=general"
               className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
-              aria-label="Email"
+              aria-label="Contact"
             >
               <Mail className="h-5 w-5" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

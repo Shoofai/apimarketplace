@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ArrowLeft,
+  Box,
   Users,
   BarChart3,
   FileText,
@@ -140,7 +141,10 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold">{api.name}</h1>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Box className="h-8 w-8" />
+              {api.name}
+            </h1>
             <Badge variant={api.status === 'published' ? 'default' : 'secondary'}>
               {api.status.charAt(0).toUpperCase() + api.status.slice(1)}
             </Badge>

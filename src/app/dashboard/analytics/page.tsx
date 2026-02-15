@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { UsageDashboard } from '@/components/features/usage/UsageDashboard';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, RefreshCw } from 'lucide-react';
+import { BarChart3, Download, RefreshCw } from 'lucide-react';
 import type { DeveloperAnalytics } from '@/lib/analytics/developer';
 
 export default function DeveloperAnalyticsPage() {
@@ -43,7 +43,10 @@ export default function DeveloperAnalyticsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Developer Analytics</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <BarChart3 className="h-8 w-8" />
+            Developer Analytics
+          </h1>
           <p className="text-muted-foreground">Monitor your API usage, performance, and costs</p>
         </div>
         <div className="flex gap-2">

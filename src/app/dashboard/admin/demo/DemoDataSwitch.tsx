@@ -81,7 +81,7 @@ export function DemoDataSwitch() {
           Demo Mode
         </CardTitle>
         <CardDescription>
-          Enable demo mode and load sample organizations, APIs, and pricing plans so dashboard components have data to display.
+          Enable demo mode and load sample data: demo org with APIs, subscriptions, favorites, collections, forum topics, challenges, referrals, notifications, and audit logs. Data is seeded for your user and a Demo Consumer org.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -105,7 +105,7 @@ export function DemoDataSwitch() {
         <div className="flex flex-col gap-2">
           <Label className="text-base font-medium">Load demo data</Label>
           <p className="text-sm text-muted-foreground">
-            Insert a demo organization with sample APIs and pricing plans (idempotent; skips existing).
+            Insert demo org, APIs, and full dashboard data: subscriptions, favorites, collections, forum, challenges, referrals, notifications, audit logs (idempotent).
           </p>
           <Button
             onClick={handleLoadDemoData}

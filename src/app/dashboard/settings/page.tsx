@@ -14,6 +14,7 @@ import {
   Lock,
   ChevronRight,
   Cookie,
+  Settings,
 } from 'lucide-react';
 
 export default async function SettingsPage() {
@@ -90,7 +91,10 @@ export default async function SettingsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+        <Settings className="h-8 w-8" />
+        Settings
+      </h1>
         <p className="text-muted-foreground">
           Manage your account settings and preferences
         </p>

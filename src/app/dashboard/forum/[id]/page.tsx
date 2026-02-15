@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MessageSquare } from 'lucide-react';
 import { ReplyForm } from './ReplyForm';
 import { ReportButton } from '@/components/reports/ReportButton';
 
@@ -34,7 +34,10 @@ export default async function ForumTopicPage({ params }: { params: Promise<{ id:
         <Link href="/dashboard/forum"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
       </Button>
       <div>
-        <h1 className="text-3xl font-bold">{(topic as { title: string }).title}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <MessageSquare className="h-8 w-8" />
+          {(topic as { title: string }).title}
+        </h1>
         {(topic as { category?: string }).category && (
           <span className="text-sm text-muted-foreground">{(topic as { category: string }).category}</span>
         )}

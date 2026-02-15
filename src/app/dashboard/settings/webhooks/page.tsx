@@ -41,7 +41,10 @@ export default async function WebhookManagementPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Webhook Management</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Webhook className="h-8 w-8" />
+          Webhook Management
+        </h1>
         <p className="text-muted-foreground">Configure webhook endpoints for event notifications</p>
       </div>
 

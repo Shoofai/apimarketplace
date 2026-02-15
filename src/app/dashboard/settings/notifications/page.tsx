@@ -63,7 +63,10 @@ export default async function NotificationPreferencesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Notification Preferences</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Bell className="h-8 w-8" />
+          Notification Preferences
+        </h1>
         <p className="text-muted-foreground">
           Choose how you want to be notified about events
         </p>

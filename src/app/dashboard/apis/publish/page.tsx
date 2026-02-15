@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { Box } from 'lucide-react';
 import { PublishWizard } from '@/components/apis/PublishWizard';
 
 export const metadata = {
@@ -48,7 +49,10 @@ export default async function PublishAPIPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Publish New API</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Box className="h-8 w-8" />
+          Publish New API
+        </h1>
         <p className="text-muted-foreground mt-1">
           Add your API to the marketplace in a few steps
         </p>

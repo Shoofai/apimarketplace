@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Search, Settings, LogOut, Sparkles, ChevronDown, Menu } from 'lucide-react';
+import { Search, Settings, LogOut, Sparkles, ChevronDown, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import {
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { CommandPalette } from '@/components/command-palette';
+import { NotificationCenter } from '@/components/features/notifications/NotificationCenter';
 import { useSupabase } from '@/hooks/useSupabase';
 import { useRouter } from 'next/navigation';
 import { usePlatformName } from '@/contexts/PlatformNameContext';
@@ -86,7 +87,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
         </Sheet>
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl flex-shrink-0">
+        <Link href="/dashboard" className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight flex-shrink-0">
           <span className="text-2xl">🚀</span>
           <span className="hidden sm:inline bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             {platformName}
@@ -121,10 +122,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
           </Link>
 
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary animate-pulse" />
-          </Button>
+          <NotificationCenter />
 
           {/* Theme Switcher */}
           <ThemeSwitcher />

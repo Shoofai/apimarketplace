@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { BarChart3 } from 'lucide-react';
 import { TrackerOverview } from '@/components/features/tracker/TrackerOverview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -31,7 +32,10 @@ export default async function TrackerPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Implementation Tracker</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <BarChart3 className="h-8 w-8" />
+          Implementation Tracker
+        </h1>
         <p className="text-muted-foreground">
           Track progress across all 28 sprints of {platformName}
         </p>

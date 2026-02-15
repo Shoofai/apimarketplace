@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Gauge } from 'lucide-react';
 import { PerformanceDashboard } from './PerformanceDashboard';
 
 export default async function AdminPerformancePage() {
@@ -35,7 +35,10 @@ export default async function AdminPerformancePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Performance Monitoring</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Gauge className="h-8 w-8" />
+            Performance Monitoring
+          </h1>
           <p className="text-muted-foreground">
             API latency, throughput, and resource usage
           </p>

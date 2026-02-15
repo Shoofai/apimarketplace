@@ -25,9 +25,11 @@ import {
   MessageSquare,
   Gift,
   DollarSign,
+  FileQuestion,
   Shield,
   Gauge,
   Palette,
+  Ticket,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -160,6 +162,11 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       comingSoon: orgPlan === 'free',
     },
     {
+      title: 'My Tickets',
+      href: '/dashboard/tickets',
+      icon: Ticket,
+    },
+    {
       title: 'Settings',
       href: '/dashboard/settings',
       icon: Settings,
@@ -177,6 +184,18 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       title: 'Review APIs',
       href: '/dashboard/admin/apis/review',
       icon: Box,
+      adminOnly: true,
+    },
+    {
+      title: 'API Claims',
+      href: '/dashboard/admin/apis/claims',
+      icon: FileQuestion,
+      adminOnly: true,
+    },
+    {
+      title: 'Tickets',
+      href: '/dashboard/admin/tickets',
+      icon: Ticket,
       adminOnly: true,
     },
     {

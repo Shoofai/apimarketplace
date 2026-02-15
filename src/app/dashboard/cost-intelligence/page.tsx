@@ -91,7 +91,10 @@ export default function CostIntelligencePage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Cost Intelligence</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <TrendingDown className="h-8 w-8" />
+            Cost Intelligence
+          </h1>
           <p className="text-muted-foreground">
             Anomaly detection, savings opportunities, and spend forecasting
           </p>

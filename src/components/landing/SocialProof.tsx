@@ -70,10 +70,10 @@ export default function SocialProof() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-4 font-heading text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+          <h2 className="section-heading mb-6 text-gray-900 dark:text-white">
             Trusted by Thousands. Loved by All.
           </h2>
-          <p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-600 dark:text-gray-300">
+          <p className="section-subheading mx-auto max-w-3xl text-gray-600 dark:text-gray-300">
             From solo developers to Fortune 500 companies, everyone builds better on
             {platformName}.
           </p>

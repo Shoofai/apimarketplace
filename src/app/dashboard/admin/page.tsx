@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Crown,
   DollarSign,
   TrendingUp,
   Globe,
@@ -44,7 +45,10 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Crown className="h-8 w-8" />
+          Admin Dashboard
+        </h1>
           <p className="text-muted-foreground">Platform operations and analytics</p>
         </div>
         <div className="flex gap-2">

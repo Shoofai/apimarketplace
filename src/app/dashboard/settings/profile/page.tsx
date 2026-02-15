@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, User } from 'lucide-react';
 import Link from 'next/link';
 import { ProfileForm } from './ProfileForm';
 
@@ -39,7 +39,10 @@ export default async function ProfileSettingsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Profile Settings</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <User className="h-8 w-8" />
+          Profile Settings
+        </h1>
         <p className="text-muted-foreground">
           Manage your personal information and account preferences
         </p>

@@ -11,7 +11,7 @@ export function PublicNav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+        <Link href="/" className="flex items-center gap-2 font-heading text-lg font-bold tracking-tight">
           <span className="text-2xl">🚀</span>
           {platformName}
         </Link>
