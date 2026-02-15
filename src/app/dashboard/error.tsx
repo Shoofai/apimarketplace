@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
 export default function DashboardError({
   error,
@@ -22,10 +20,19 @@ export default function DashboardError({
         An error occurred in the dashboard. You can try again or return to the dashboard home.
       </p>
       <div className="flex gap-3">
-        <Button onClick={reset}>Try again</Button>
-        <Link href="/dashboard">
-          <Button variant="outline">Dashboard home</Button>
-        </Link>
+        <button
+          type="button"
+          onClick={reset}
+          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Try again
+        </button>
+        <a
+          href="/dashboard"
+          className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
+        >
+          Dashboard home
+        </a>
       </div>
     </div>
   );

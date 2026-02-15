@@ -1,12 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { APICard } from '@/components/marketplace/APICard';
 import { CompareBar } from '@/components/marketplace/CompareBar';
 import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
-import { Search, Filter } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { FilterSidebar, type Category as FilterCategory } from '@/components/marketplace/FilterSidebar';
+import { ActiveFilters } from '@/components/marketplace/ActiveFilters';
+import { MarketplaceTopBar } from '@/components/marketplace/MarketplaceTopBar';
+import { MarketplacePagination } from '@/components/marketplace/MarketplacePagination';
+import { Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import type { SearchResult } from '@/lib/api/search';
 import type { RecommendedAPI } from '@/lib/recommendations/types';
 
@@ -21,7 +32,27 @@ interface MarketplaceContentProps {
   sort: string;
   page: number;
   minRating: number | undefined;
+  freeOnly: boolean;
+  tags: string[];
+  priceMin: number | undefined;
+  priceMax: number | undefined;
   searchParams: Record<string, string | undefined>;
+}
+
+const FORM_ID = 'marketplace-filters';
+
+function buildParams(overrides: Record<string, string | number | boolean | string[] | undefined>, drop?: string[]): string {
+  const p: Record<string, string> = {};
+  Object.entries(overrides).forEach(([k, v]) => {
+    if (drop?.includes(k)) return;
+    if (v === undefined || v === '' || v === false) return;
+    if (Array.isArray(v)) {
+      if (v.length > 0) p[k] = v.join(',');
+      return;
+    }
+    p[k] = String(v);
+  });
+  return new URLSearchParams(p).toString();
 }
 
 export function MarketplaceContent({
@@ -33,172 +64,195 @@ export function MarketplaceContent({
   sort,
   page,
   minRating,
+  freeOnly,
+  tags,
+  priceMin,
+  priceMax,
   searchParams,
 }: MarketplaceContentProps) {
+  const [filtersSheetOpen, setFiltersSheetOpen] = useState(false);
+  const base = {
+    q: query || undefined,
+    category,
+    sort,
+    page: page > 1 ? page : undefined,
+    minRating,
+    freeOnly: freeOnly ? '1' : undefined,
+    tags: tags.length > 0 ? tags : undefined,
+    priceMin,
+    priceMax,
+  };
+
+  const categoryHref = (catId: string | null) => {
+    const params = buildParams({ ...base, category: catId ?? undefined, page: undefined });
+    return params ? `/marketplace?${params}` : '/marketplace';
+  };
+
+  const clearParam = (key: keyof typeof base) => {
+    const next = { ...base, page: undefined, [key]: undefined };
+    const params = buildParams(next);
+    return params ? `/marketplace?${params}` : '/marketplace';
+  };
+
+  const buildSortHref = (sortValue: string) => {
+    const params = buildParams({ ...base, sort: sortValue, page: undefined });
+    return params ? `/marketplace?${params}` : '/marketplace';
+  };
+
+  const clearTagHref = (tagToRemove: string) => {
+    const nextTags = tags.filter((t) => t !== tagToRemove);
+    const params = buildParams({ ...base, tags: nextTags.length ? nextTags : undefined, page: undefined });
+    return params ? `/marketplace?${params}` : '/marketplace';
+  };
+
+  const categoryName = category ? categories.find((c) => c.id === category)?.name : undefined;
+  const filterCategories: FilterCategory[] = categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
+  const clearPriceHref = (() => {
+    const params = buildParams({ ...base, priceMin: undefined, priceMax: undefined, page: undefined });
+    return params ? `/marketplace?${params}` : '/marketplace';
+  })();
+
+  const buildPageHref = (p: number) => {
+    const params = buildParams({ ...base, page: p === 1 ? undefined : p });
+    return params ? `/marketplace?${params}` : '/marketplace';
+  };
+
+  const resultsCount =
+    searchResults.total > 0
+      ? `Showing ${searchResults.apis.length} of ${searchResults.total.toLocaleString()} APIs`
+      : undefined;
+
+  const title = categoryName ?? 'API Marketplace';
+  const searchPlaceholder = categoryName
+    ? `Search ${categoryName} APIs...`
+    : 'Search 17k+ APIs...';
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold mb-2">API Marketplace</h1>
-        <p className="text-muted-foreground">
-          Discover and integrate powerful APIs to accelerate your development
-        </p>
-      </div>
+    <div className="space-y-0">
+      <form id={FORM_ID} action="/marketplace" method="get" className="contents">
+        <input type="hidden" name="sort" value={sort} />
+        {category ? <input type="hidden" name="category" value={category} /> : null}
 
-      <div className="flex gap-6">
-        {/* Category Filters Sidebar */}
-        <aside className="w-64 flex-shrink-0 hidden lg:block">
-          <Card className="p-6 sticky top-6">
-            <h2 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-              Categories
-            </h2>
-            <div className="space-y-1">
-              <a
-                href="/marketplace"
-                className={`block px-3 py-2 rounded-md text-sm transition-colors ${
-                  !category
-                    ? 'bg-primary text-primary-foreground font-medium'
-                    : 'text-foreground hover:bg-accent'
-                }`}
-              >
-                All APIs
-              </a>
-              {categories.map((cat) => (
-                <a
-                  key={cat.id}
-                  href={`/marketplace?category=${cat.id}`}
-                  className={`block px-3 py-2 rounded-md text-sm transition-colors ${
-                    category === cat.id
-                      ? 'bg-primary text-primary-foreground font-medium'
-                      : 'text-foreground hover:bg-accent'
-                  }`}
-                >
-                  {cat.name}
-                </a>
-              ))}
+        <div className="flex gap-6">
+          {/* Desktop sidebar */}
+          <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-6 self-start">
+            <div className="p-4 border border-border rounded-lg bg-card">
+              <FilterSidebar
+                category={category}
+                categoryHref={categoryHref}
+                categories={filterCategories}
+                query={query}
+                sort={sort}
+                freeOnly={freeOnly}
+                priceMin={priceMin}
+                priceMax={priceMax}
+                minRating={minRating}
+                tags={tags}
+                formId={FORM_ID}
+              />
             </div>
-          </Card>
-        </aside>
+          </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0">
-          {/* Search and Sort */}
-          <Card className="p-4 mb-6">
-            <form
-              id="search-form"
-              action="/marketplace"
-              method="get"
-              className="space-y-4"
-            >
-              {category ? <input type="hidden" name="category" value={category} /> : null}
-              <div className="flex gap-4 flex-wrap items-center">
-                <div className="flex-1 min-w-[200px] relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search APIs..."
-                    defaultValue={query}
-                    className="pl-10"
-                    name="q"
-                  />
-                </div>
-                <select
-                  name="sort"
-                  className="rounded-md border border-input bg-background h-9 px-3 py-1 text-sm w-48"
-                  defaultValue={sort}
-                >
-                  <option value="popular">Most Popular</option>
-                  <option value="rating">Highest Rated</option>
-                  <option value="newest">Newest</option>
-                  <option value="price_asc">Price: Low to High</option>
-                  <option value="price_desc">Price: High to Low</option>
-                </select>
-                <Button type="submit">Search</Button>
+          {/* Main: top bar + active filters + grid + pagination */}
+          <main className="flex-1 min-w-0 flex flex-col gap-6">
+            <MarketplaceTopBar
+              title={title}
+              searchPlaceholder={searchPlaceholder}
+              query={query}
+              formId={FORM_ID}
+              sort={sort}
+              buildSortHref={buildSortHref}
+              resultsCount={resultsCount}
+              showFiltersButton
+              onOpenFilters={() => setFiltersSheetOpen(true)}
+            />
+
+            <ActiveFilters
+              query={query || undefined}
+              categoryName={categoryName}
+              clearCategoryHref={clearParam('category')}
+              minRating={minRating}
+              clearMinRatingHref={clearParam('minRating')}
+              freeOnly={freeOnly}
+              clearFreeOnlyHref={clearParam('freeOnly')}
+              tags={tags}
+              clearTagHref={clearTagHref}
+              priceMin={priceMin}
+              priceMax={priceMax}
+              clearPriceHref={clearPriceHref}
+              clearQueryHref={clearParam('q')}
+              clearAllHref="/marketplace"
+            />
+
+            {searchResults.apis.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {searchResults.apis.map((api) => (
+                  <APICard key={api.id} api={api} />
+                ))}
               </div>
-              <div className="flex flex-wrap items-center gap-4 pt-2 border-t">
-                <label className="text-sm text-muted-foreground">Minimum rating</label>
-                <select
-                  name="minRating"
-                  className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  defaultValue={minRating ?? ''}
-                >
-                  <option value="">Any</option>
-                  <option value="4">4+ stars</option>
-                  <option value="3">3+ stars</option>
-                </select>
-                <Button type="submit" variant="secondary" size="sm">
-                  Apply filters
+            ) : null}
+
+            {recommendations.length > 0 && !query && page === 1 && (
+              <div className="pt-8 border-t border-border">
+                <RecommendedAPIs apis={recommendations} title="Recommended for you" />
+              </div>
+            )}
+
+            {searchResults.apis.length === 0 ? (
+              <Card className="p-12 text-center col-span-full">
+                <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium mb-2">No APIs found</h3>
+                <p className="text-muted-foreground mb-4">
+                  Try adjusting your search or filters
+                </p>
+                <Button asChild variant="outline">
+                  <a href="/marketplace">Clear filters</a>
                 </Button>
-                {(query || category || minRating) && (
-                  <Button type="reset" variant="ghost" size="sm" asChild>
-                    <a href="/marketplace">Clear filters</a>
-                  </Button>
-                )}
-              </div>
-            </form>
-          </Card>
+              </Card>
+            ) : null}
 
-          {/* Results */}
-          <div className="mb-6">
-            <p className="text-sm text-muted-foreground">
-              Showing {searchResults.apis.length} of {searchResults.total} APIs
-              {query && ` for "${query}"`}
-            </p>
+            {searchResults.totalPages > 1 ? (
+              <div className="mt-6">
+                <MarketplacePagination
+                  currentPage={page}
+                  totalPages={searchResults.totalPages}
+                  buildPageHref={buildPageHref}
+                />
+              </div>
+            ) : null}
+          </main>
+        </div>
+      </form>
+
+      {/* Mobile filters sheet */}
+      <Sheet open={filtersSheetOpen} onOpenChange={setFiltersSheetOpen}>
+        <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Filters</SheetTitle>
+          </SheetHeader>
+          <div className="pt-4">
+            <FilterSidebar
+              category={category}
+              categoryHref={categoryHref}
+              categories={filterCategories}
+              query={query}
+              sort={sort}
+              freeOnly={freeOnly}
+              priceMin={priceMin}
+              priceMax={priceMax}
+              minRating={minRating}
+              tags={tags}
+              formId={FORM_ID}
+              standaloneForm
+              onCategoryClick={(catId) => {
+                setFiltersSheetOpen(false);
+                window.location.href = categoryHref(catId);
+              }}
+            />
           </div>
+        </SheetContent>
+      </Sheet>
 
-          {/* API Grid */}
-          {searchResults.apis.length > 0 ? (
-            <div className="space-y-4">
-              {searchResults.apis.map((api) => (
-                <APICard key={api.id} api={api} />
-              ))}
-            </div>
-          ) : null}
-
-          {/* Recommended for you (when no search or on first page) */}
-          {recommendations.length > 0 && !query && page === 1 && (
-            <div className="mt-10 pt-8 border-t">
-              <RecommendedAPIs apis={recommendations} title="Recommended for you" />
-            </div>
-          )}
-
-          {searchResults.apis.length === 0 ? (
-            <Card className="p-12 text-center">
-              <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No APIs found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your search or filters
-              </p>
-              <Button asChild variant="outline">
-                <a href="/marketplace">Clear filters</a>
-              </Button>
-            </Card>
-          ) : null}
-
-          {/* Pagination */}
-          {searchResults.totalPages > 1 ? (
-            <div className="mt-8 flex justify-center gap-2">
-              {page > 1 ? (
-                <Button variant="outline" asChild>
-                  <a href={`/marketplace?${new URLSearchParams({ ...searchParams, page: String(page - 1) } as Record<string, string>)}`}>
-                    Previous
-                  </a>
-                </Button>
-              ) : null}
-              <div className="flex items-center gap-2 px-4">
-                Page {page} of {searchResults.totalPages}
-              </div>
-              {page < searchResults.totalPages ? (
-                <Button variant="outline" asChild>
-                  <a href={`/marketplace?${new URLSearchParams({ ...searchParams, page: String(page + 1) } as Record<string, string>)}`}>
-                    Next
-                  </a>
-                </Button>
-              ) : null}
-            </div>
-          ) : null}
-        </main>
-      </div>
       <CompareBar />
     </div>
   );

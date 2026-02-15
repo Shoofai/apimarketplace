@@ -189,7 +189,9 @@ const config: Config = {
   			'fade-in': 'fadeIn 0.5s ease-out',
   			'slide-up': 'slideUp 0.5s ease-out',
   			'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-  			float: 'float 6s ease-in-out infinite'
+  			float: 'float 6s ease-in-out infinite',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
   		keyframes: {
   			fadeIn: {
@@ -217,6 +219,14 @@ const config: Config = {
   				'50%': {
   					transform: 'translateY(-20px)'
   				}
+  			},
+  			'accordion-down': {
+  				from: { height: '0' },
+  				to: { height: 'var(--radix-accordion-content-height)' }
+  			},
+  			'accordion-up': {
+  				from: { height: 'var(--radix-accordion-content-height)' },
+  				to: { height: '0' }
   			}
   		}
   	}
