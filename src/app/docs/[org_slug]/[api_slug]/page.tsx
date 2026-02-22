@@ -29,28 +29,30 @@ export default async function APIDocsPage({ params }: DocsPageProps) {
   const { org_slug, api_slug } = await params;
   const supabase = await createClient();
 
-  // Fetch API with OpenAPI spec
+  // Fetch API with OpenAPI spec from api_specs
   const { data: api, error } = await supabase
     .from('apis')
     .select(
       `
       *,
       organization:organizations!apis_organization_id_fkey(name, slug),
-      endpoints:api_endpoints(*)
+      endpoints:api_endpoints(*),
+      api_specs(openapi_spec, openapi_raw, openapi_spec_format)
     `
     )
     .eq('slug', api_slug)
     .eq('status', 'published')
     .single();
 
-  if (error || !api || !api.openapi_spec) {
+  const specRow = api?.api_specs as { openapi_spec?: unknown; openapi_raw?: string; openapi_spec_format?: string } | null;
+  if (error || !api || !specRow?.openapi_spec) {
     notFound();
   }
 
   // Parse OpenAPI spec
   const spec = await parseOpenApiSpec(
-    api.openapi_spec,
-    api.openapi_spec_format || 'json'
+    specRow.openapi_spec,
+    specRow.openapi_spec_format || 'json'
   );
 
   // Group endpoints by tag

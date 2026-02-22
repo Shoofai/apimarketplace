@@ -34,6 +34,7 @@ async function runProcess() {
   const admin = createAdminClient();
   const cutoff = new Date(Date.now() - SEVEN_YEARS_MS).toISOString();
   let deletedInvoices = 0;
+  let droppedPartitions = 0;
 
   const { data: oldInvoices, error: fetchError } = await admin
     .from('invoices')
@@ -48,8 +49,15 @@ async function runProcess() {
     if (!delError) deletedInvoices = oldInvoices.length;
   }
 
+  const retentionMonths = parseInt(process.env.API_REQUESTS_LOG_RETENTION_MONTHS ?? '12', 10) || 12;
+  const { data: dropped, error: rpcError } = await admin.rpc('drop_old_api_requests_log_partitions', {
+    retention_months: retentionMonths,
+  });
+  if (!rpcError && typeof dropped === 'number') droppedPartitions = dropped;
+
   return NextResponse.json({
     deleted_invoices: deletedInvoices,
+    dropped_partitions: droppedPartitions,
     cutoff,
     message: 'Retention run completed',
   });

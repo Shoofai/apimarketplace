@@ -46,7 +46,7 @@ export default function LogoWall() {
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
         className="mb-8 text-center text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
       >
-        Trusted by developers at
+        Integrate with thousands of apps, including:
       </motion.p>
 
       <div className="relative overflow-hidden">

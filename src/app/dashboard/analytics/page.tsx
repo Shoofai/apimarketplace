@@ -44,7 +44,7 @@ export default function DeveloperAnalyticsPage() {
       <PageHeader
         title="Developer Analytics"
         description="Monitor your API usage, performance, and costs"
-        icon={BarChart3}
+        icon="bar-chart-3"
         actions={
           <div className="flex gap-2">
           <Select value={timeRange} onValueChange={setTimeRange}>

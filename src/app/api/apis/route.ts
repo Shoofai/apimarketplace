@@ -96,7 +96,7 @@ export async function POST(request: Request) {
       ? generateUniqueSlug(slugInput, existingSlugs)
       : generateUniqueSlug(name, existingSlugs);
 
-    // Create API (draft)
+    // Create API (draft); openapi data goes to api_specs
     const { data: api, error: apiError } = await supabase
       .from('apis')
       .insert({
@@ -108,8 +108,6 @@ export async function POST(request: Request) {
         short_description: short_description?.trim() || description?.trim() || null,
         base_url: base_url.trim(),
         status: 'draft',
-        openapi_raw: openapi_raw || null,
-        openapi_spec: null,
       })
       .select()
       .single();
@@ -117,6 +115,20 @@ export async function POST(request: Request) {
     if (apiError) {
       logger.error('Failed to create API', { error: apiError });
       return NextResponse.json({ error: apiError.message }, { status: 500 });
+    }
+
+    // Store OpenAPI in api_specs
+    if (openapi_raw != null && (typeof openapi_raw === 'string' || openapi_raw === '')) {
+      const format = (openapi_format === 'yaml' ? 'yaml' : 'json') as 'yaml' | 'json';
+      await supabase.from('api_specs').upsert(
+        {
+          api_id: api.id,
+          openapi_raw: openapi_raw || null,
+          openapi_spec_format: format,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'api_id' }
+      );
     }
 
     // Parse OpenAPI and create endpoints if provided

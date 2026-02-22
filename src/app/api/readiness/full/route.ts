@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     const { data: api, error: apiError } = await supabase
       .from('apis')
-      .select('id, organization_id, openapi_spec')
+      .select('id, organization_id, api_specs(openapi_spec)')
       .eq('id', api_id)
       .eq('organization_id', context.organization_id)
       .single();
@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const spec = api.openapi_spec as Record<string, unknown> | null;
+    const specRow = (api as { api_specs?: { openapi_spec?: unknown }[] | { openapi_spec?: unknown } }).api_specs;
+    const spec = (Array.isArray(specRow) ? specRow[0]?.openapi_spec : specRow?.openapi_spec) as Record<string, unknown> | null;
     if (!spec || typeof spec !== 'object') {
       return NextResponse.json(
         { error: 'API has no OpenAPI spec. Add a spec to run an audit.' },

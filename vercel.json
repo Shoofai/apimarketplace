@@ -5,13 +5,8 @@
   "framework": "nextjs",
   "outputDirectory": ".next",
   "crons": [
-    {
-      "path": "/api/cron/process-gdpr-deletions",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/process-retention",
-      "schedule": "0 3 * * 0"
-    }
+    {"path": "/api/cron/process-gdpr-deletions", "schedule": "0 2 * * *"},
+    {"path": "/api/cron/process-retention", "schedule": "0 3 * * 0"},
+    {"path": "/api/cron/refresh-mvs", "schedule": "0 4 * * *"}
   ]
 }

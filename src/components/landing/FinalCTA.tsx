@@ -36,7 +36,7 @@ export default function FinalCTA() {
           {/* Badge */}
           <div className="flex justify-center">
             <span className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20">
-              ⚡ Join 10,000+ API providers and 500K+ developers
+              ⚡ One platform for API discovery, integration, and monetization
             </span>
           </div>
 

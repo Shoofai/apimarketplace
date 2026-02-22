@@ -93,7 +93,7 @@ export default async function SettingsPage() {
       <PageHeader
         title="Settings"
         description="Manage your account settings and preferences"
-        icon={Settings}
+        icon="settings"
       />
 
       {/* Settings Sections Grid */}

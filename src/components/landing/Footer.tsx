@@ -84,10 +84,10 @@ export default function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-foreground placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-900 dark:placeholder:text-gray-400"
+              className="h-10 flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-foreground placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-900 dark:placeholder:text-gray-400"
               required
             />
-            <Button type="submit" size="sm">
+            <Button type="submit" className="h-10 shrink-0 px-4">
               Subscribe
             </Button>
           </form>
@@ -222,7 +222,7 @@ export default function Footer() {
         {/* Trust signals */}
         <div className="flex flex-wrap items-center justify-center gap-6 border-t border-gray-200 py-6 dark:border-gray-800">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-            10K+ APIs · 500K+ Developers
+            One platform for API discovery, integration, and monetization
           </span>
           <span className="rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
             SOC 2 Ready

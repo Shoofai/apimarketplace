@@ -22,7 +22,7 @@ export default async function UseCasesPage() {
       title: 'For API Providers',
       tagline: 'Monetize your API in 5 minutes',
       challenge: 'Building payment infrastructure, docs, billing, and analytics takes 6+ months. Most APIs never reach 1,000 users.',
-      solution: 'Launch in one day. Connect Stripe once for subscriptions and usage-based billing. AI generates interactive docs from your OpenAPI spec. Reach 500K+ developers instantly.',
+      solution: 'Launch in one day. Connect Stripe once for subscriptions and usage-based billing. AI generates interactive docs from your OpenAPI spec. Get discovered by developers in one marketplace.',
       results: '90% faster time-to-revenue. 10x more API consumers. $0 infrastructure cost.',
       testimonial: '"We went from zero to paying customers in 48 hours. The platform fee is worth every penny."',
       cta: 'List Your API',

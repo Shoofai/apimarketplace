@@ -20,6 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_security_events_severity ON security_events(sever
 
 ALTER TABLE security_events ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Platform admins can read security_events" ON security_events;
 CREATE POLICY "Platform admins can read security_events"
   ON security_events FOR SELECT
   USING (
@@ -45,12 +46,16 @@ CREATE TABLE IF NOT EXISTS performance_metrics (
   timestamp timestamptz NOT NULL DEFAULT date_trunc('hour', now())
 );
 
+-- Ensure endpoint exists (remote may have older schema)
+ALTER TABLE performance_metrics ADD COLUMN IF NOT EXISTS endpoint text;
+
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_metric_type ON performance_metrics(metric_type);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_timestamp ON performance_metrics(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_endpoint ON performance_metrics(endpoint);
 
 ALTER TABLE performance_metrics ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Platform admins can read performance_metrics" ON performance_metrics;
 CREATE POLICY "Platform admins can read performance_metrics"
   ON performance_metrics FOR SELECT
   USING (
@@ -77,6 +82,7 @@ CREATE INDEX IF NOT EXISTS idx_rate_limit_violations_endpoint ON rate_limit_viol
 
 ALTER TABLE rate_limit_violations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Platform admins can read rate_limit_violations" ON rate_limit_violations;
 CREATE POLICY "Platform admins can read rate_limit_violations"
   ON rate_limit_violations FOR SELECT
   USING (

@@ -112,7 +112,7 @@ export default function ProblemStatement() {
             <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
           </Link>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Join 10K+ APIs and 500K+ developers on one platform.
+            Join one platform for APIs and developers.
           </p>
         </motion.div>
       </div>

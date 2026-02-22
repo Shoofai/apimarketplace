@@ -16,6 +16,7 @@ CREATE INDEX IF NOT EXISTS idx_readiness_reports_org ON api_readiness_reports(or
 ALTER TABLE api_readiness_reports ENABLE ROW LEVEL SECURITY;
 
 -- SELECT: org members can view reports for their org
+DROP POLICY IF EXISTS "Org members can view readiness reports" ON api_readiness_reports;
 CREATE POLICY "Org members can view readiness reports"
   ON api_readiness_reports FOR SELECT
   USING (
@@ -25,6 +26,7 @@ CREATE POLICY "Org members can view readiness reports"
   );
 
 -- INSERT: org members can create reports for APIs owned by their org
+DROP POLICY IF EXISTS "Org members can create readiness reports" ON api_readiness_reports;
 CREATE POLICY "Org members can create readiness reports"
   ON api_readiness_reports FOR INSERT
   WITH CHECK (

@@ -22,15 +22,18 @@ export default async function PlaygroundPage({
     redirect('/login');
   }
 
-  // Optionally load API details if api param is provided
-  let apiData = null;
+  // Optionally load API details if api param is provided (openapi_spec from api_specs)
+  let apiData: { id?: string; name?: string; slug?: string; openapi_spec?: unknown } | null = null;
   if (resolved.api) {
     const { data } = await supabase
       .from('apis')
-      .select('id, name, slug, openapi_spec')
+      .select('id, name, slug, api_specs(openapi_spec)')
       .eq('id', resolved.api)
       .single();
-    apiData = data;
+    const specRow = (data as any)?.api_specs;
+    apiData = data
+      ? { id: data.id, name: data.name, slug: data.slug, openapi_spec: Array.isArray(specRow) ? specRow[0]?.openapi_spec : specRow?.openapi_spec }
+      : null;
   }
 
   return (

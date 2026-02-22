@@ -12,6 +12,7 @@ CREATE INDEX IF NOT EXISTS idx_favorites_api ON api_favorites(api_id);
 
 ALTER TABLE api_favorites ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage their own favorites" ON api_favorites;
 CREATE POLICY "Users can manage their own favorites"
   ON api_favorites FOR ALL
   USING (auth.uid() = user_id)

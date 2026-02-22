@@ -32,20 +32,18 @@ export async function createClient() {
   );
 }
 
-/** Returns the current user, or null if unauthenticated or if the session is invalid (e.g. expired refresh token). Clears invalid session cookies so the next request is clean. */
+/** Returns the current user, or null if unauthenticated or if the session is invalid (e.g. expired refresh token). Clears invalid session cookies when getUser() fails. Never throws so the homepage and other callers can safely show logged-out UI. */
 export async function getUserSafe(): Promise<{ data: { user: User | null }; error: unknown }> {
   const supabase = await createClient();
   try {
     const result = await supabase.auth.getUser();
     return result;
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    const isInvalidSession =
-      /refresh.?token|Refresh Token|session.*expired|invalid.*session/i.test(message);
-    if (isInvalidSession) {
+    try {
       await supabase.auth.signOut();
-      return { data: { user: null }, error };
+    } catch {
+      // Ignore signOut errors (e.g. no session to clear)
     }
-    throw error;
+    return { data: { user: null }, error };
   }
 }

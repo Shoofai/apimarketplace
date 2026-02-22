@@ -128,7 +128,7 @@ export function MarketplaceContent({
     n >= 1000 ? `${Math.floor(n / 1000)}K+` : n.toString();
   const searchPlaceholder = categoryName
     ? `Search ${categoryName} APIs...`
-    : `Search ${searchResults.total > 0 ? formatApiCount(searchResults.total) : '10K+'} APIs...`;
+    : `Search ${searchResults.total > 0 ? formatApiCount(searchResults.total) + ' ' : ''}APIs...`;
 
   return (
     <div className="space-y-0">

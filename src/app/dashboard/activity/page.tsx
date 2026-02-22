@@ -77,7 +77,7 @@ export default async function ActivityPage() {
       <PageHeader
         title="Activity"
         description="Your recent activity across the platform"
-        icon={Activity}
+        icon="activity"
         leading={
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">

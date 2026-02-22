@@ -16,16 +16,17 @@ const config: Config = {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			primary: {
-  				'50': '#EFF6FF',
-  				'100': '#DBEAFE',
-  				'200': '#BFDBFE',
-  				'300': '#60A5FA',
-  				'400': '#3B82F6',
-  				'500': '#3B82F6',
-  				'600': '#2563EB',
-  				'700': '#1E3A8A',
-  				'800': '#1E40AF',
-  				'900': '#0A0E27',
+  				'50': '#f5f3ff',
+  				'100': '#ede9fe',
+  				'200': '#ddd6fe',
+  				'300': '#c4b5fd',
+  				'400': '#a78bfa',
+  				'500': '#8b5cf6',
+  				'600': '#7c3aed',
+  				'700': '#6d28d9',
+  				'800': '#5b21b6',
+  				'900': '#4c1d95',
+  				'950': '#2e1065',
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
@@ -183,6 +184,14 @@ const config: Config = {
   					lineHeight: '1.1',
   					letterSpacing: '-0.04em'
   				}
+  			],
+  			hero: [
+  				'clamp(1.75rem, 4vw + 1.25rem, 3.75rem)',
+  				{ lineHeight: '1.08', letterSpacing: '-0.03em' }
+  			],
+  			subhero: [
+  				'clamp(1rem, 1.5vw + 0.75rem, 1.5rem)',
+  				{ lineHeight: '1.5' }
   			]
   		},
   		borderRadius: {
@@ -191,16 +200,16 @@ const config: Config = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		boxShadow: {
-  			glow: '0 0 40px rgba(59, 130, 246, 0.3)',
+  			glow: '0 0 40px rgba(139, 92, 246, 0.3)',
   			'glow-purple': '0 0 40px rgba(139, 92, 246, 0.3)',
   			'glow-cta': '0 0 40px rgba(245, 158, 11, 0.3)'
   		},
   		backgroundImage: {
-  			'gradient-hero': 'linear-gradient(135deg, #1E3A8A 0%, rgba(6, 182, 212, 0.2) 50%, #8B5CF6 100%)',
-  			'gradient-feature': 'linear-gradient(180deg, #3B82F6 0%, #8B5CF6 100%)',
-  			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+  			'gradient-hero': 'linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #8b5cf6 100%)',
+  			'gradient-feature': 'linear-gradient(180deg, #7c3aed 0%, #8b5cf6 100%)',
+  			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
   			'gradient-cta': 'linear-gradient(to right, #f59e0b, #d97706)',
-  			'gradient-tech': 'linear-gradient(to right, #3b82f6, #06b6d4)'
+  			'gradient-tech': 'linear-gradient(to right, #8b5cf6, #a78bfa)'
   		},
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-out',

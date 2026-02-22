@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, getUserSafe } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import DashboardNav from '@/components/dashboard/DashboardNav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -11,10 +11,10 @@ export default async function MarketplaceLayout({
 }) {
   const supabase = await createClient();
 
-  // Check authentication
+  // Check authentication (handles invalid/expired refresh token without throwing)
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getUserSafe();
 
   if (!user) {
     redirect('/login');

@@ -21,22 +21,22 @@ export default async function AboutPage() {
       <PageHero
         title={`About ${platformName}`}
         subtitle="We believe API integration shouldn't take weeks."
-        stats={['10K+ APIs', '500K+ Developers', '$100M+ Revenue Processed']}
+        stats={['Stripe Connect', 'OpenAPI → Docs', 'Usage-based billing']}
       />
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <div className="not-prose grid grid-cols-3 gap-4 my-10 rounded-xl border border-border bg-muted/30 p-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-foreground">10K+</div>
-              <div className="text-sm text-muted-foreground">APIs listed</div>
+              <div className="text-sm font-semibold text-foreground">Stripe Connect</div>
+              <div className="text-xs text-muted-foreground">Get paid in minutes</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-foreground">500K+</div>
-              <div className="text-sm text-muted-foreground">Active developers</div>
+              <div className="text-sm font-semibold text-foreground">OpenAPI → Docs</div>
+              <div className="text-xs text-muted-foreground">AI-generated docs</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-foreground">$100M+</div>
-              <div className="text-sm text-muted-foreground">Revenue processed</div>
+              <div className="text-sm font-semibold text-foreground">Usage-based billing</div>
+              <div className="text-xs text-muted-foreground">Built-in metering</div>
             </div>
           </div>
 

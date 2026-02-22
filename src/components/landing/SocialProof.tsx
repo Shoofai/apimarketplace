@@ -3,9 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Star, Quote } from 'lucide-react';
-import { Counter } from '@/components/ui/counter';
 import { Card } from '@/components/ui/card';
-import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 const testimonials = [
   {
@@ -31,12 +29,7 @@ const testimonials = [
   },
 ];
 
-const metrics = [
-  { value: 10000, suffix: '+', label: 'APIs Listed' },
-  { value: 500, suffix: 'K+', label: 'Active Developers' },
-  { value: 100, prefix: '$', suffix: 'M+', label: 'Revenue Processed' },
-  { value: 99.99, suffix: '%', label: 'Uptime SLA' },
-];
+const capabilities = ['Stripe Connect', 'OpenAPI → Docs', 'Usage-based billing', 'Built to scale'];
 
 const caseStudies = [
   {
@@ -59,7 +52,6 @@ const caseStudies = [
 export default function SocialProof() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
-  const platformName = usePlatformName();
 
   return (
     <section ref={ref} className="bg-white py-24 dark:bg-gray-950 sm:py-32">
@@ -71,32 +63,34 @@ export default function SocialProof() {
           className="mb-16 text-center"
         >
           <h2 className="section-heading mb-6 text-gray-900 dark:text-white">
-            Trusted by Thousands. Loved by All.
+            Built for how teams ship today
           </h2>
           <p className="section-subheading mx-auto max-w-3xl text-gray-600 dark:text-gray-300">
-            From solo developers to Fortune 500 companies, everyone builds better on
-            {platformName}.
+            One platform for API discovery, integration, and monetization—for indie APIs and scaling teams.
           </p>
         </motion.div>
 
-        {/* Metrics Ticker */}
+        {/* Capability pills */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ delay: 0.2 }}
-          className="mb-16 grid grid-cols-2 gap-6 md:grid-cols-4"
+          className="mb-16 flex flex-wrap items-center justify-center gap-4"
         >
-          {metrics.map((metric, index) => (
-            <div key={index} className="text-center">
-              <div className="mb-2 text-4xl font-black text-primary-600 dark:text-primary-400">
-                <Counter end={metric.value} prefix={metric.prefix} suffix={metric.suffix} />
-              </div>
-              <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{metric.label}</div>
-            </div>
+          {capabilities.map((label, index) => (
+            <span
+              key={index}
+              className="rounded-full border border-primary-200 bg-primary-50 px-5 py-2.5 text-sm font-medium text-primary-700 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+            >
+              {label}
+            </span>
           ))}
         </motion.div>
 
         {/* Testimonials */}
+        <p className="mb-6 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+          Example outcomes (illustrative).
+        </p>
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
@@ -133,7 +127,7 @@ export default function SocialProof() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white">Case Studies</h3>
+          <h3 className="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white">Example use cases</h3>
           <div className="grid gap-6 md:grid-cols-3">
             {caseStudies.map((study, index) => (
               <Card key={index} className="p-6 transition-all hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
@@ -155,7 +149,7 @@ export default function SocialProof() {
           className="mt-16"
         >
           <p className="mb-8 text-center text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-            Trusted by leading companies
+            Integrations and ecosystem
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 opacity-50">
             {[...Array(6)].map((_, i) => (

@@ -60,7 +60,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
   const org = userData.organizations as any;
 
-  // Get API details
+  // Get API details (openapi_spec from api_specs)
   const { data: api, error } = await supabase
     .from('apis')
     .select(`
@@ -72,7 +72,6 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       status,
       created_at,
       updated_at,
-      openapi_spec,
       categories,
       organization_id,
       organizations:organization_id (
@@ -80,7 +79,8 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
         name,
         slug,
         plan
-      )
+      ),
+      api_specs(openapi_spec, openapi_raw, openapi_spec_format)
     `)
     .eq('id', id)
     .single();

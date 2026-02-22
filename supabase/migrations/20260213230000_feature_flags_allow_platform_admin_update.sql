@@ -1,4 +1,5 @@
 -- Allow platform admins to UPDATE feature_flags (toggles)
+DROP POLICY IF EXISTS "Platform admins can update feature flags" ON public.feature_flags;
 CREATE POLICY "Platform admins can update feature flags"
 ON public.feature_flags
 FOR UPDATE

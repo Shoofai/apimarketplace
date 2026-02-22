@@ -85,7 +85,7 @@ export default function HeroSplit() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero dark:from-gray-900 dark:via-primary-900/30 dark:to-primary-900/30">
+    <section className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero dark:from-gray-900 dark:via-primary-900/30 dark:to-primary-900/30">
       {/* Dot/grid pattern */}
       <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.12]">
         <div
@@ -98,9 +98,9 @@ export default function HeroSplit() {
       {/* Gradient glow - subtle in light, stronger in dark */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-100/30 via-transparent to-transparent dark:bg-gradient-glow" />
 
-      {/* Section 1 — Main hero: split layout */}
-      <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-12">
+      {/* Section 1 — Main hero: split layout (Option B: fits in viewport, responsive spacing) */}
+      <div className="relative mx-auto flex min-h-0 flex-1 flex-col justify-center px-4 pt-8 pb-4 sm:px-6 sm:pt-12 sm:pb-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-[1fr_360px] lg:gap-10">
           {/* Left: headline + CTAs */}
           <motion.div
             variants={staggerContainer}
@@ -109,16 +109,16 @@ export default function HeroSplit() {
             className="flex flex-col"
           >
           {/* Badge — top-left aligned */}
-          <motion.div variants={fadeIn} className="mb-8 self-start">
+          <motion.div variants={fadeIn} className="mb-4 self-start sm:mb-6">
             <span className="inline-flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-gray-900 shadow-sm dark:bg-white/5 dark:text-white">
-              10K+ APIs · 500K+ Developers · $100M+ Revenue Processed
+              Discover, integrate, and monetize APIs in one place
             </span>
           </motion.div>
 
-          {/* Headline — 3 lines, same colors */}
+          {/* Headline — clamp() for viewport-scaled type */}
           <motion.h1
             variants={slideUp}
-            className="mb-6 max-w-5xl font-heading text-4xl font-extrabold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
+            className="mb-3 max-w-5xl font-heading text-hero font-extrabold tracking-tight text-gray-900 sm:mb-5 dark:text-white"
           >
             <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 bg-clip-text text-transparent dark:from-primary-300 dark:via-primary-400 dark:to-primary-500">
               The Only API Platform
@@ -129,10 +129,10 @@ export default function HeroSplit() {
             Developers Both Win
           </motion.h1>
 
-          {/* Subheadline */}
+          {/* Subheadline — clamp() */}
           <motion.p
             variants={slideUp}
-            className="mb-10 max-w-3xl text-lg font-medium leading-relaxed text-gray-700 sm:text-xl lg:text-2xl dark:text-primary-100"
+            className="mb-5 max-w-3xl font-medium leading-relaxed text-gray-700 text-subhero sm:mb-8 dark:text-primary-100"
           >
             From API discovery to production in 2 minutes. Test before you buy, AI-generated code,
             one-click monetization, and enterprise governance—all in one place.
@@ -191,18 +191,18 @@ export default function HeroSplit() {
         </div>
       </div>
 
-      {/* Section 2 — Trust bar */}
-      <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+      {/* Section 2 — Trust bar (same section, shrinks when space is tight) */}
+      <div className="relative mx-auto max-w-7xl flex-shrink-0 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         <motion.div
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-4 sm:gap-6"
         >
           {/* Subheading + logo strip */}
           <motion.div variants={fadeIn} className="flex flex-col items-center text-center">
             <p className="mb-3 text-sm font-medium text-gray-600 dark:text-primary-200/90">
-              Powering products used around the world
+              Integrate with the tools you use
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-gray-600 dark:text-white/80">
               {USED_BY.map((name, i) => (

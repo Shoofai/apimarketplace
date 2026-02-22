@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Counter } from '@/components/ui/counter';
 import { trackCTAClick } from '@/lib/analytics';
 import { fadeIn, slideUp, staggerContainer } from '@/lib/animations';
 import { APIConstellation } from '../APIConstellation';
@@ -12,7 +11,6 @@ import { DemoModal } from '../DemoModal';
 import { HeroQuiz } from '../HeroQuiz';
 import LiveActivityTicker from '../LiveActivityTicker';
 import { MagneticButton } from '../MagneticButton';
-import { Sparkline } from '../Sparkline';
 
 export default function HeroClassic() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -60,8 +58,8 @@ export default function HeroClassic() {
       {/* API Constellation Background */}
       <APIConstellation mouseX={mousePos.x} mouseY={mousePos.y} />
 
-      {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-24 sm:px-6 lg:px-8">
+      {/* Content — Option B: fits in viewport, responsive spacing + clamp() */}
+      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <motion.div
           variants={staggerContainer}
           initial="initial"
@@ -69,16 +67,16 @@ export default function HeroClassic() {
           className="flex flex-col items-center text-center"
         >
           {/* Badge */}
-          <motion.div variants={fadeIn} className="mb-8">
+          <motion.div variants={fadeIn} className="mb-4 sm:mb-6">
             <span className="inline-flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-gray-900 shadow-sm dark:bg-white/5 dark:text-white">
-              10K+ APIs · 500K+ Developers · $100M+ Revenue Processed
+              Discover, integrate, and monetize APIs in one place
             </span>
           </motion.div>
 
-          {/* Main Headline */}
+          {/* Main Headline — clamp() for viewport-scaled type */}
           <motion.h1
             variants={slideUp}
-            className="mb-6 max-w-5xl font-heading text-4xl font-extrabold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
+            className="mb-3 max-w-5xl font-heading text-hero font-extrabold tracking-tight text-gray-900 sm:mb-5 dark:text-white"
           >
             <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 bg-clip-text text-transparent dark:from-primary-300 dark:via-primary-400 dark:to-primary-500">
               The Only API Platform
@@ -87,17 +85,17 @@ export default function HeroClassic() {
             Where Providers & Developers Both Win
           </motion.h1>
 
-          {/* Subheadline */}
+          {/* Subheadline — clamp() */}
           <motion.p
             variants={slideUp}
-            className="mb-10 max-w-3xl text-lg font-medium leading-relaxed text-gray-700 sm:text-xl lg:text-2xl dark:text-primary-100"
+            className="mb-5 max-w-3xl font-medium leading-relaxed text-gray-700 text-subhero sm:mb-8 dark:text-primary-100"
           >
             From API discovery to production in 2 minutes. Test before you buy, AI-generated code, one-click monetization,
             and enterprise governance—all in one place.
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={slideUp} className="mb-4 flex flex-col gap-4 sm:flex-row sm:gap-6">
+          <motion.div variants={slideUp} className="mb-3 flex flex-col gap-4 sm:mb-4 sm:flex-row sm:gap-6">
             <MagneticButton>
               <Button
                 variant="cta"
@@ -129,54 +127,24 @@ export default function HeroClassic() {
           </motion.div>
           <HeroQuiz open={quizOpen} onOpenChange={setQuizOpen} />
           <DemoModal open={demoOpen} onOpenChange={setDemoOpen} />
-          <motion.p variants={slideUp} className="mb-16 text-sm text-gray-600 dark:text-primary-200/90">
+          <motion.p variants={slideUp} className="mb-8 text-sm text-gray-600 sm:mb-12 dark:text-primary-200/90">
             No credit card required · Free tier included · Start building in minutes
           </motion.p>
 
-          {/* Stats Bar */}
+          {/* Capability row */}
           <motion.div
             variants={fadeIn}
-            className="grid w-full max-w-4xl grid-cols-1 gap-8 rounded-2xl border-2 border-gray-200 bg-white/80 px-8 py-10 shadow-xl backdrop-blur-xl transition-shadow hover:shadow-2xl sm:grid-cols-3 dark:border-white/10 dark:bg-white/5"
+            className="flex w-full max-w-4xl flex-wrap items-center justify-center gap-4 rounded-2xl border-2 border-gray-200 bg-white/80 px-8 py-8 shadow-xl backdrop-blur-xl transition-shadow hover:shadow-2xl dark:border-white/10 dark:bg-white/5"
           >
-            <div className="group flex flex-col items-center text-center">
-              <div className="mb-2 flex items-center justify-center gap-3">
-                <div className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                  <Counter end={10000} suffix="+" />
-                </div>
-                <Sparkline
-                  data={[20, 35, 42, 55, 48, 70, 85, 90]}
-                  className="h-5 w-12 text-primary-300"
-                  strokeColor="currentColor"
-                />
-              </div>
-              <div className="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-primary-200/90">APIs Listed</div>
-            </div>
-            <div className="group flex flex-col items-center text-center">
-              <div className="mb-2 flex items-center justify-center gap-3">
-                <div className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                  <Counter end={500000} suffix="+" />
-                </div>
-                <Sparkline
-                  data={[15, 28, 38, 52, 65, 75, 82, 95]}
-                  className="h-5 w-12 text-primary-300"
-                  strokeColor="currentColor"
-                />
-              </div>
-              <div className="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-primary-200/90">Active Developers</div>
-            </div>
-            <div className="group flex flex-col items-center text-center">
-              <div className="mb-2 flex items-center justify-center gap-3">
-                <div className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                  <Counter end={100} prefix="$" suffix="M+" />
-                </div>
-                <Sparkline
-                  data={[22, 40, 55, 68, 72, 88, 92, 98]}
-                  className="h-5 w-12 text-primary-300"
-                  strokeColor="currentColor"
-                />
-              </div>
-              <div className="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-primary-200/90">Revenue Processed</div>
-            </div>
+            <span className="rounded-full border border-primary-200 bg-primary-50 px-5 py-2.5 text-sm font-semibold text-primary-700 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
+              Stripe Connect
+            </span>
+            <span className="rounded-full border border-primary-200 bg-primary-50 px-5 py-2.5 text-sm font-semibold text-primary-700 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
+              OpenAPI → Docs
+            </span>
+            <span className="rounded-full border border-primary-200 bg-primary-50 px-5 py-2.5 text-sm font-semibold text-primary-700 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
+              Usage-based billing
+            </span>
           </motion.div>
 
           {/* Live Activity Ticker */}

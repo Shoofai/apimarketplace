@@ -77,7 +77,7 @@ export default async function MyAPIsPage() {
       <PageHeader
         title="My APIs"
         description="Manage and monitor your published APIs"
-        icon={Box}
+        icon="box"
         actions={
           <Link href="/dashboard/apis/publish">
             <Button size="lg" className="gap-2">
@@ -129,7 +129,6 @@ async function APIsList({ orgId, orgSlug, query }: { orgId: string; orgSlug: str
       version,
       status,
       created_at,
-      openapi_spec,
       categories
     `)
     .eq('organization_id', orgId)

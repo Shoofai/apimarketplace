@@ -83,7 +83,7 @@ export default async function DashboardPage() {
             </Badge>
           </div>
         }
-        icon={isAdmin ? Crown : undefined}
+        icon={isAdmin ? 'crown' : undefined}
         actions={
           isAdmin ? (
             <Link href="/dashboard/admin">

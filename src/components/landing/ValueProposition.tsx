@@ -15,7 +15,7 @@ const valueProps = {
       'AI-generated interactive docs from your OpenAPI spec',
       'Usage-based billing with automatic metering',
       'Built-in rate limiting and analytics dashboard',
-      'Reach 500K+ developers instantly without marketing',
+      'Get discovered by developers in one marketplace',
     ],
     metrics: [
       { value: 90, suffix: '%', label: 'faster time-to-revenue' },
@@ -30,7 +30,7 @@ const valueProps = {
       'AI generates working integration code in 2 minutes',
       'Test any API with interactive playground before buying',
       'Switch providers without changing a single line of code',
-      'Auto-optimize costs across 10,000+ API alternatives',
+      'Auto-optimize costs across API alternatives',
       'One authentication flow for all APIs',
     ],
     metrics: [
@@ -45,7 +45,7 @@ const valueProps = {
     benefits: [
       'Complete visibility into all API usage across teams',
       'Policy engine enforces security and compliance rules',
-      'Cost optimizer saves $500K+ annually on API spend',
+      'Visibility and optimization to reduce API costs',
       'Built-in SOC2, HIPAA, GDPR compliance scanning',
       'White-label option for internal developer portals',
     ],

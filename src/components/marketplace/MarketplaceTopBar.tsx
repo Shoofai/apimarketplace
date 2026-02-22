@@ -56,7 +56,7 @@ export interface MarketplaceTopBarProps {
 
 export function MarketplaceTopBar({
   title,
-  searchPlaceholder = 'Search 10K+ APIs...',
+  searchPlaceholder = 'Search APIs...',
   query,
   formId,
   sort,

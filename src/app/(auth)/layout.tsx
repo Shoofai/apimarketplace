@@ -102,19 +102,19 @@ export default async function AuthLayout({
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="relative z-10 grid grid-cols-3 gap-8 pt-8 border-t border-white/10 dark:border-white/5">
-          <div>
-            <div className="text-3xl font-bold text-white dark:text-foreground mb-1">10K+</div>
-            <div className="text-sm text-white/80 dark:text-muted-foreground">APIs</div>
+        {/* Capabilities */}
+        <div className="relative z-10 grid grid-cols-3 gap-6 pt-8 border-t border-white/10 dark:border-white/5">
+          <div className="text-center">
+            <div className="text-sm font-semibold text-white dark:text-foreground">Stripe Connect</div>
+            <div className="text-xs text-white/80 dark:text-muted-foreground">Get paid in minutes</div>
           </div>
-          <div>
-            <div className="text-3xl font-bold text-white dark:text-foreground mb-1">500K+</div>
-            <div className="text-sm text-white/80 dark:text-muted-foreground">Developers</div>
+          <div className="text-center">
+            <div className="text-sm font-semibold text-white dark:text-foreground">OpenAPI → Docs</div>
+            <div className="text-xs text-white/80 dark:text-muted-foreground">AI-generated docs</div>
           </div>
-          <div>
-            <div className="text-3xl font-bold text-white dark:text-foreground mb-1">$100M+</div>
-            <div className="text-sm text-white/80 dark:text-muted-foreground">Revenue</div>
+          <div className="text-center">
+            <div className="text-sm font-semibold text-white dark:text-foreground">Usage-based billing</div>
+            <div className="text-xs text-white/80 dark:text-muted-foreground">Built-in metering</div>
           </div>
         </div>
       </div>

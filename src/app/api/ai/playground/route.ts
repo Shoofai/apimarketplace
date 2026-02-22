@@ -59,10 +59,10 @@ export async function POST(request: Request) {
 
     const supabase = await createClient();
 
-    // Fetch API details
+    // Fetch API details (openapi_spec from api_specs)
     const { data: api } = await supabase
       .from('apis')
-      .select('*, subscriptions:api_subscriptions(*)')
+      .select('*, subscriptions:api_subscriptions(*), api_specs(openapi_spec, openapi_spec_format)')
       .eq('id', apiId)
       .single();
 
@@ -82,8 +82,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse OpenAPI spec
-    const spec = await parseOpenApiSpec(api.openapi_spec, api.openapi_spec_format || 'json');
+    const specRow = (api as { api_specs?: { openapi_spec?: unknown; openapi_spec_format?: string }[] | { openapi_spec?: unknown; openapi_spec_format?: string } }).api_specs;
+    const specData = Array.isArray(specRow) ? specRow[0] : specRow;
+    const spec = await parseOpenApiSpec(specData?.openapi_spec, specData?.openapi_spec_format || 'json');
 
     // Create streaming response
     const encoder = new TextEncoder();

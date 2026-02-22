@@ -15,12 +15,14 @@ CREATE INDEX IF NOT EXISTS idx_api_incidents_started ON api_incidents(started_at
 
 ALTER TABLE api_incidents ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Anyone can read incidents for published APIs" ON api_incidents;
 CREATE POLICY "Anyone can read incidents for published APIs"
   ON api_incidents FOR SELECT
   USING (
     api_id IN (SELECT id FROM apis WHERE status = 'published')
   );
 
+DROP POLICY IF EXISTS "Providers can manage incidents for their APIs" ON api_incidents;
 CREATE POLICY "Providers can manage incidents for their APIs"
   ON api_incidents FOR ALL
   USING (
