@@ -1,1 +1,3 @@
 2026-02-22: API-from-apps card enhancements (height, step progress, toast, connector flow). Plan: api_card_visual_enhancements.
+
+2026-02-22: Production readiness DB-4 rollback doc, UI-3 API_ROUTE_CALLSITES.md + 47 route comments.
