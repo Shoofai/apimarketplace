@@ -24,12 +24,12 @@ interface FloatingQuickActionsProps {
 const actions = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/marketplace', icon: Globe, label: 'Marketplace' },
-  { href: '/dashboard/apis', icon: Box, label: 'My APIs', providerOnly: true },
-  { href: '/dashboard/subscriptions', icon: Layers, label: 'Subscriptions', consumerOnly: true },
+  { href: '/dashboard/provider/apis', icon: Box, label: 'My APIs', providerOnly: true },
+  { href: '/dashboard/discover/subscriptions', icon: Layers, label: 'Subscriptions', consumerOnly: true },
   { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
   { href: '/dashboard/settings/api-keys', icon: Key, label: 'API Keys' },
-  { href: '/dashboard/sandbox', icon: TestTube2, label: 'Sandbox' },
-  { href: '/dashboard/playground', icon: Zap, label: 'AI Playground' },
+  { href: '/dashboard/developer/sandbox', icon: TestTube2, label: 'Sandbox' },
+  { href: '/dashboard/developer/playground', icon: Zap, label: 'AI Playground' },
 ];
 
 export function FloatingQuickActions({ user }: FloatingQuickActionsProps) {

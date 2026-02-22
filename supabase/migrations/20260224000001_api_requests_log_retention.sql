@@ -1,4 +1,14 @@
 -- Drop api_requests_log partitions older than retention_months. Call from cron.
+--
+-- ROLLBACK/BACKUP PLAN (Production Readiness DB-4):
+-- - This migration only creates a function; it does not run DROP at apply time.
+-- - The function drop_old_api_requests_log_partitions() is invoked by cron
+--   (/api/cron/process-retention). To roll back: revoke execute from cron or
+--   drop the function: DROP FUNCTION IF EXISTS drop_old_api_requests_log_partitions(int);
+-- - Partitions once dropped are not recoverable. Ensure backups (e.g. PITR) cover
+--   api_requests_log* tables before running retention in production.
+-- - In shared branches, prefer not to change this function; use a new migration
+--   if behavior changes are required.
 
 CREATE OR REPLACE FUNCTION drop_old_api_requests_log_partitions(retention_months int DEFAULT 12)
 RETURNS int

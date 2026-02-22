@@ -1,3 +1,4 @@
+// Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 

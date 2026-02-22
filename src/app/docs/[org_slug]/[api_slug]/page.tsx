@@ -48,11 +48,15 @@ export default async function APIDocsPage({ params }: DocsPageProps) {
   if (error || !api || !specRow?.openapi_spec) {
     notFound();
   }
+  const rawSpec = specRow.openapi_spec;
+  if (typeof rawSpec !== 'string') {
+    notFound();
+  }
 
   // Parse OpenAPI spec
   const spec = await parseOpenApiSpec(
-    specRow.openapi_spec,
-    specRow.openapi_spec_format || 'json'
+    rawSpec,
+    (specRow.openapi_spec_format || 'json') as 'yaml' | 'json'
   );
 
   // Group endpoints by tag

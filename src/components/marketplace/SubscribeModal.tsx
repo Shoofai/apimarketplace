@@ -92,7 +92,7 @@ export function SubscribeModal({
     setStep('plan');
     setApiKey(null);
     setError(null);
-    router.push('/dashboard/subscriptions');
+    router.push('/dashboard/discover/subscriptions');
   };
 
   const handleClose = (next: boolean) => {

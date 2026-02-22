@@ -373,9 +373,9 @@ async function seedDashboardData(
 
   if ((notifCount ?? 0) < 3) {
     const notifs = [
-      { title: 'New Subscriber', body: 'Your Weather API gained a new subscriber.', event_type: 'api.new_subscriber', link: '/dashboard/apis', is_read: false },
+      { title: 'New Subscriber', body: 'Your Weather API gained a new subscriber.', event_type: 'api.new_subscriber', link: '/dashboard/provider/apis', is_read: false },
       { title: 'Usage Alert', body: 'You\'ve used 80% of your monthly quota.', event_type: 'usage.quota_80', is_read: false },
-      { title: 'API Approved', body: 'Your API submission has been approved.', event_type: 'api.status_changed', link: '/dashboard/apis', is_read: true },
+      { title: 'API Approved', body: 'Your API submission has been approved.', event_type: 'api.status_changed', link: '/dashboard/provider/apis', is_read: true },
     ];
     for (let i = 0; i < notifs.length; i++) {
       await admin.from('notifications').insert({

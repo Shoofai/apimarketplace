@@ -115,17 +115,17 @@ export default async function DashboardPage() {
                   Review APIs
                 </Button>
               </Link>
-              <Link href="/dashboard/admin/feature-flags">
+              <Link href="/dashboard/admin/platform/feature-flags">
                 <Button variant="outline" size="lg">
                   Feature Flags
                 </Button>
               </Link>
-              <Link href="/dashboard/admin/users">
+              <Link href="/dashboard/admin/people/users">
                 <Button variant="outline" size="lg">
                   Manage Users
                 </Button>
               </Link>
-              <Link href="/dashboard/admin/tracker">
+              <Link href="/dashboard/admin/dev/tracker">
                 <Button variant="outline" size="lg">
                   Implementation Tracker
                 </Button>
@@ -144,7 +144,7 @@ export default async function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isProvider && (
             <>
-              <Link href="/dashboard/apis/new" className="group">
+              <Link href="/dashboard/provider/apis/new" className="group">
                 <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                 </Card>
               </Link>
 
-              <Link href="/dashboard/provider/analytics" className="group">
+              <Link href="/dashboard/analytics/provider" className="group">
                 <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -205,7 +205,7 @@ export default async function DashboardPage() {
                 </Card>
               </Link>
 
-              <Link href="/dashboard/sandbox" className="group">
+              <Link href="/dashboard/developer/sandbox" className="group">
                 <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -226,7 +226,7 @@ export default async function DashboardPage() {
             </>
           )}
 
-          <Link href="/dashboard/playground" className="group">
+          <Link href="/dashboard/developer/playground" className="group">
             <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
@@ -245,7 +245,7 @@ export default async function DashboardPage() {
             </Card>
           </Link>
 
-          <Link href="/dashboard/analytics" className="group">
+          <Link href="/dashboard/analytics/usage" className="group">
             <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">

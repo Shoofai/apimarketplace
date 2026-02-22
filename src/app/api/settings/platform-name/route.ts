@@ -1,3 +1,4 @@
+// Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextResponse } from 'next/server';
 import { DEFAULT_PLATFORM_NAME, getPlatformName } from '@/lib/settings/platform-name';
 

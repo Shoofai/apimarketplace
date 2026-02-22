@@ -35,6 +35,7 @@ const PHASES: { name: string; count: number; start: number; end: number }[] = [
   { name: 'Phase 3: Killer Features', count: 5, start: 13, end: 17 },
   { name: 'Phase 4: Advanced Features', count: 5, start: 18, end: 22 },
   { name: 'Phase 5: Operations & Launch', count: 6, start: 23, end: 28 },
+  { name: 'Phase 6: Post-launch changelog', count: 1, start: 29, end: 29 },
 ];
 
 export function TrackerOverview() {
@@ -89,7 +90,7 @@ export function TrackerOverview() {
     return <TrackerSkeleton />;
   }
 
-  const totalSprints = 28;
+  const totalSprints = sprints.length;
   const completedSprints = sprints.filter((s) => s.status === 'completed').length;
   const overallProgress = Math.round((completedSprints / totalSprints) * 100);
 

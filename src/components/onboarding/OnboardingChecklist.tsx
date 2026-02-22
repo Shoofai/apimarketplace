@@ -16,8 +16,8 @@ interface ChecklistItem {
 export function OnboardingChecklist() {
   const [items, setItems] = useState<ChecklistItem[]>([
     { id: 'subscribe', label: 'Subscribe to your first API', href: '/marketplace', done: false },
-    { id: 'sandbox', label: 'Test an API in Sandbox', href: '/dashboard/sandbox', done: false },
-    { id: 'ai', label: 'Generate code with AI', href: '/dashboard/playground', done: false },
+    { id: 'sandbox', label: 'Test an API in Sandbox', href: '/dashboard/developer/sandbox', done: false },
+    { id: 'ai', label: 'Generate code with AI', href: '/dashboard/developer/playground', done: false },
     { id: 'team', label: 'Invite a team member', href: '/dashboard/settings/team', done: false },
   ]);
   const [dismissed, setDismissed] = useState(false);

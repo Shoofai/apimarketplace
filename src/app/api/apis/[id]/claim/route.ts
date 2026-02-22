@@ -1,3 +1,4 @@
+// Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextResponse } from 'next/server';
 import { requirePermission } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';

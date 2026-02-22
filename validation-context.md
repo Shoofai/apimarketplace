@@ -1,6 +1,6 @@
 # Production Readiness Report
 
-**Generated:** 2026-02-22T00:53:51.566Z | **Scanner:** 1.0.0 | **Schema:** 1.0
+**Generated:** 2026-02-22T15:15:01.144Z | **Scanner:** 1.0.0 | **Schema:** 1.0
 
 ## Ship status
 
@@ -74,6 +74,7 @@
 | /api/contact | API: /api/contact |
 | /api/cron/process-gdpr-deletions | API: /api/cron/process-gdpr-deletions |
 | /api/cron/process-retention | API: /api/cron/process-retention |
+| /api/cron/refresh-mvs | API: /api/cron/refresh-mvs |
 | /api/favorites | API: /api/favorites |
 | /api/forum/topics/[id]/posts | API: /api/forum/topics/[id]/posts |
 | /api/forum/topics/[id] | API: /api/forum/topics/[id] |
@@ -111,46 +112,58 @@
 | /dashboard/activity | Page: /dashboard/activity |
 | /dashboard/admin/apis/claims/[id] | Page: /dashboard/admin/apis/claims/[id] |
 | /dashboard/admin/apis/claims | Page: /dashboard/admin/apis/claims |
+| /dashboard/admin/apis | Page: /dashboard/admin/apis |
 | /dashboard/admin/apis/review/[id] | Page: /dashboard/admin/apis/review/[id] |
 | /dashboard/admin/apis/review | Page: /dashboard/admin/apis/review |
-| /dashboard/admin/demo | Page: /dashboard/admin/demo |
-| /dashboard/admin/feature-flags | Page: /dashboard/admin/feature-flags |
-| /dashboard/admin/health | Page: /dashboard/admin/health |
-| /dashboard/admin/moderation | Page: /dashboard/admin/moderation |
-| /dashboard/admin/organizations | Page: /dashboard/admin/organizations |
+| /dashboard/admin/dev/demo | Page: /dashboard/admin/dev/demo |
+| /dashboard/admin/dev | Page: /dashboard/admin/dev |
+| /dashboard/admin/dev/tracker | Page: /dashboard/admin/dev/tracker |
+| /dashboard/admin/operations/health | Page: /dashboard/admin/operations/health |
+| /dashboard/admin/operations | Page: /dashboard/admin/operations |
+| /dashboard/admin/operations/performance | Page: /dashboard/admin/operations/performance |
+| /dashboard/admin/operations/readiness | Page: /dashboard/admin/operations/readiness |
+| /dashboard/admin/operations/security | Page: /dashboard/admin/operations/security |
 | /dashboard/admin | Page: /dashboard/admin |
-| /dashboard/admin/performance | Page: /dashboard/admin/performance |
-| /dashboard/admin/platform-settings | Page: /dashboard/admin/platform-settings |
-| /dashboard/admin/readiness | Page: /dashboard/admin/readiness |
-| /dashboard/admin/security | Page: /dashboard/admin/security |
-| /dashboard/admin/tickets/[id] | Page: /dashboard/admin/tickets/[id] |
-| /dashboard/admin/tickets | Page: /dashboard/admin/tickets |
-| /dashboard/admin/tracker | Page: /dashboard/admin/tracker |
-| /dashboard/admin/users/[id] | Page: /dashboard/admin/users/[id] |
-| /dashboard/admin/users | Page: /dashboard/admin/users |
-| /dashboard/admin/verification | Page: /dashboard/admin/verification |
+| /dashboard/admin/people/organizations | Page: /dashboard/admin/people/organizations |
+| /dashboard/admin/people | Page: /dashboard/admin/people |
+| /dashboard/admin/people/users/[id] | Page: /dashboard/admin/people/users/[id] |
+| /dashboard/admin/people/users | Page: /dashboard/admin/people/users |
+| /dashboard/admin/people/verification | Page: /dashboard/admin/people/verification |
+| /dashboard/admin/platform/feature-flags | Page: /dashboard/admin/platform/feature-flags |
+| /dashboard/admin/platform | Page: /dashboard/admin/platform |
+| /dashboard/admin/platform/settings | Page: /dashboard/admin/platform/settings |
+| /dashboard/admin/support/moderation | Page: /dashboard/admin/support/moderation |
+| /dashboard/admin/support | Page: /dashboard/admin/support |
+| /dashboard/admin/support/tickets/[id] | Page: /dashboard/admin/support/tickets/[id] |
+| /dashboard/admin/support/tickets | Page: /dashboard/admin/support/tickets |
+| /dashboard/analytics/cost-intelligence | Page: /dashboard/analytics/cost-intelligence |
 | /dashboard/analytics | Page: /dashboard/analytics |
-| /dashboard/api-builder | Page: /dashboard/api-builder |
-| /dashboard/apis/[id] | Page: /dashboard/apis/[id] |
-| /dashboard/apis/new | Page: /dashboard/apis/new |
-| /dashboard/apis | Page: /dashboard/apis |
-| /dashboard/apis/publish | Page: /dashboard/apis/publish |
-| /dashboard/challenges/[id] | Page: /dashboard/challenges/[id] |
-| /dashboard/challenges | Page: /dashboard/challenges |
-| /dashboard/collab | Page: /dashboard/collab |
-| /dashboard/collections/[id] | Page: /dashboard/collections/[id] |
-| /dashboard/collections | Page: /dashboard/collections |
-| /dashboard/cost-intelligence | Page: /dashboard/cost-intelligence |
-| /dashboard/favorites | Page: /dashboard/favorites |
-| /dashboard/forum/[id] | Page: /dashboard/forum/[id] |
-| /dashboard/forum | Page: /dashboard/forum |
+| /dashboard/analytics/provider | Page: /dashboard/analytics/provider |
+| /dashboard/analytics/usage | Page: /dashboard/analytics/usage |
+| /dashboard/developer/api-builder | Page: /dashboard/developer/api-builder |
+| /dashboard/developer/collab | Page: /dashboard/developer/collab |
+| /dashboard/developer | Page: /dashboard/developer |
+| /dashboard/developer/playground | Page: /dashboard/developer/playground |
+| /dashboard/developer/sandbox | Page: /dashboard/developer/sandbox |
+| /dashboard/developer/workflows | Page: /dashboard/developer/workflows |
+| /dashboard/discover/challenges/[id] | Page: /dashboard/discover/challenges/[id] |
+| /dashboard/discover/challenges | Page: /dashboard/discover/challenges |
+| /dashboard/discover/collections/[id] | Page: /dashboard/discover/collections/[id] |
+| /dashboard/discover/collections | Page: /dashboard/discover/collections |
+| /dashboard/discover/favorites | Page: /dashboard/discover/favorites |
+| /dashboard/discover/forum/[id] | Page: /dashboard/discover/forum/[id] |
+| /dashboard/discover/forum | Page: /dashboard/discover/forum |
+| /dashboard/discover | Page: /dashboard/discover |
+| /dashboard/discover/referrals | Page: /dashboard/discover/referrals |
+| /dashboard/discover/subscriptions | Page: /dashboard/discover/subscriptions |
 | /dashboard/notifications | Page: /dashboard/notifications |
 | /dashboard | Page: /dashboard |
-| /dashboard/playground | Page: /dashboard/playground |
 | /dashboard/provider/affiliates | Page: /dashboard/provider/affiliates |
-| /dashboard/provider/analytics | Page: /dashboard/provider/analytics |
-| /dashboard/referrals | Page: /dashboard/referrals |
-| /dashboard/sandbox | Page: /dashboard/sandbox |
+| /dashboard/provider/apis/[id] | Page: /dashboard/provider/apis/[id] |
+| /dashboard/provider/apis/new | Page: /dashboard/provider/apis/new |
+| /dashboard/provider/apis | Page: /dashboard/provider/apis |
+| /dashboard/provider/apis/publish | Page: /dashboard/provider/apis/publish |
+| /dashboard/provider | Page: /dashboard/provider |
 | /dashboard/settings/api-keys | Page: /dashboard/settings/api-keys |
 | /dashboard/settings/billing | Page: /dashboard/settings/billing |
 | /dashboard/settings/notifications | Page: /dashboard/settings/notifications |
@@ -160,10 +173,8 @@
 | /dashboard/settings/profile | Page: /dashboard/settings/profile |
 | /dashboard/settings/security | Page: /dashboard/settings/security |
 | /dashboard/settings/webhooks | Page: /dashboard/settings/webhooks |
-| /dashboard/subscriptions | Page: /dashboard/subscriptions |
 | /dashboard/tickets/[id] | Page: /dashboard/tickets/[id] |
 | /dashboard/tickets | Page: /dashboard/tickets |
-| /dashboard/workflows | Page: /dashboard/workflows |
 | /docs/[org_slug]/[api_slug] | Page: /docs/[org_slug]/[api_slug] |
 | /legal/acceptable-use | Page: /legal/acceptable-use |
 | /legal/cookie-settings | Page: /legal/cookie-settings |
@@ -180,7 +191,13 @@
 ---
 ## Gaps (findings)
 
-### LOW (46)
+### HIGH (1)
+
+- **DB-4** Migration contains DROP TABLE/COLUMN, TRUNCATE, or ALTER COLUMN TYPE.
+  - `/Users/timinkan/projects/apimarketplace/supabase/migrations/20260224000001_api_requests_log_retention.sql`
+  - Fix: Ensure backup/rollback plan; avoid destructive DDL in shared branches.
+
+### LOW (47)
 
 - **UI-3** API route /api/admin/apis/[id]/approve may never be called (no matching callsite).
   - `/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve/route.ts`
@@ -306,6 +323,10 @@
   - `/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-retention/route.ts`
   - Fix: Confirm route is used (e.g. from server action or external).
 
+- **UI-3** API route /api/cron/refresh-mvs may never be called (no matching callsite).
+  - `/Users/timinkan/projects/apimarketplace/src/app/api/cron/refresh-mvs/route.ts`
+  - Fix: Confirm route is used (e.g. from server action or external).
+
 - **UI-3** API route /api/forum/topics/[id]/posts may never be called (no matching callsite).
   - `/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/posts/route.ts`
   - Fix: Confirm route is used (e.g. from server action or external).
@@ -368,7 +389,7 @@
 
 ---
 
-**Suppressed:** 46
+**Suppressed:** 47
 
 ---
 

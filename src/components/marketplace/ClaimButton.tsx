@@ -34,7 +34,7 @@ export function ClaimButton({ apiId, apiName, redirectUrl }: ClaimButtonProps) {
         return;
       }
       router.refresh();
-      router.push('/dashboard/apis');
+      router.push('/dashboard/provider/apis');
     } catch {
       setError('Failed to submit claim');
     } finally {

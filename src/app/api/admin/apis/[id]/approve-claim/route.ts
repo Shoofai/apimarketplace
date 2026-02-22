@@ -1,3 +1,4 @@
+// Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { withPlatformAdmin } from '@/lib/auth/admin';
@@ -63,7 +64,7 @@ export const PATCH = withPlatformAdmin(
         organizationId: newOrgId,
         title: 'API Claim Approved',
         body: `Your claim for "${api.name}" has been approved. Configure and publish it from My APIs.`,
-        link: `/dashboard/apis/${api.id}`,
+        link: `/dashboard/provider/apis/${api.id}`,
         metadata: { api_id: api.id, status: 'draft' },
       });
     }

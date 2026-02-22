@@ -1,3 +1,4 @@
+// Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
@@ -84,7 +85,15 @@ export async function POST(request: Request) {
 
     const specRow = (api as { api_specs?: { openapi_spec?: unknown; openapi_spec_format?: string }[] | { openapi_spec?: unknown; openapi_spec_format?: string } }).api_specs;
     const specData = Array.isArray(specRow) ? specRow[0] : specRow;
-    const spec = await parseOpenApiSpec(specData?.openapi_spec, specData?.openapi_spec_format || 'json');
+    const rawSpec = specData?.openapi_spec;
+    const format = (specData?.openapi_spec_format || 'json') as 'yaml' | 'json';
+    if (typeof rawSpec !== 'string') {
+      return NextResponse.json(
+        { error: 'API has no valid OpenAPI spec' },
+        { status: 400 }
+      );
+    }
+    const spec = await parseOpenApiSpec(rawSpec, format);
 
     // Create streaming response
     const encoder = new TextEncoder();

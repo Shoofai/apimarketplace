@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-02-22T00:53:51.566Z",
+  "generatedAt": "2026-02-22T15:15:01.144Z",
   "scannerVersion": "1.0.0",
   "routes": [
     {
@@ -319,6 +319,11 @@
       "description": "API: /api/cron/process-retention"
     },
     {
+      "path": "/api/cron/refresh-mvs",
+      "status": "ok",
+      "description": "API: /api/cron/refresh-mvs"
+    },
+    {
       "path": "/api/favorites",
       "status": "ok",
       "description": "API: /api/favorites"
@@ -504,6 +509,11 @@
       "description": "Page: /dashboard/admin/apis/claims"
     },
     {
+      "path": "/dashboard/admin/apis",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/apis"
+    },
+    {
       "path": "/dashboard/admin/apis/review/[id]",
       "status": "ok",
       "description": "Page: /dashboard/admin/apis/review/[id]"
@@ -514,29 +524,44 @@
       "description": "Page: /dashboard/admin/apis/review"
     },
     {
-      "path": "/dashboard/admin/demo",
+      "path": "/dashboard/admin/dev/demo",
       "status": "ok",
-      "description": "Page: /dashboard/admin/demo"
+      "description": "Page: /dashboard/admin/dev/demo"
     },
     {
-      "path": "/dashboard/admin/feature-flags",
+      "path": "/dashboard/admin/dev",
       "status": "ok",
-      "description": "Page: /dashboard/admin/feature-flags"
+      "description": "Page: /dashboard/admin/dev"
     },
     {
-      "path": "/dashboard/admin/health",
+      "path": "/dashboard/admin/dev/tracker",
       "status": "ok",
-      "description": "Page: /dashboard/admin/health"
+      "description": "Page: /dashboard/admin/dev/tracker"
     },
     {
-      "path": "/dashboard/admin/moderation",
+      "path": "/dashboard/admin/operations/health",
       "status": "ok",
-      "description": "Page: /dashboard/admin/moderation"
+      "description": "Page: /dashboard/admin/operations/health"
     },
     {
-      "path": "/dashboard/admin/organizations",
+      "path": "/dashboard/admin/operations",
       "status": "ok",
-      "description": "Page: /dashboard/admin/organizations"
+      "description": "Page: /dashboard/admin/operations"
+    },
+    {
+      "path": "/dashboard/admin/operations/performance",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/operations/performance"
+    },
+    {
+      "path": "/dashboard/admin/operations/readiness",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/operations/readiness"
+    },
+    {
+      "path": "/dashboard/admin/operations/security",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/operations/security"
     },
     {
       "path": "/dashboard/admin",
@@ -544,54 +569,69 @@
       "description": "Page: /dashboard/admin"
     },
     {
-      "path": "/dashboard/admin/performance",
+      "path": "/dashboard/admin/people/organizations",
       "status": "ok",
-      "description": "Page: /dashboard/admin/performance"
+      "description": "Page: /dashboard/admin/people/organizations"
     },
     {
-      "path": "/dashboard/admin/platform-settings",
+      "path": "/dashboard/admin/people",
       "status": "ok",
-      "description": "Page: /dashboard/admin/platform-settings"
+      "description": "Page: /dashboard/admin/people"
     },
     {
-      "path": "/dashboard/admin/readiness",
+      "path": "/dashboard/admin/people/users/[id]",
       "status": "ok",
-      "description": "Page: /dashboard/admin/readiness"
+      "description": "Page: /dashboard/admin/people/users/[id]"
     },
     {
-      "path": "/dashboard/admin/security",
+      "path": "/dashboard/admin/people/users",
       "status": "ok",
-      "description": "Page: /dashboard/admin/security"
+      "description": "Page: /dashboard/admin/people/users"
     },
     {
-      "path": "/dashboard/admin/tickets/[id]",
+      "path": "/dashboard/admin/people/verification",
       "status": "ok",
-      "description": "Page: /dashboard/admin/tickets/[id]"
+      "description": "Page: /dashboard/admin/people/verification"
     },
     {
-      "path": "/dashboard/admin/tickets",
+      "path": "/dashboard/admin/platform/feature-flags",
       "status": "ok",
-      "description": "Page: /dashboard/admin/tickets"
+      "description": "Page: /dashboard/admin/platform/feature-flags"
     },
     {
-      "path": "/dashboard/admin/tracker",
+      "path": "/dashboard/admin/platform",
       "status": "ok",
-      "description": "Page: /dashboard/admin/tracker"
+      "description": "Page: /dashboard/admin/platform"
     },
     {
-      "path": "/dashboard/admin/users/[id]",
+      "path": "/dashboard/admin/platform/settings",
       "status": "ok",
-      "description": "Page: /dashboard/admin/users/[id]"
+      "description": "Page: /dashboard/admin/platform/settings"
     },
     {
-      "path": "/dashboard/admin/users",
+      "path": "/dashboard/admin/support/moderation",
       "status": "ok",
-      "description": "Page: /dashboard/admin/users"
+      "description": "Page: /dashboard/admin/support/moderation"
     },
     {
-      "path": "/dashboard/admin/verification",
+      "path": "/dashboard/admin/support",
       "status": "ok",
-      "description": "Page: /dashboard/admin/verification"
+      "description": "Page: /dashboard/admin/support"
+    },
+    {
+      "path": "/dashboard/admin/support/tickets/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/support/tickets/[id]"
+    },
+    {
+      "path": "/dashboard/admin/support/tickets",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/support/tickets"
+    },
+    {
+      "path": "/dashboard/analytics/cost-intelligence",
+      "status": "ok",
+      "description": "Page: /dashboard/analytics/cost-intelligence"
     },
     {
       "path": "/dashboard/analytics",
@@ -599,74 +639,94 @@
       "description": "Page: /dashboard/analytics"
     },
     {
-      "path": "/dashboard/api-builder",
+      "path": "/dashboard/analytics/provider",
       "status": "ok",
-      "description": "Page: /dashboard/api-builder"
+      "description": "Page: /dashboard/analytics/provider"
     },
     {
-      "path": "/dashboard/apis/[id]",
+      "path": "/dashboard/analytics/usage",
       "status": "ok",
-      "description": "Page: /dashboard/apis/[id]"
+      "description": "Page: /dashboard/analytics/usage"
     },
     {
-      "path": "/dashboard/apis/new",
+      "path": "/dashboard/developer/api-builder",
       "status": "ok",
-      "description": "Page: /dashboard/apis/new"
+      "description": "Page: /dashboard/developer/api-builder"
     },
     {
-      "path": "/dashboard/apis",
+      "path": "/dashboard/developer/collab",
       "status": "ok",
-      "description": "Page: /dashboard/apis"
+      "description": "Page: /dashboard/developer/collab"
     },
     {
-      "path": "/dashboard/apis/publish",
+      "path": "/dashboard/developer",
       "status": "ok",
-      "description": "Page: /dashboard/apis/publish"
+      "description": "Page: /dashboard/developer"
     },
     {
-      "path": "/dashboard/challenges/[id]",
+      "path": "/dashboard/developer/playground",
       "status": "ok",
-      "description": "Page: /dashboard/challenges/[id]"
+      "description": "Page: /dashboard/developer/playground"
     },
     {
-      "path": "/dashboard/challenges",
+      "path": "/dashboard/developer/sandbox",
       "status": "ok",
-      "description": "Page: /dashboard/challenges"
+      "description": "Page: /dashboard/developer/sandbox"
     },
     {
-      "path": "/dashboard/collab",
+      "path": "/dashboard/developer/workflows",
       "status": "ok",
-      "description": "Page: /dashboard/collab"
+      "description": "Page: /dashboard/developer/workflows"
     },
     {
-      "path": "/dashboard/collections/[id]",
+      "path": "/dashboard/discover/challenges/[id]",
       "status": "ok",
-      "description": "Page: /dashboard/collections/[id]"
+      "description": "Page: /dashboard/discover/challenges/[id]"
     },
     {
-      "path": "/dashboard/collections",
+      "path": "/dashboard/discover/challenges",
       "status": "ok",
-      "description": "Page: /dashboard/collections"
+      "description": "Page: /dashboard/discover/challenges"
     },
     {
-      "path": "/dashboard/cost-intelligence",
+      "path": "/dashboard/discover/collections/[id]",
       "status": "ok",
-      "description": "Page: /dashboard/cost-intelligence"
+      "description": "Page: /dashboard/discover/collections/[id]"
     },
     {
-      "path": "/dashboard/favorites",
+      "path": "/dashboard/discover/collections",
       "status": "ok",
-      "description": "Page: /dashboard/favorites"
+      "description": "Page: /dashboard/discover/collections"
     },
     {
-      "path": "/dashboard/forum/[id]",
+      "path": "/dashboard/discover/favorites",
       "status": "ok",
-      "description": "Page: /dashboard/forum/[id]"
+      "description": "Page: /dashboard/discover/favorites"
     },
     {
-      "path": "/dashboard/forum",
+      "path": "/dashboard/discover/forum/[id]",
       "status": "ok",
-      "description": "Page: /dashboard/forum"
+      "description": "Page: /dashboard/discover/forum/[id]"
+    },
+    {
+      "path": "/dashboard/discover/forum",
+      "status": "ok",
+      "description": "Page: /dashboard/discover/forum"
+    },
+    {
+      "path": "/dashboard/discover",
+      "status": "ok",
+      "description": "Page: /dashboard/discover"
+    },
+    {
+      "path": "/dashboard/discover/referrals",
+      "status": "ok",
+      "description": "Page: /dashboard/discover/referrals"
+    },
+    {
+      "path": "/dashboard/discover/subscriptions",
+      "status": "ok",
+      "description": "Page: /dashboard/discover/subscriptions"
     },
     {
       "path": "/dashboard/notifications",
@@ -679,29 +739,34 @@
       "description": "Page: /dashboard"
     },
     {
-      "path": "/dashboard/playground",
-      "status": "ok",
-      "description": "Page: /dashboard/playground"
-    },
-    {
       "path": "/dashboard/provider/affiliates",
       "status": "ok",
       "description": "Page: /dashboard/provider/affiliates"
     },
     {
-      "path": "/dashboard/provider/analytics",
+      "path": "/dashboard/provider/apis/[id]",
       "status": "ok",
-      "description": "Page: /dashboard/provider/analytics"
+      "description": "Page: /dashboard/provider/apis/[id]"
     },
     {
-      "path": "/dashboard/referrals",
+      "path": "/dashboard/provider/apis/new",
       "status": "ok",
-      "description": "Page: /dashboard/referrals"
+      "description": "Page: /dashboard/provider/apis/new"
     },
     {
-      "path": "/dashboard/sandbox",
+      "path": "/dashboard/provider/apis",
       "status": "ok",
-      "description": "Page: /dashboard/sandbox"
+      "description": "Page: /dashboard/provider/apis"
+    },
+    {
+      "path": "/dashboard/provider/apis/publish",
+      "status": "ok",
+      "description": "Page: /dashboard/provider/apis/publish"
+    },
+    {
+      "path": "/dashboard/provider",
+      "status": "ok",
+      "description": "Page: /dashboard/provider"
     },
     {
       "path": "/dashboard/settings/api-keys",
@@ -749,11 +814,6 @@
       "description": "Page: /dashboard/settings/webhooks"
     },
     {
-      "path": "/dashboard/subscriptions",
-      "status": "ok",
-      "description": "Page: /dashboard/subscriptions"
-    },
-    {
       "path": "/dashboard/tickets/[id]",
       "status": "ok",
       "description": "Page: /dashboard/tickets/[id]"
@@ -762,11 +822,6 @@
       "path": "/dashboard/tickets",
       "status": "ok",
       "description": "Page: /dashboard/tickets"
-    },
-    {
-      "path": "/dashboard/workflows",
-      "status": "ok",
-      "description": "Page: /dashboard/workflows"
     },
     {
       "path": "/docs/[org_slug]/[api_slug]",
@@ -1327,6 +1382,22 @@
       "confidence": "MEDIUM"
     },
     {
+      "id": "ui-3-Route:/api/cron/refresh-mvs:/Users/timinkan/projects/apimarketplace/src/app/api/cron/refresh-mvs/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/cron/refresh-mvs may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/refresh-mvs/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/refresh-mvs/route.ts",
+          "reason": "API route /api/cron/refresh-mvs may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
       "id": "ui-3-Route:/api/forum/topics/[id]/posts:/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/posts/route.ts",
       "severity": "low",
       "category": "ui",
@@ -1565,6 +1636,22 @@
         }
       ],
       "confidence": "MEDIUM"
+    },
+    {
+      "id": "db-4-Migration:/Users/timinkan/projects/apimarketplace/supabase/migrations/20260224000001_api_requests_log_retention.sql",
+      "severity": "high",
+      "category": "database",
+      "message": "Migration contains DROP TABLE/COLUMN, TRUNCATE, or ALTER COLUMN TYPE.",
+      "fix": "Ensure backup/rollback plan; avoid destructive DDL in shared branches.",
+      "filePath": "/Users/timinkan/projects/apimarketplace/supabase/migrations/20260224000001_api_requests_log_retention.sql",
+      "ruleId": "DB-4",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/supabase/migrations/20260224000001_api_requests_log_retention.sql",
+          "reason": "Migration contains DROP TABLE/COLUMN, TRUNCATE, or ALTER COLUMN TYPE."
+        }
+      ],
+      "confidence": "MEDIUM"
     }
   ],
   "shipChecklist": [
@@ -1588,5 +1675,5 @@
     }
   ],
   "shipChecklistStatus": "ship",
-  "suppressedCount": 46
+  "suppressedCount": 47
 }

@@ -163,12 +163,12 @@ export function PublishWizard({ categories }: PublishWizardProps) {
       if (apiId) {
         const pubRes = await fetch(`/api/apis/${apiId}/publish`, { method: 'POST' });
         if (pubRes.ok) {
-          router.push('/dashboard/apis');
+          router.push('/dashboard/provider/apis');
           return;
         }
-        router.push(`/dashboard/apis/${apiId}`);
+        router.push(`/dashboard/provider/apis/${apiId}`);
       }
-      router.push('/dashboard/apis');
+      router.push('/dashboard/provider/apis');
     } catch {
       setError('Something went wrong');
     } finally {

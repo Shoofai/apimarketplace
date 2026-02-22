@@ -108,19 +108,19 @@ export function CommandPalette({ user }: CommandPaletteProps) {
     {
       label: 'My APIs',
       icon: Box,
-      href: '/dashboard/apis',
+      href: '/dashboard/provider/apis',
       providerOnly: true,
     },
     {
       label: 'Subscriptions',
       icon: Layers,
-      href: '/dashboard/subscriptions',
+      href: '/dashboard/discover/subscriptions',
       consumerOnly: true,
     },
     {
       label: 'My Favorites',
       icon: Heart,
-      href: '/dashboard/favorites',
+      href: '/dashboard/discover/favorites',
       consumerOnly: true,
     },
     {
@@ -141,23 +141,23 @@ export function CommandPalette({ user }: CommandPaletteProps) {
     {
       label: 'AI Playground',
       icon: Zap,
-      href: '/dashboard/playground',
+      href: '/dashboard/developer/playground',
     },
     {
       label: 'API Sandbox',
       icon: TestTube2,
-      href: '/dashboard/sandbox',
+      href: '/dashboard/developer/sandbox',
     },
     {
       label: 'Workflows',
       icon: Workflow,
-      href: '/dashboard/workflows',
+      href: '/dashboard/developer/workflows',
       planRequired: orgPlan === 'free' ? 'pro' : undefined,
     },
     {
       label: 'Collaborative Testing',
       icon: Code2,
-      href: '/dashboard/collab',
+      href: '/dashboard/developer/collab',
       planRequired: orgPlan === 'free' ? 'pro' : undefined,
     },
   ];
@@ -178,37 +178,37 @@ export function CommandPalette({ user }: CommandPaletteProps) {
     {
       label: 'Manage Users',
       icon: Users,
-      href: '/dashboard/admin/users',
+      href: '/dashboard/admin/people/users',
       adminOnly: true,
     },
     {
       label: 'Manage Organizations',
       icon: Users,
-      href: '/dashboard/admin/organizations',
+      href: '/dashboard/admin/people/organizations',
       adminOnly: true,
     },
     {
       label: 'Feature Flags',
       icon: Settings,
-      href: '/dashboard/admin/feature-flags',
+      href: '/dashboard/admin/platform/feature-flags',
       adminOnly: true,
     },
     {
       label: 'Implementation Tracker',
       icon: BarChart3,
-      href: '/dashboard/admin/tracker',
+      href: '/dashboard/admin/dev/tracker',
       adminOnly: true,
     },
     {
       label: 'Security',
       icon: Shield,
-      href: '/dashboard/admin/security',
+      href: '/dashboard/admin/operations/security',
       adminOnly: true,
     },
     {
       label: 'Performance',
       icon: Gauge,
-      href: '/dashboard/admin/performance',
+      href: '/dashboard/admin/operations/performance',
       adminOnly: true,
     },
   ];

@@ -178,7 +178,7 @@ export default function HeroSplit() {
             variants={fadeIn}
             initial="initial"
             animate="animate"
-            className="lg:pt-4"
+            className="flex flex-col justify-center lg:min-h-[50vh] lg:pt-4"
           >
             <APIFromAppsIllustration
               connected={connected}

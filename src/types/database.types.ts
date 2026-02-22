@@ -5062,6 +5062,7 @@ export type Database = {
     }
     Functions: {
       aggregate_hourly_usage: { Args: never; Returns: undefined }
+      drop_old_api_requests_log_partitions: { Args: { retention_months: number }; Returns: number }
       generate_ticket_number: { Args: never; Returns: string }
       is_org_admin: { Args: { org_id: string }; Returns: boolean }
       refresh_api_rankings: { Args: never; Returns: undefined }

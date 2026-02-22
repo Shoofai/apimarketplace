@@ -18,6 +18,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { getAdminKpis } from '@/lib/admin/stats';
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -52,19 +53,19 @@ export default async function AdminDashboardPage() {
           <p className="text-muted-foreground">Platform operations and analytics</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/dashboard/admin/health">
+          <Link href="/dashboard/admin/operations/health">
             <Button variant="outline" className="gap-2">
               <Heart className="h-4 w-4" />
               System Health
             </Button>
           </Link>
-          <Link href="/dashboard/admin/security">
+          <Link href="/dashboard/admin/operations/security">
             <Button variant="outline" className="gap-2">
               <Shield className="h-4 w-4" />
               Security
             </Button>
           </Link>
-          <Link href="/dashboard/admin/performance">
+          <Link href="/dashboard/admin/operations/performance">
             <Button variant="outline" className="gap-2">
               <Gauge className="h-4 w-4" />
               Performance
@@ -85,16 +86,14 @@ export default async function AdminDashboardPage() {
 }
 
 async function AdminKPIs() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const response = await fetch(`${base}/api/admin/stats`, {
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    return <div>Failed to load stats</div>;
+  const supabase = await createClient();
+  let kpis: Awaited<ReturnType<typeof getAdminKpis>>['kpis'];
+  try {
+    const result = await getAdminKpis(supabase);
+    kpis = result.kpis;
+  } catch {
+    return <div className="text-destructive">Failed to load stats</div>;
   }
-
-  const { kpis } = await response.json();
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
