@@ -51,8 +51,8 @@ export default async function OrganizationSettingsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Building2 className="h-6 w-6" />
           Organization Settings
         </h1>
         <p className="text-muted-foreground">
@@ -91,7 +91,7 @@ export default async function OrganizationSettingsPage() {
             <div>
               <CardTitle>Team Members</CardTitle>
               <CardDescription>
-                Manage your organization's team members
+                Manage your organization&apos;s team members
               </CardDescription>
             </div>
             <Button className="gap-2">

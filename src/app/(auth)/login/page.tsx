@@ -81,8 +81,11 @@ export default function LoginPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
-        <p className="text-muted-foreground mt-2">
+        <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground">
+          Welcome back
+        </h2>
+        <div className="mt-2 h-1 w-12 rounded-full bg-gradient-to-r from-primary to-accent" />
+        <p className="text-muted-foreground mt-4">
           Sign in to your account to continue
         </p>
       </div>
@@ -96,7 +99,7 @@ export default function LoginPage() {
       <div className="space-y-4">
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full border-border hover:border-primary/40 hover:bg-primary/5 hover:text-foreground dark:hover:border-primary-500/40 dark:hover:bg-primary-900/20"
           onClick={() => handleOAuthLogin('github')}
           disabled={loading}
         >
@@ -106,7 +109,7 @@ export default function LoginPage() {
 
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full border-border hover:border-primary/40 hover:bg-primary/5 hover:text-foreground dark:hover:border-primary-500/40 dark:hover:bg-primary-900/20"
           onClick={() => handleOAuthLogin('google')}
           disabled={loading}
         >
@@ -134,7 +137,7 @@ export default function LoginPage() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <Separator className="w-full" />
+          <Separator className="w-full bg-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-card dark:bg-card px-2 text-muted-foreground">
@@ -192,15 +195,22 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full font-medium bg-gradient-to-r from-primary to-accent text-primary-foreground shadow hover:opacity-90"
+            disabled={loading}
+          >
             {loading ? 'Signing in...' : 'Sign in'}
           </Button>
         </form>
       </Form>
 
       <div className="text-center text-sm text-muted-foreground">
-        Don't have an account?{' '}
-        <Link href="/signup" className="text-primary hover:text-primary/80 font-medium transition-colors">
+        Don&apos;t have an account?{' '}
+        <Link
+          href="/signup"
+          className="font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
+        >
           Sign up
         </Link>
       </div>

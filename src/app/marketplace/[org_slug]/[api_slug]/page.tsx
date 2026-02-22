@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,18 +16,16 @@ import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
 import Link from 'next/link';
 
 interface APIDetailPageProps {
-  params: {
-    org_slug: string;
-    api_slug: string;
-  };
+  params: Promise<{ org_slug: string; api_slug: string }>;
 }
 
 export async function generateMetadata({ params }: APIDetailPageProps) {
+  const { api_slug } = await params;
   const supabase = await createClient();
   const { data: api } = await supabase
     .from('apis')
     .select('name, short_description')
-    .eq('slug', params.api_slug)
+    .eq('slug', api_slug)
     .single();
 
   return {
@@ -36,6 +35,7 @@ export async function generateMetadata({ params }: APIDetailPageProps) {
 }
 
 export default async function APIDetailPage({ params }: APIDetailPageProps) {
+  const { org_slug, api_slug } = await params;
   const supabase = await createClient();
 
   // Fetch API with all related data
@@ -55,7 +55,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       )
     `
     )
-    .eq('slug', params.api_slug)
+    .eq('slug', api_slug)
     .in('status', ['published', 'unclaimed'])
     .single();
 
@@ -76,12 +76,14 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-start gap-6">
             {/* API Logo */}
-            <div className="w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <div className="relative w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
               {api.logo_url ? (
-                <img
+                <Image
                   src={api.logo_url}
                   alt={api.name}
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  sizes="96px"
+                  className="object-cover rounded-lg"
                 />
               ) : (
                 <span className="text-4xl font-bold text-gray-400">
@@ -113,7 +115,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 <div className="flex items-center gap-2">
                   <FavoriteButton apiId={api.id} apiName={api.name} initialFavorited={false} />
                   {api.status === 'unclaimed' ? (
-                    <ClaimButton apiId={api.id} apiName={api.name} redirectUrl={`/marketplace/${params.org_slug}/${params.api_slug}`} />
+                    <ClaimButton apiId={api.id} apiName={api.name} redirectUrl={`/marketplace/${org_slug}/${api_slug}`} />
                   ) : (
                     <APIDetailSubscribe
                       apiId={api.id}
@@ -260,7 +262,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 See status page for live uptime and incident history.
               </p>
               <Button variant="outline" size="sm" className="mt-2" asChild>
-                <Link href={`/marketplace/${params.org_slug}/${params.api_slug}/status`}>
+                <Link href={`/marketplace/${org_slug}/${api_slug}/status`}>
                   View status page
                 </Link>
               </Button>
@@ -374,7 +376,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 <a
                   href={
                     (api as { original_url?: string | null }).original_url ??
-                    `/docs/${params.org_slug}/${params.api_slug}`
+                    `/docs/${org_slug}/${api_slug}`
                   }
                   target={(api as { original_url?: string | null }).original_url ? '_blank' : undefined}
                   rel={(api as { original_url?: string | null }).original_url ? 'noopener noreferrer' : undefined}
@@ -438,7 +440,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                 View uptime, latency, and incident history for this API.
               </p>
               <Button asChild>
-                <Link href={`/marketplace/${params.org_slug}/${params.api_slug}/status`}>
+                <Link href={`/marketplace/${org_slug}/${api_slug}/status`}>
                   Open status page
                 </Link>
               </Button>

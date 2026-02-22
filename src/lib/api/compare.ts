@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export interface CompareAPI {
   id: string;
@@ -43,7 +44,8 @@ export async function getAPIsForCompare(ids: string[]): Promise<CompareAPI[]> {
     `
     )
     .in('id', ids.slice(0, MAX_APIS))
-    .eq('status', 'published');
+    .eq('status', 'published')
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (error) return [];
 

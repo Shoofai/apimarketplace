@@ -42,7 +42,7 @@ export function PlatformNameForm({ initialName }: { initialName: string }) {
           id="platform-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. apinergy"
+          placeholder="e.g. Apinergy"
           disabled={loading}
         />
       </div>

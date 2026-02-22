@@ -230,7 +230,7 @@ export default function Footer() {
           <span className="rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
             GDPR Compliant
           </span>
-          <span className="text-xs text-gray-500 dark:text-gray-500">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             Payments powered by Stripe
           </span>
         </div>
@@ -241,29 +241,53 @@ export default function Footer() {
             © {new Date().getFullYear()} {platformName}. All rights reserved.
           </p>
 
-          {/* Social Icons */}
+          {/* Social Icons - use NEXT_PUBLIC_TWITTER_URL, NEXT_PUBLIC_GITHUB_URL, NEXT_PUBLIC_LINKEDIN_URL when configured */}
           <div className="flex gap-4">
-            <a
-              href="#twitter"
-              className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
-              aria-label="Twitter"
-            >
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a
-              href="#github"
-              className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
-              aria-label="GitHub"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-            <a
-              href="#linkedin"
-              className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-5 w-5" />
-            </a>
+            {process.env.NEXT_PUBLIC_TWITTER_URL ? (
+              <a
+                href={process.env.NEXT_PUBLIC_TWITTER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                aria-label="Twitter"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            ) : (
+              <span className="text-gray-400 dark:text-gray-500" aria-hidden>
+                <Twitter className="h-5 w-5" />
+              </span>
+            )}
+            {process.env.NEXT_PUBLIC_GITHUB_URL ? (
+              <a
+                href={process.env.NEXT_PUBLIC_GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+            ) : (
+              <span className="text-gray-400 dark:text-gray-500" aria-hidden>
+                <Github className="h-5 w-5" />
+              </span>
+            )}
+            {process.env.NEXT_PUBLIC_LINKEDIN_URL ? (
+              <a
+                href={process.env.NEXT_PUBLIC_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+            ) : (
+              <span className="text-gray-400 dark:text-gray-500" aria-hidden>
+                <Linkedin className="h-5 w-5" />
+              </span>
+            )}
             <Link
               href="/contact?source=footer&category=general"
               className="text-gray-600 transition-colors hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"

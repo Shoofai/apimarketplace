@@ -4,7 +4,13 @@ import { createClient } from '@/lib/supabase/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, full_name, company_size, role, primary_goal, phone_number } = body;
+    const { email, full_name, company_size, role, primary_goal, phone_number: rawPhone, source } = body;
+
+    // Validate and normalize phone (E.164)
+    const phone_number =
+      typeof rawPhone === 'string' && /^\+[0-9]{10,15}$/.test(rawPhone.trim())
+        ? rawPhone.trim().slice(0, 20)
+        : null;
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -20,7 +26,8 @@ export async function POST(request: NextRequest) {
       company_size: company_size || null,
       role: role || null,
       primary_goal: primary_goal || null,
-      phone_number: phone_number || null,
+      phone_number,
+      source: source && typeof source === 'string' ? source.trim().slice(0, 64) : null,
     }).select();
 
     if (error) {

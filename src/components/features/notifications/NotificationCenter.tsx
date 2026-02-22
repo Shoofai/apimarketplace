@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -31,12 +31,7 @@ export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
-  useEffect(() => {
-    fetchNotifications();
-    subscribeToNotifications();
-  }, [filter]);
-
-  async function fetchNotifications() {
+  const fetchNotifications = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -55,9 +50,9 @@ export function NotificationCenter() {
       setNotifications(data);
       setUnreadCount(data.filter((n) => !n.is_read).length);
     }
-  }
+  }, [filter, supabase]);
 
-  function subscribeToNotifications() {
+  const subscribeToNotifications = useCallback(() => {
     const channel = supabase
       .channel('notifications')
       .on(
@@ -77,7 +72,12 @@ export function NotificationCenter() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchNotifications();
+    subscribeToNotifications();
+  }, [fetchNotifications, subscribeToNotifications]);
 
   async function markAsRead(notificationId: string) {
     await supabase

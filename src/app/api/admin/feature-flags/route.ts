@@ -22,20 +22,20 @@ export const GET = withPlatformAdmin(async () => {
 });
 
 /**
- * PATCH /api/admin/feature-flags/[key]
- * Update feature flag
+ * PATCH /api/admin/feature-flags
+ * Update feature flag by key (body: { key, is_enabled })
  */
-export async function PATCH(
-  req: Request,
-  { params }: { params: { key: string } }
-) {
+export async function PATCH(req: Request) {
   const supabase = await createClient();
-  const { is_enabled } = await req.json();
+  const { key, is_enabled } = await req.json();
+  if (!key || typeof key !== 'string') {
+    return NextResponse.json({ error: 'Missing key' }, { status: 400 });
+  }
 
   const { data, error } = await supabase
     .from('feature_flags')
     .update({ is_enabled })
-    .eq('flag_key', params.key)
+    .eq('flag_key', key)
     .select()
     .single();
 

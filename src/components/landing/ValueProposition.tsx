@@ -104,7 +104,7 @@ export default function ValueProposition() {
   const [activeTab, setActiveTab] = useState('providers');
 
   return (
-    <section ref={ref} className="bg-gradient-to-br from-gray-50 to-blue-50 py-24 dark:from-gray-950 dark:to-gray-900 sm:py-32">
+    <section ref={ref} className="bg-gradient-to-br from-gray-50 to-gray-100 py-24 dark:from-gray-950 dark:to-gray-900 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -126,8 +126,8 @@ export default function ValueProposition() {
           transition={{ delay: 0.2 }}
         >
           <Tabs defaultValue="providers" className="w-full" onValueChange={(v) => setActiveTab(v)}>
-            <div className="sticky top-0 z-20 -mx-4 bg-gradient-to-b from-gray-50/95 to-gray-50/80 px-4 py-4 backdrop-blur-sm dark:from-gray-950/95 dark:to-gray-950/80 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-              <TabsList className="mx-auto mb-8 grid w-full max-w-3xl grid-cols-3 p-1">
+            <div className="sticky top-16 z-20 -mx-4 bg-transparent px-4 py-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+              <TabsList className="mx-auto mb-8 grid w-full max-w-3xl grid-cols-3">
                 <TabsTrigger value="providers" className="text-sm sm:text-base">
                   Providers
                 </TabsTrigger>
@@ -146,7 +146,7 @@ export default function ValueProposition() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="grid gap-8 lg:grid-cols-2"
+                  className="grid gap-8 lg:grid-cols-2 lg:items-center"
                 >
                   <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg ring-1 ring-gray-200/50 dark:border-gray-800 dark:bg-gray-900 dark:ring-gray-800/50">
                     <h3 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">{content.title}</h3>
@@ -161,7 +161,7 @@ export default function ValueProposition() {
                     </ul>
                   </div>
 
-                  <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-6 py-6">
                     <div className="grid gap-4">
                       {content.metrics.map((metric, idx) => (
                         <motion.div
@@ -169,7 +169,7 @@ export default function ValueProposition() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: idx * 0.1 }}
-                          className="rounded-xl border border-primary-200 bg-gradient-to-br from-primary-50 to-accent-50 p-6 text-center dark:border-primary-800 dark:from-primary-950/50 dark:to-accent-950/50"
+                          className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-100 to-gray-50 p-6 text-center dark:border-gray-600 dark:from-gray-800 dark:to-gray-900"
                         >
                           <p className="text-2xl font-black text-gray-900 dark:text-white">
                             {metric.value > 0 ? (
@@ -208,7 +208,7 @@ export default function ValueProposition() {
                             />
                           ))}
                         </div>
-                        <p className="mt-2 text-center text-xs text-gray-500">Exponential growth</p>
+                        <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">Exponential growth</p>
                       </motion.div>
                     )}
 
@@ -218,8 +218,8 @@ export default function ValueProposition() {
                           <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
                           <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
                           <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                          <span className="ml-2 flex items-center gap-1 text-xs text-gray-500">
-                            <Code2 className="h-3 w-3" /> integration.js
+<span className="ml-2 flex items-center gap-1 text-xs text-gray-400">
+                          <Code2 className="h-3 w-3" /> integration.js
                           </span>
                         </div>
                         <TypingCode code={codeSnippet} isActive={activeTab === 'developers'} />
@@ -233,14 +233,14 @@ export default function ValueProposition() {
                         className="flex flex-1 flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900"
                       >
                         <div className="mb-4 flex items-center gap-2">
-                          <BarChart3 className="h-5 w-5 text-primary-600" />
+                          <BarChart3 className="h-5 w-5 text-primary-600 dark:text-primary-400" />
                           <span className="font-semibold text-gray-900 dark:text-white">Cost savings</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
                             <p className="text-xs text-gray-500 dark:text-gray-400">Before</p>
                             <p className="text-xl font-bold text-gray-700 dark:text-gray-300">$1.2M</p>
-                            <p className="text-xs text-gray-500">API spend/year</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">API spend/year</p>
                           </div>
                           <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
                             <p className="text-xs text-green-600 dark:text-green-400">After</p>
@@ -250,7 +250,7 @@ export default function ValueProposition() {
                             <p className="text-xs text-green-600 dark:text-green-400">60% saved</p>
                           </div>
                         </div>
-                        <p className="mt-2 text-center text-xs text-gray-500">Real-time dashboard</p>
+                        <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">Real-time dashboard</p>
                       </motion.div>
                     )}
 

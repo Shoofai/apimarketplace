@@ -8,7 +8,8 @@ import { dispatchNotification } from '@/lib/notifications/dispatcher';
  * Approve an API for publishing
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
     const supabase = await createClient();
 
     // Update API status
@@ -18,7 +19,7 @@ export const PATCH = withPlatformAdmin(
         status: 'published',
         published_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select('*, organizations(name)')
       .single();
 

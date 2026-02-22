@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,7 +21,8 @@ export default async function MyTicketsPage() {
     .from('support_tickets')
     .select('id, ticket_number, subject, status, created_at')
     .or(`submitter_user_id.eq.${user.id},submitter_email.eq.${user.email}`)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const statusColors: Record<string, string> = {
     new: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
@@ -34,8 +36,8 @@ export default async function MyTicketsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Ticket className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Ticket className="h-6 w-6" />
           My Tickets
         </h1>
         <p className="text-muted-foreground">

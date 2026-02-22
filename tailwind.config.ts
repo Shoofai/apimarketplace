@@ -75,6 +75,20 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			cta: {
+  				'50': '#fffbeb',
+  				'100': '#fef3c7',
+  				'200': '#fde68a',
+  				'300': '#fcd34d',
+  				'400': '#fbbf24',
+  				'500': '#f59e0b',
+  				'600': '#d97706',
+  				'700': '#b45309',
+  				'800': '#92400e',
+  				'900': '#78350f',
+  				DEFAULT: 'hsl(var(--cta))',
+  				foreground: 'hsl(var(--cta-foreground))'
   			}
   		},
   		fontFamily: {
@@ -85,7 +99,7 @@ const config: Config = {
   				'sans-serif'
   			],
   			heading: [
-  				'var(--font-space-grotesk)',
+  				'var(--font-heading)',
   				'var(--font-sans)',
   				'ui-sans-serif',
   				'system-ui',
@@ -150,23 +164,23 @@ const config: Config = {
   				}
   			],
   			'4xl': [
-  				'clamp(2.25rem, 1.9rem + 1.75vw, 3rem)',
+  				'clamp(1.875rem, 1.5rem + 1vw, 2.5rem)',
   				{
   					lineHeight: '1.2',
   					letterSpacing: '-0.03em'
   				}
   			],
   			'5xl': [
-  				'clamp(3rem, 2.5rem + 2.5vw, 3.75rem)',
+  				'clamp(2.5rem, 2rem + 1.5vw, 3rem)',
   				{
   					lineHeight: '1.1',
   					letterSpacing: '-0.03em'
   				}
   			],
   			'6xl': [
-  				'clamp(3.75rem, 3rem + 3.75vw, 4.5rem)',
+  				'clamp(3rem, 2.5rem + 1.5vw, 3.5rem)',
   				{
-  					lineHeight: '1.05',
+  					lineHeight: '1.1',
   					letterSpacing: '-0.04em'
   				}
   			]
@@ -178,22 +192,30 @@ const config: Config = {
   		},
   		boxShadow: {
   			glow: '0 0 40px rgba(59, 130, 246, 0.3)',
-  			'glow-purple': '0 0 40px rgba(139, 92, 246, 0.3)'
+  			'glow-purple': '0 0 40px rgba(139, 92, 246, 0.3)',
+  			'glow-cta': '0 0 40px rgba(245, 158, 11, 0.3)'
   		},
   		backgroundImage: {
-  			'gradient-hero': 'linear-gradient(135deg, #1E3A8A 0%, #8B5CF6 100%)',
+  			'gradient-hero': 'linear-gradient(135deg, #1E3A8A 0%, rgba(6, 182, 212, 0.2) 50%, #8B5CF6 100%)',
   			'gradient-feature': 'linear-gradient(180deg, #3B82F6 0%, #8B5CF6 100%)',
-  			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 70%)'
+  			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+  			'gradient-cta': 'linear-gradient(to right, #f59e0b, #d97706)',
+  			'gradient-tech': 'linear-gradient(to right, #3b82f6, #06b6d4)'
   		},
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-out',
   			'slide-up': 'slideUp 0.5s ease-out',
   			'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
   			float: 'float 6s ease-in-out infinite',
+  			ticker: 'ticker 35s linear infinite',
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
   		keyframes: {
+  			ticker: {
+  				'0%': { transform: 'translateX(0)' },
+  				'100%': { transform: 'translateX(-50%)' }
+  			},
   			fadeIn: {
   				'0%': {
   					opacity: '0'

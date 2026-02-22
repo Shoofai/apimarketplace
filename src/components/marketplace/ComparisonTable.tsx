@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -23,9 +24,15 @@ export function ComparisonTable({ apis }: ComparisonTableProps) {
               <th key={api.id} className="p-4 text-left align-top w-[220px]">
                 <Card className="p-4">
                   <div className="flex flex-col items-center text-center gap-2">
-                    <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="relative w-14 h-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                       {api.logo_url ? (
-                        <img src={api.logo_url} alt={api.name} className="w-full h-full object-cover rounded-lg" />
+                        <Image
+                          src={api.logo_url}
+                          alt={api.name}
+                          fill
+                          sizes="56px"
+                          className="object-cover rounded-lg"
+                        />
                       ) : (
                         <span className="text-xl font-bold text-muted-foreground">{api.name.charAt(0)}</span>
                       )}

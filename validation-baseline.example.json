@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "suppress": [
+    {
+      "ruleId": "PERF-1",
+      "filePath": "src/app/legacy/report/page.tsx",
+      "line": 42
+    },
+    {
+      "ruleId": "UI-3",
+      "gapId": "ui-3-orphan-route-admin"
+    }
+  ]
+}

@@ -8,18 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Book, Code, ExternalLink } from 'lucide-react';
 
 interface DocsPageProps {
-  params: {
-    org_slug: string;
-    api_slug: string;
-  };
+  params: Promise<{ org_slug: string; api_slug: string }>;
 }
 
 export async function generateMetadata({ params }: DocsPageProps) {
+  const { api_slug } = await params;
   const supabase = await createClient();
   const { data: api } = await supabase
     .from('apis')
     .select('name')
-    .eq('slug', params.api_slug)
+    .eq('slug', api_slug)
     .single();
 
   return {
@@ -28,6 +26,7 @@ export async function generateMetadata({ params }: DocsPageProps) {
 }
 
 export default async function APIDocsPage({ params }: DocsPageProps) {
+  const { org_slug, api_slug } = await params;
   const supabase = await createClient();
 
   // Fetch API with OpenAPI spec
@@ -40,7 +39,7 @@ export default async function APIDocsPage({ params }: DocsPageProps) {
       endpoints:api_endpoints(*)
     `
     )
-    .eq('slug', params.api_slug)
+    .eq('slug', api_slug)
     .eq('status', 'published')
     .single();
 
@@ -81,7 +80,7 @@ export default async function APIDocsPage({ params }: DocsPageProps) {
                 </span>
                 <span className="text-gray-400">•</span>
                 <a
-                  href={`/marketplace/${params.org_slug}/${params.api_slug}`}
+                  href={`/marketplace/${org_slug}/${api_slug}`}
                   className="text-blue-600 hover:underline flex items-center gap-1"
                 >
                   View in Marketplace
@@ -90,7 +89,7 @@ export default async function APIDocsPage({ params }: DocsPageProps) {
               </div>
             </div>
             <Button asChild>
-              <a href={`/marketplace/${params.org_slug}/${params.api_slug}`}>
+              <a href={`/marketplace/${org_slug}/${api_slug}`}>
                 Subscribe to API
               </a>
             </Button>
@@ -323,7 +322,7 @@ data = response.json()`}
                     </tr>
                     <tr>
                       <td className="py-3 font-mono">404</td>
-                      <td className="py-3">Not Found - Resource doesn't exist</td>
+                      <td className="py-3">Not Found - Resource doesn&apos;t exist</td>
                     </tr>
                     <tr>
                       <td className="py-3 font-mono">429</td>

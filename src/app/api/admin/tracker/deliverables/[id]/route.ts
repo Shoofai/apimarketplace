@@ -7,8 +7,9 @@ import { withPlatformAdmin } from '@/lib/auth/admin';
  * Toggle deliverable completion
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
+      const { id } = await params;
       const supabase = await createClient();
       const { is_completed } = await req.json();
 
@@ -22,7 +23,7 @@ export const PATCH = withPlatformAdmin(
       const { data, error } = await supabase
         .from('sprint_deliverables')
         .update(updates)
-        .eq('id', params.id)
+        .eq('id', id)
         .select()
         .single();
 

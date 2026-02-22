@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 /**
  * Get feature flag value by name
@@ -39,8 +40,9 @@ export async function getAllFeatureFlags() {
 
   const { data, error } = await supabase
     .from('feature_flags')
-    .select('*')
-    .order('name');
+    .select('id, name, enabled_globally, description, enabled_for_orgs, enabled_for_plans')
+    .order('name')
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (error) {
     return [];

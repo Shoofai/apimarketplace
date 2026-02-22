@@ -205,7 +205,7 @@ export default function SignupPage() {
                   />
                 </FormControl>
                 <FormDescription>
-                  This will be your organization's display name
+                  This will be your organization&apos;s display name
                 </FormDescription>
                 <FormMessage />
               </FormItem>

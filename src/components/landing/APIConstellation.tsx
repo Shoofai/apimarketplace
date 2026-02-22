@@ -23,11 +23,21 @@ const CENTER_X = 200;
 const CENTER_Y = 200;
 const SVG_SIZE = 400;
 
+/** Round and format so server and client produce identical SVG attributes (avoids hydration mismatch). */
+const COORD_DECIMALS = 10;
+function roundCoord(n: number): number {
+  const p = 10 ** COORD_DECIMALS;
+  return Math.round(n * p) / p;
+}
+function coordStr(n: number): string {
+  return roundCoord(n).toFixed(COORD_DECIMALS);
+}
+
 function getNodePosition(angle: number, radius: number) {
   const rad = (angle * Math.PI) / 180;
   return {
-    x: CENTER_X + Math.cos(rad) * radius,
-    y: CENTER_Y + Math.sin(rad) * radius,
+    x: roundCoord(CENTER_X + Math.cos(rad) * radius),
+    y: roundCoord(CENTER_Y + Math.sin(rad) * radius),
   };
 }
 
@@ -98,7 +108,7 @@ export function APIConstellation({ mouseX: propMouseX = 0, mouseY: propMouseY = 
 
         {/* Connection lines from center to nodes */}
         {nodePositions.map((node, i) => {
-          const pathD = `M ${CENTER_X} ${CENTER_Y} L ${node.x} ${node.y}`;
+          const pathD = `M ${coordStr(CENTER_X)} ${coordStr(CENTER_Y)} L ${coordStr(node.x)} ${coordStr(node.y)}`;
           return (
             <g key={node.id}>
               <motion.path
@@ -174,8 +184,8 @@ export function APIConstellation({ mouseX: propMouseX = 0, mouseY: propMouseY = 
         {nodePositions.map((node, i) => (
           <g key={node.id}>
             <motion.circle
-              cx={node.x}
-              cy={node.y}
+              cx={coordStr(node.x)}
+              cy={coordStr(node.y)}
               r={8}
               fill="rgba(139, 92, 246, 0.4)"
               stroke="rgba(167, 139, 250, 0.6)"
@@ -188,8 +198,8 @@ export function APIConstellation({ mouseX: propMouseX = 0, mouseY: propMouseY = 
               }}
             />
             <motion.circle
-              cx={node.x}
-              cy={node.y}
+              cx={coordStr(node.x)}
+              cy={coordStr(node.y)}
               r={6}
               fill="rgba(167, 139, 250, 0.6)"
               initial={{ scale: 0 }}

@@ -49,8 +49,8 @@ export default async function OrganizationManagementPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Building2 className="h-6 w-6" />
           Organization Management
         </h1>
         <p className="text-muted-foreground">Manage organizations and plans</p>
@@ -64,7 +64,7 @@ export default async function OrganizationManagementPage() {
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalOrgs || 0}</div>
+            <div className="text-xl font-bold">{totalOrgs || 0}</div>
           </CardContent>
         </Card>
 
@@ -74,7 +74,7 @@ export default async function OrganizationManagementPage() {
             <Globe className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{providerCount}</div>
+            <div className="text-xl font-bold">{providerCount}</div>
           </CardContent>
         </Card>
 
@@ -84,7 +84,7 @@ export default async function OrganizationManagementPage() {
             <Users className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{developerCount}</div>
+            <div className="text-xl font-bold">{developerCount}</div>
           </CardContent>
         </Card>
 
@@ -94,7 +94,7 @@ export default async function OrganizationManagementPage() {
             <DollarSign className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               {organizations?.filter((o) => o.plan === 'enterprise').length || 0}
             </div>
           </CardContent>

@@ -86,7 +86,7 @@ export async function GET() {
 
     const { data: requests } = await supabase
       .from('data_export_requests')
-      .select('*')
+      .select('id, user_id, status, requested_at, completed_at, export_url, expires_at, created_at')
       .eq('user_id', userData?.id)
       .order('created_at', { ascending: false })
       .limit(10);

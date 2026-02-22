@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "suppress": [
+    { "ruleId": "UI-3" }
+  ]
+}

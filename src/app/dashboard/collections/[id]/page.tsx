@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -41,7 +42,8 @@ export default async function CollectionDetailPage({ params }: { params: Promise
         pricing_plans:api_pricing_plans(price_monthly)
       `)
       .in('id', apiIds)
-      .eq('status', 'published');
+      .eq('status', 'published')
+      .limit(DEFAULT_LIST_LIMIT);
     apis = (data ?? []).map((api: { pricing_plans?: { price_monthly?: number }[] }) => {
       const prices = api.pricing_plans?.map((p) => p.price_monthly ?? 0) ?? [];
       return {
@@ -59,8 +61,8 @@ export default async function CollectionDetailPage({ params }: { params: Promise
           <Link href="/dashboard/collections"><ArrowLeft className="h-4 w-4" /></Link>
         </Button>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <FolderOpen className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <FolderOpen className="h-6 w-6" />
             {(collection as { name: string }).name}
           </h1>
           {(collection as { description?: string }).description && (

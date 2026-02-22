@@ -8,7 +8,8 @@ import { dispatchNotification } from '@/lib/notifications/dispatcher';
  * Reject an API submission
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
     const supabase = await createClient();
     const { reason } = await req.json();
 
@@ -22,7 +23,7 @@ export const PATCH = withPlatformAdmin(
       .update({
         status: 'rejected',
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select('*, organizations(name)')
       .single();
 

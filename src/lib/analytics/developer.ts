@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export interface DeveloperAnalytics {
   subscriptions: { id: string; name: string; api_name: string }[];
@@ -31,7 +32,8 @@ export async function getDeveloperAnalytics(
     .from('api_subscriptions')
     .select('id, api:apis!api_subscriptions_api_id_fkey(id, name)')
     .eq('organization_id', organizationId)
-    .eq('status', 'active');
+    .eq('status', 'active')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const allSubIds = (subs ?? []).map((s) => s.id);
   const subscriptionIds =
@@ -60,7 +62,8 @@ export async function getDeveloperAnalytics(
       .select('status_code, latency_ms, created_at')
       .in('subscription_id', subscriptionIds)
       .gte('created_at', fromStr)
-      .lte('created_at', toStr);
+      .lte('created_at', toStr)
+      .limit(DEFAULT_LIST_LIMIT);
 
     if (requests?.length) {
       apiCalls = requests.length;
@@ -84,7 +87,8 @@ export async function getDeveloperAnalytics(
       .eq('organization_id', organizationId)
       .gte('created_at', fromStr)
       .lte('created_at', toStr)
-      .eq('status', 'paid');
+      .eq('status', 'paid')
+      .limit(DEFAULT_LIST_LIMIT);
     monthlySpend = (invoices ?? []).reduce(
       (sum, inv: { total_amount?: number; total?: number }) =>
         sum + Number((inv as { total_amount?: number }).total_amount ?? (inv as { total?: number }).total ?? 0),

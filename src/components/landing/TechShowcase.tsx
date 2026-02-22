@@ -111,21 +111,23 @@ export default function TechShowcase() {
   };
 
   return (
-    <section ref={ref} className="bg-gray-900 py-24 dark:bg-gray-950 sm:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          className="mb-12 text-center"
-        >
-          <h2 className="section-heading mb-6 text-white">
-            Built with Modern Tech
-          </h2>
-          <p className="section-subheading mx-auto max-w-3xl text-gray-300 dark:text-gray-400">
-            Production-grade infrastructure. Enterprise security. Developer-friendly APIs.
-          </p>
-        </motion.div>
+    <section ref={ref}>
+      {/* Inner strip: always dark so heading/subheading and code block stay legible when band forces section transparent (light mode) */}
+      <div className="bg-gray-900 dark:bg-gray-950 py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            className="mb-12 text-center"
+          >
+            <h2 className="section-heading mb-6 text-white">
+              Built with Modern Tech
+            </h2>
+            <p className="section-subheading mx-auto max-w-3xl text-gray-300 dark:text-gray-400">
+              Production-grade infrastructure. Enterprise security. Developer-friendly APIs.
+            </p>
+          </motion.div>
 
         {/* Code Examples */}
         <motion.div
@@ -144,7 +146,7 @@ export default function TechShowcase() {
 
             {Object.entries(codeExamples).map(([lang, code]) => (
               <TabsContent key={lang} value={lang}>
-                  <div className="relative overflow-hidden rounded-xl border border-gray-700 bg-gray-800 shadow-2xl ring-1 ring-white/10 dark:border-gray-700 dark:bg-gray-900">
+                  <div className="relative overflow-hidden rounded-xl border border-gray-600 bg-gray-800 shadow-2xl ring-1 ring-white/5 dark:border-gray-700 dark:bg-gray-900 dark:ring-white/10">
                     <div className="flex items-center justify-between border-b border-gray-700 bg-gray-800/50 px-4 py-3 backdrop-blur dark:border-gray-600">
                     <span className="text-sm font-medium text-gray-400 dark:text-gray-500">
                       {lang.charAt(0).toUpperCase() + lang.slice(1)}
@@ -175,28 +177,31 @@ export default function TechShowcase() {
           </Tabs>
         </motion.div>
 
-        {/* Tech Stack */}
+        {/* Tech Stack – animated ticker */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.4 }}
         >
           <h3 className="mb-8 text-center text-2xl font-bold text-white">Powered By</h3>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {technologies.map((tech, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-xl border border-gray-700 bg-gray-800 p-6 text-center transition-all hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="relative">
-                  <div className="mb-2 text-lg font-bold text-white">{tech.name}</div>
-                  <div className="text-sm text-gray-400 dark:text-gray-500">{tech.category}</div>
+          <div className="relative overflow-hidden">
+            <div className="flex w-max animate-ticker gap-4 [@media(prefers-reduced-motion:reduce)]:animate-none">
+              {[...technologies, ...technologies].map((tech, index) => (
+                <div
+                  key={`${tech.name}-${index}`}
+                  className="group relative flex min-w-[140px] shrink-0 overflow-hidden rounded-xl border border-gray-700 bg-gray-800 p-6 text-center transition-all hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div className="relative">
+                    <div className="mb-2 text-lg font-bold text-white">{tech.name}</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500">{tech.category}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </motion.div>
+        </div>
       </div>
     </section>
   );

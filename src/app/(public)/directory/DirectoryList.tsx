@@ -50,7 +50,7 @@ export function DirectoryList({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <Input
           type="search"
-          placeholder="Search APIs..."
+          placeholder={`Search ${apis.length} APIs...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"

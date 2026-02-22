@@ -6,9 +6,9 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
-    // Don't bundle redis; use Node require at runtime (optional dependency)
-    serverComponentsExternalPackages: ['redis'],
   },
+  // Don't bundle redis; use Node require at runtime (optional dependency)
+  serverExternalPackages: ['redis'],
 
   // Image optimization
   images: {

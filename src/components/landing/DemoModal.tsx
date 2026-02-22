@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import Link from 'next/link';
 
 // Replace with your actual demo video URL when available
 const DEMO_VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL || '';
@@ -38,13 +39,13 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
             <p className="text-sm text-muted-foreground">
               Explore our API marketplace to see the platform in action.
             </p>
-            <a
+            <Link
               href="/marketplace"
               className="text-primary underline underline-offset-4 hover:no-underline"
               onClick={() => onOpenChange(false)}
             >
               Browse APIs →
-            </a>
+            </Link>
           </div>
         )}
       </DialogContent>

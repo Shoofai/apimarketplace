@@ -1,0 +1,1592 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-02-22T00:53:51.566Z",
+  "scannerVersion": "1.0.0",
+  "routes": [
+    {
+      "path": "/(auth)/forgot-password",
+      "status": "ok",
+      "description": "Page: /(auth)/forgot-password"
+    },
+    {
+      "path": "/(auth)/login",
+      "status": "ok",
+      "description": "Page: /(auth)/login"
+    },
+    {
+      "path": "/(auth)/reset-password",
+      "status": "ok",
+      "description": "Page: /(auth)/reset-password"
+    },
+    {
+      "path": "/(auth)/signup",
+      "status": "ok",
+      "description": "Page: /(auth)/signup"
+    },
+    {
+      "path": "/(auth)/verify-email",
+      "status": "ok",
+      "description": "Page: /(auth)/verify-email"
+    },
+    {
+      "path": "/(public)/about",
+      "status": "ok",
+      "description": "Page: /(public)/about"
+    },
+    {
+      "path": "/(public)/audit",
+      "status": "ok",
+      "description": "Page: /(public)/audit"
+    },
+    {
+      "path": "/(public)/collections",
+      "status": "ok",
+      "description": "Page: /(public)/collections"
+    },
+    {
+      "path": "/(public)/contact",
+      "status": "ok",
+      "description": "Page: /(public)/contact"
+    },
+    {
+      "path": "/(public)/directory",
+      "status": "ok",
+      "description": "Page: /(public)/directory"
+    },
+    {
+      "path": "/(public)/docs",
+      "status": "ok",
+      "description": "Page: /(public)/docs"
+    },
+    {
+      "path": "/(public)",
+      "status": "ok",
+      "description": "Page: /(public)"
+    },
+    {
+      "path": "/(public)/pricing",
+      "status": "ok",
+      "description": "Page: /(public)/pricing"
+    },
+    {
+      "path": "/(public)/security",
+      "status": "ok",
+      "description": "Page: /(public)/security"
+    },
+    {
+      "path": "/(public)/status",
+      "status": "ok",
+      "description": "Page: /(public)/status"
+    },
+    {
+      "path": "/(public)/use-cases",
+      "status": "ok",
+      "description": "Page: /(public)/use-cases"
+    },
+    {
+      "path": "/api/admin/apis/[id]/approve",
+      "status": "ok",
+      "description": "API: /api/admin/apis/[id]/approve"
+    },
+    {
+      "path": "/api/admin/apis/[id]/approve-claim",
+      "status": "ok",
+      "description": "API: /api/admin/apis/[id]/approve-claim"
+    },
+    {
+      "path": "/api/admin/apis/[id]/reject",
+      "status": "ok",
+      "description": "API: /api/admin/apis/[id]/reject"
+    },
+    {
+      "path": "/api/admin/apis/[id]/reject-claim",
+      "status": "ok",
+      "description": "API: /api/admin/apis/[id]/reject-claim"
+    },
+    {
+      "path": "/api/admin/demo",
+      "status": "ok",
+      "description": "API: /api/admin/demo"
+    },
+    {
+      "path": "/api/admin/feature-flags/[name]",
+      "status": "ok",
+      "description": "API: /api/admin/feature-flags/[name]"
+    },
+    {
+      "path": "/api/admin/feature-flags",
+      "status": "ok",
+      "description": "API: /api/admin/feature-flags"
+    },
+    {
+      "path": "/api/admin/moderation/reports/[id]",
+      "status": "ok",
+      "description": "API: /api/admin/moderation/reports/[id]"
+    },
+    {
+      "path": "/api/admin/moderation/reports",
+      "status": "ok",
+      "description": "API: /api/admin/moderation/reports"
+    },
+    {
+      "path": "/api/admin/organizations/[id]/verify",
+      "status": "ok",
+      "description": "API: /api/admin/organizations/[id]/verify"
+    },
+    {
+      "path": "/api/admin/performance/metrics",
+      "status": "ok",
+      "description": "API: /api/admin/performance/metrics"
+    },
+    {
+      "path": "/api/admin/readiness",
+      "status": "ok",
+      "description": "API: /api/admin/readiness"
+    },
+    {
+      "path": "/api/admin/readiness/scan",
+      "status": "ok",
+      "description": "API: /api/admin/readiness/scan"
+    },
+    {
+      "path": "/api/admin/security/metrics",
+      "status": "ok",
+      "description": "API: /api/admin/security/metrics"
+    },
+    {
+      "path": "/api/admin/settings/hero-variant",
+      "status": "ok",
+      "description": "API: /api/admin/settings/hero-variant"
+    },
+    {
+      "path": "/api/admin/settings/platform-name",
+      "status": "ok",
+      "description": "API: /api/admin/settings/platform-name"
+    },
+    {
+      "path": "/api/admin/stats",
+      "status": "ok",
+      "description": "API: /api/admin/stats"
+    },
+    {
+      "path": "/api/admin/tickets/[id]/reply",
+      "status": "ok",
+      "description": "API: /api/admin/tickets/[id]/reply"
+    },
+    {
+      "path": "/api/admin/tracker/deliverables/[id]",
+      "status": "ok",
+      "description": "API: /api/admin/tracker/deliverables/[id]"
+    },
+    {
+      "path": "/api/admin/tracker/sprints/[id]",
+      "status": "ok",
+      "description": "API: /api/admin/tracker/sprints/[id]"
+    },
+    {
+      "path": "/api/admin/tracker/sprints",
+      "status": "ok",
+      "description": "API: /api/admin/tracker/sprints"
+    },
+    {
+      "path": "/api/admin/tracker/tasks/[id]",
+      "status": "ok",
+      "description": "API: /api/admin/tracker/tasks/[id]"
+    },
+    {
+      "path": "/api/ai/debug",
+      "status": "ok",
+      "description": "API: /api/ai/debug"
+    },
+    {
+      "path": "/api/ai/explain",
+      "status": "ok",
+      "description": "API: /api/ai/explain"
+    },
+    {
+      "path": "/api/ai/playground",
+      "status": "ok",
+      "description": "API: /api/ai/playground"
+    },
+    {
+      "path": "/api/analytics/cost-intelligence",
+      "status": "ok",
+      "description": "API: /api/analytics/cost-intelligence"
+    },
+    {
+      "path": "/api/analytics/developer",
+      "status": "ok",
+      "description": "API: /api/analytics/developer"
+    },
+    {
+      "path": "/api/analytics/provider",
+      "status": "ok",
+      "description": "API: /api/analytics/provider"
+    },
+    {
+      "path": "/api/analytics",
+      "status": "ok",
+      "description": "API: /api/analytics"
+    },
+    {
+      "path": "/api/apis/[id]/claim",
+      "status": "ok",
+      "description": "API: /api/apis/[id]/claim"
+    },
+    {
+      "path": "/api/apis/[id]/publish",
+      "status": "ok",
+      "description": "API: /api/apis/[id]/publish"
+    },
+    {
+      "path": "/api/apis/[id]/reviews",
+      "status": "ok",
+      "description": "API: /api/apis/[id]/reviews"
+    },
+    {
+      "path": "/api/apis/[id]",
+      "status": "ok",
+      "description": "API: /api/apis/[id]"
+    },
+    {
+      "path": "/api/apis/[id]/status",
+      "status": "ok",
+      "description": "API: /api/apis/[id]/status"
+    },
+    {
+      "path": "/api/apis/[id]/versions",
+      "status": "ok",
+      "description": "API: /api/apis/[id]/versions"
+    },
+    {
+      "path": "/api/apis",
+      "status": "ok",
+      "description": "API: /api/apis"
+    },
+    {
+      "path": "/api/auth/me",
+      "status": "ok",
+      "description": "API: /api/auth/me"
+    },
+    {
+      "path": "/api/auth/signup",
+      "status": "ok",
+      "description": "API: /api/auth/signup"
+    },
+    {
+      "path": "/api/challenges/[id]",
+      "status": "ok",
+      "description": "API: /api/challenges/[id]"
+    },
+    {
+      "path": "/api/challenges/[id]/submit",
+      "status": "ok",
+      "description": "API: /api/challenges/[id]/submit"
+    },
+    {
+      "path": "/api/challenges",
+      "status": "ok",
+      "description": "API: /api/challenges"
+    },
+    {
+      "path": "/api/collections/[id]/apis",
+      "status": "ok",
+      "description": "API: /api/collections/[id]/apis"
+    },
+    {
+      "path": "/api/collections/[id]",
+      "status": "ok",
+      "description": "API: /api/collections/[id]"
+    },
+    {
+      "path": "/api/collections",
+      "status": "ok",
+      "description": "API: /api/collections"
+    },
+    {
+      "path": "/api/contact",
+      "status": "ok",
+      "description": "API: /api/contact"
+    },
+    {
+      "path": "/api/cron/process-gdpr-deletions",
+      "status": "ok",
+      "description": "API: /api/cron/process-gdpr-deletions"
+    },
+    {
+      "path": "/api/cron/process-retention",
+      "status": "ok",
+      "description": "API: /api/cron/process-retention"
+    },
+    {
+      "path": "/api/favorites",
+      "status": "ok",
+      "description": "API: /api/favorites"
+    },
+    {
+      "path": "/api/forum/topics/[id]/posts",
+      "status": "ok",
+      "description": "API: /api/forum/topics/[id]/posts"
+    },
+    {
+      "path": "/api/forum/topics/[id]",
+      "status": "ok",
+      "description": "API: /api/forum/topics/[id]"
+    },
+    {
+      "path": "/api/forum/topics",
+      "status": "ok",
+      "description": "API: /api/forum/topics"
+    },
+    {
+      "path": "/api/gdpr/consent",
+      "status": "ok",
+      "description": "API: /api/gdpr/consent"
+    },
+    {
+      "path": "/api/gdpr/delete/[id]",
+      "status": "ok",
+      "description": "API: /api/gdpr/delete/[id]"
+    },
+    {
+      "path": "/api/gdpr/delete",
+      "status": "ok",
+      "description": "API: /api/gdpr/delete"
+    },
+    {
+      "path": "/api/gdpr/export",
+      "status": "ok",
+      "description": "API: /api/gdpr/export"
+    },
+    {
+      "path": "/api/health",
+      "status": "ok",
+      "description": "API: /api/health"
+    },
+    {
+      "path": "/api/leads",
+      "status": "ok",
+      "description": "API: /api/leads"
+    },
+    {
+      "path": "/api/organizations/current/audit-log",
+      "status": "ok",
+      "description": "API: /api/organizations/current/audit-log"
+    },
+    {
+      "path": "/api/organizations/current/members",
+      "status": "ok",
+      "description": "API: /api/organizations/current/members"
+    },
+    {
+      "path": "/api/organizations/current",
+      "status": "ok",
+      "description": "API: /api/organizations/current"
+    },
+    {
+      "path": "/api/parse-openapi",
+      "status": "ok",
+      "description": "API: /api/parse-openapi"
+    },
+    {
+      "path": "/api/proxy",
+      "status": "ok",
+      "description": "API: /api/proxy"
+    },
+    {
+      "path": "/api/readiness/full",
+      "status": "ok",
+      "description": "API: /api/readiness/full"
+    },
+    {
+      "path": "/api/readiness/quick",
+      "status": "ok",
+      "description": "API: /api/readiness/quick"
+    },
+    {
+      "path": "/api/readiness/reports/[id]",
+      "status": "ok",
+      "description": "API: /api/readiness/reports/[id]"
+    },
+    {
+      "path": "/api/readiness/reports",
+      "status": "ok",
+      "description": "API: /api/readiness/reports"
+    },
+    {
+      "path": "/api/referrals",
+      "status": "ok",
+      "description": "API: /api/referrals"
+    },
+    {
+      "path": "/api/reports",
+      "status": "ok",
+      "description": "API: /api/reports"
+    },
+    {
+      "path": "/api/settings/platform-name",
+      "status": "ok",
+      "description": "API: /api/settings/platform-name"
+    },
+    {
+      "path": "/api/subscriptions",
+      "status": "ok",
+      "description": "API: /api/subscriptions"
+    },
+    {
+      "path": "/api/user/onboarding/checklist",
+      "status": "ok",
+      "description": "API: /api/user/onboarding/checklist"
+    },
+    {
+      "path": "/api/user/onboarding",
+      "status": "ok",
+      "description": "API: /api/user/onboarding"
+    },
+    {
+      "path": "/api/user/profile",
+      "status": "ok",
+      "description": "API: /api/user/profile"
+    },
+    {
+      "path": "/api/waitlist",
+      "status": "ok",
+      "description": "API: /api/waitlist"
+    },
+    {
+      "path": "/api/webhooks/endpoints",
+      "status": "ok",
+      "description": "API: /api/webhooks/endpoints"
+    },
+    {
+      "path": "/api/webhooks/stripe",
+      "status": "ok",
+      "description": "API: /api/webhooks/stripe"
+    },
+    {
+      "path": "/api/workflows/[id]/execute",
+      "status": "ok",
+      "description": "API: /api/workflows/[id]/execute"
+    },
+    {
+      "path": "/api/workflows/[id]",
+      "status": "ok",
+      "description": "API: /api/workflows/[id]"
+    },
+    {
+      "path": "/api/workflows",
+      "status": "ok",
+      "description": "API: /api/workflows"
+    },
+    {
+      "path": "/auth/callback",
+      "status": "ok",
+      "description": "API: /auth/callback"
+    },
+    {
+      "path": "/collections/[id]",
+      "status": "ok",
+      "description": "Page: /collections/[id]"
+    },
+    {
+      "path": "/dashboard/activity",
+      "status": "ok",
+      "description": "Page: /dashboard/activity"
+    },
+    {
+      "path": "/dashboard/admin/apis/claims/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/apis/claims/[id]"
+    },
+    {
+      "path": "/dashboard/admin/apis/claims",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/apis/claims"
+    },
+    {
+      "path": "/dashboard/admin/apis/review/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/apis/review/[id]"
+    },
+    {
+      "path": "/dashboard/admin/apis/review",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/apis/review"
+    },
+    {
+      "path": "/dashboard/admin/demo",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/demo"
+    },
+    {
+      "path": "/dashboard/admin/feature-flags",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/feature-flags"
+    },
+    {
+      "path": "/dashboard/admin/health",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/health"
+    },
+    {
+      "path": "/dashboard/admin/moderation",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/moderation"
+    },
+    {
+      "path": "/dashboard/admin/organizations",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/organizations"
+    },
+    {
+      "path": "/dashboard/admin",
+      "status": "ok",
+      "description": "Page: /dashboard/admin"
+    },
+    {
+      "path": "/dashboard/admin/performance",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/performance"
+    },
+    {
+      "path": "/dashboard/admin/platform-settings",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/platform-settings"
+    },
+    {
+      "path": "/dashboard/admin/readiness",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/readiness"
+    },
+    {
+      "path": "/dashboard/admin/security",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/security"
+    },
+    {
+      "path": "/dashboard/admin/tickets/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/tickets/[id]"
+    },
+    {
+      "path": "/dashboard/admin/tickets",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/tickets"
+    },
+    {
+      "path": "/dashboard/admin/tracker",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/tracker"
+    },
+    {
+      "path": "/dashboard/admin/users/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/users/[id]"
+    },
+    {
+      "path": "/dashboard/admin/users",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/users"
+    },
+    {
+      "path": "/dashboard/admin/verification",
+      "status": "ok",
+      "description": "Page: /dashboard/admin/verification"
+    },
+    {
+      "path": "/dashboard/analytics",
+      "status": "ok",
+      "description": "Page: /dashboard/analytics"
+    },
+    {
+      "path": "/dashboard/api-builder",
+      "status": "ok",
+      "description": "Page: /dashboard/api-builder"
+    },
+    {
+      "path": "/dashboard/apis/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/apis/[id]"
+    },
+    {
+      "path": "/dashboard/apis/new",
+      "status": "ok",
+      "description": "Page: /dashboard/apis/new"
+    },
+    {
+      "path": "/dashboard/apis",
+      "status": "ok",
+      "description": "Page: /dashboard/apis"
+    },
+    {
+      "path": "/dashboard/apis/publish",
+      "status": "ok",
+      "description": "Page: /dashboard/apis/publish"
+    },
+    {
+      "path": "/dashboard/challenges/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/challenges/[id]"
+    },
+    {
+      "path": "/dashboard/challenges",
+      "status": "ok",
+      "description": "Page: /dashboard/challenges"
+    },
+    {
+      "path": "/dashboard/collab",
+      "status": "ok",
+      "description": "Page: /dashboard/collab"
+    },
+    {
+      "path": "/dashboard/collections/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/collections/[id]"
+    },
+    {
+      "path": "/dashboard/collections",
+      "status": "ok",
+      "description": "Page: /dashboard/collections"
+    },
+    {
+      "path": "/dashboard/cost-intelligence",
+      "status": "ok",
+      "description": "Page: /dashboard/cost-intelligence"
+    },
+    {
+      "path": "/dashboard/favorites",
+      "status": "ok",
+      "description": "Page: /dashboard/favorites"
+    },
+    {
+      "path": "/dashboard/forum/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/forum/[id]"
+    },
+    {
+      "path": "/dashboard/forum",
+      "status": "ok",
+      "description": "Page: /dashboard/forum"
+    },
+    {
+      "path": "/dashboard/notifications",
+      "status": "ok",
+      "description": "Page: /dashboard/notifications"
+    },
+    {
+      "path": "/dashboard",
+      "status": "ok",
+      "description": "Page: /dashboard"
+    },
+    {
+      "path": "/dashboard/playground",
+      "status": "ok",
+      "description": "Page: /dashboard/playground"
+    },
+    {
+      "path": "/dashboard/provider/affiliates",
+      "status": "ok",
+      "description": "Page: /dashboard/provider/affiliates"
+    },
+    {
+      "path": "/dashboard/provider/analytics",
+      "status": "ok",
+      "description": "Page: /dashboard/provider/analytics"
+    },
+    {
+      "path": "/dashboard/referrals",
+      "status": "ok",
+      "description": "Page: /dashboard/referrals"
+    },
+    {
+      "path": "/dashboard/sandbox",
+      "status": "ok",
+      "description": "Page: /dashboard/sandbox"
+    },
+    {
+      "path": "/dashboard/settings/api-keys",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/api-keys"
+    },
+    {
+      "path": "/dashboard/settings/billing",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/billing"
+    },
+    {
+      "path": "/dashboard/settings/notifications",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/notifications"
+    },
+    {
+      "path": "/dashboard/settings/organization",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/organization"
+    },
+    {
+      "path": "/dashboard/settings",
+      "status": "ok",
+      "description": "Page: /dashboard/settings"
+    },
+    {
+      "path": "/dashboard/settings/privacy",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/privacy"
+    },
+    {
+      "path": "/dashboard/settings/profile",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/profile"
+    },
+    {
+      "path": "/dashboard/settings/security",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/security"
+    },
+    {
+      "path": "/dashboard/settings/webhooks",
+      "status": "ok",
+      "description": "Page: /dashboard/settings/webhooks"
+    },
+    {
+      "path": "/dashboard/subscriptions",
+      "status": "ok",
+      "description": "Page: /dashboard/subscriptions"
+    },
+    {
+      "path": "/dashboard/tickets/[id]",
+      "status": "ok",
+      "description": "Page: /dashboard/tickets/[id]"
+    },
+    {
+      "path": "/dashboard/tickets",
+      "status": "ok",
+      "description": "Page: /dashboard/tickets"
+    },
+    {
+      "path": "/dashboard/workflows",
+      "status": "ok",
+      "description": "Page: /dashboard/workflows"
+    },
+    {
+      "path": "/docs/[org_slug]/[api_slug]",
+      "status": "ok",
+      "description": "Page: /docs/[org_slug]/[api_slug]"
+    },
+    {
+      "path": "/legal/acceptable-use",
+      "status": "ok",
+      "description": "Page: /legal/acceptable-use"
+    },
+    {
+      "path": "/legal/cookie-settings",
+      "status": "ok",
+      "description": "Page: /legal/cookie-settings"
+    },
+    {
+      "path": "/legal/cookies",
+      "status": "ok",
+      "description": "Page: /legal/cookies"
+    },
+    {
+      "path": "/legal/dpa",
+      "status": "ok",
+      "description": "Page: /legal/dpa"
+    },
+    {
+      "path": "/legal/privacy",
+      "status": "ok",
+      "description": "Page: /legal/privacy"
+    },
+    {
+      "path": "/legal/sla",
+      "status": "ok",
+      "description": "Page: /legal/sla"
+    },
+    {
+      "path": "/legal/terms",
+      "status": "ok",
+      "description": "Page: /legal/terms"
+    },
+    {
+      "path": "/marketplace/[org_slug]/[api_slug]",
+      "status": "ok",
+      "description": "Page: /marketplace/[org_slug]/[api_slug]"
+    },
+    {
+      "path": "/marketplace/[org_slug]/[api_slug]/status",
+      "status": "ok",
+      "description": "Page: /marketplace/[org_slug]/[api_slug]/status"
+    },
+    {
+      "path": "/marketplace/compare",
+      "status": "ok",
+      "description": "Page: /marketplace/compare"
+    },
+    {
+      "path": "/marketplace",
+      "status": "ok",
+      "description": "Page: /marketplace"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "ui-3-Route:/api/admin/apis/[id]/approve:/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/apis/[id]/approve may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve/route.ts",
+          "reason": "API route /api/admin/apis/[id]/approve may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/apis/[id]/approve-claim:/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve-claim/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/apis/[id]/approve-claim may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve-claim/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/approve-claim/route.ts",
+          "reason": "API route /api/admin/apis/[id]/approve-claim may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/apis/[id]/reject:/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/apis/[id]/reject may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject/route.ts",
+          "reason": "API route /api/admin/apis/[id]/reject may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/apis/[id]/reject-claim:/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject-claim/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/apis/[id]/reject-claim may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject-claim/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/apis/[id]/reject-claim/route.ts",
+          "reason": "API route /api/admin/apis/[id]/reject-claim may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/feature-flags/[name]:/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/[name]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/feature-flags/[name] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/[name]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/[name]/route.ts",
+          "reason": "API route /api/admin/feature-flags/[name] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/feature-flags:/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/feature-flags may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/feature-flags/route.ts",
+          "reason": "API route /api/admin/feature-flags may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/moderation/reports/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/admin/moderation/reports/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/moderation/reports/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/moderation/reports/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/moderation/reports/[id]/route.ts",
+          "reason": "API route /api/admin/moderation/reports/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/organizations/[id]/verify:/Users/timinkan/projects/apimarketplace/src/app/api/admin/organizations/[id]/verify/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/organizations/[id]/verify may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/organizations/[id]/verify/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/organizations/[id]/verify/route.ts",
+          "reason": "API route /api/admin/organizations/[id]/verify may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/stats:/Users/timinkan/projects/apimarketplace/src/app/api/admin/stats/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/stats may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/stats/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/stats/route.ts",
+          "reason": "API route /api/admin/stats may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/tickets/[id]/reply:/Users/timinkan/projects/apimarketplace/src/app/api/admin/tickets/[id]/reply/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/tickets/[id]/reply may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tickets/[id]/reply/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tickets/[id]/reply/route.ts",
+          "reason": "API route /api/admin/tickets/[id]/reply may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/tracker/deliverables/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/deliverables/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/tracker/deliverables/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/deliverables/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/deliverables/[id]/route.ts",
+          "reason": "API route /api/admin/tracker/deliverables/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/tracker/sprints/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/sprints/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/tracker/sprints/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/sprints/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/sprints/[id]/route.ts",
+          "reason": "API route /api/admin/tracker/sprints/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/admin/tracker/tasks/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/tasks/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/admin/tracker/tasks/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/tasks/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/admin/tracker/tasks/[id]/route.ts",
+          "reason": "API route /api/admin/tracker/tasks/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/ai/debug:/Users/timinkan/projects/apimarketplace/src/app/api/ai/debug/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/ai/debug may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/debug/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/debug/route.ts",
+          "reason": "API route /api/ai/debug may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/ai/explain:/Users/timinkan/projects/apimarketplace/src/app/api/ai/explain/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/ai/explain may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/explain/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/explain/route.ts",
+          "reason": "API route /api/ai/explain may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/ai/playground:/Users/timinkan/projects/apimarketplace/src/app/api/ai/playground/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/ai/playground may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/playground/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/ai/playground/route.ts",
+          "reason": "API route /api/ai/playground may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/analytics:/Users/timinkan/projects/apimarketplace/src/app/api/analytics/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/analytics may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/analytics/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/analytics/route.ts",
+          "reason": "API route /api/analytics may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]/claim:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/claim/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id]/claim may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/claim/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/claim/route.ts",
+          "reason": "API route /api/apis/[id]/claim may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]/publish:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/publish/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id]/publish may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/publish/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/publish/route.ts",
+          "reason": "API route /api/apis/[id]/publish may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]/reviews:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/reviews/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id]/reviews may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/reviews/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/reviews/route.ts",
+          "reason": "API route /api/apis/[id]/reviews may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/route.ts",
+          "reason": "API route /api/apis/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]/status:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/status/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id]/status may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/status/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/status/route.ts",
+          "reason": "API route /api/apis/[id]/status may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/apis/[id]/versions:/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/versions/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/apis/[id]/versions may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/versions/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/apis/[id]/versions/route.ts",
+          "reason": "API route /api/apis/[id]/versions may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/auth/me:/Users/timinkan/projects/apimarketplace/src/app/api/auth/me/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/auth/me may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/auth/me/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/auth/me/route.ts",
+          "reason": "API route /api/auth/me may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/challenges/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/challenges/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/route.ts",
+          "reason": "API route /api/challenges/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/challenges/[id]/submit:/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/submit/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/challenges/[id]/submit may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/submit/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/[id]/submit/route.ts",
+          "reason": "API route /api/challenges/[id]/submit may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/challenges:/Users/timinkan/projects/apimarketplace/src/app/api/challenges/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/challenges may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/challenges/route.ts",
+          "reason": "API route /api/challenges may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/collections/[id]/apis:/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/apis/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/collections/[id]/apis may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/apis/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/apis/route.ts",
+          "reason": "API route /api/collections/[id]/apis may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/collections/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/collections/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/collections/[id]/route.ts",
+          "reason": "API route /api/collections/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/cron/process-gdpr-deletions:/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-gdpr-deletions/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/cron/process-gdpr-deletions may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-gdpr-deletions/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-gdpr-deletions/route.ts",
+          "reason": "API route /api/cron/process-gdpr-deletions may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/cron/process-retention:/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-retention/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/cron/process-retention may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-retention/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/cron/process-retention/route.ts",
+          "reason": "API route /api/cron/process-retention may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/forum/topics/[id]/posts:/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/posts/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/forum/topics/[id]/posts may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/posts/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/posts/route.ts",
+          "reason": "API route /api/forum/topics/[id]/posts may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/forum/topics/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/forum/topics/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/forum/topics/[id]/route.ts",
+          "reason": "API route /api/forum/topics/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/gdpr/delete/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/gdpr/delete/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/[id]/route.ts",
+          "reason": "API route /api/gdpr/delete/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/gdpr/delete:/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/gdpr/delete may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/delete/route.ts",
+          "reason": "API route /api/gdpr/delete may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/gdpr/export:/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/export/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/gdpr/export may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/export/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/gdpr/export/route.ts",
+          "reason": "API route /api/gdpr/export may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/organizations/current/audit-log:/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/audit-log/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/organizations/current/audit-log may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/audit-log/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/audit-log/route.ts",
+          "reason": "API route /api/organizations/current/audit-log may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/organizations/current/members:/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/members/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/organizations/current/members may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/members/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/organizations/current/members/route.ts",
+          "reason": "API route /api/organizations/current/members may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/readiness/reports/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/readiness/reports/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/readiness/reports/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/readiness/reports/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/readiness/reports/[id]/route.ts",
+          "reason": "API route /api/readiness/reports/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/referrals:/Users/timinkan/projects/apimarketplace/src/app/api/referrals/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/referrals may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/referrals/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/referrals/route.ts",
+          "reason": "API route /api/referrals may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/settings/platform-name:/Users/timinkan/projects/apimarketplace/src/app/api/settings/platform-name/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/settings/platform-name may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/settings/platform-name/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/settings/platform-name/route.ts",
+          "reason": "API route /api/settings/platform-name may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/waitlist:/Users/timinkan/projects/apimarketplace/src/app/api/waitlist/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/waitlist may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/waitlist/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/waitlist/route.ts",
+          "reason": "API route /api/waitlist may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/webhooks/stripe:/Users/timinkan/projects/apimarketplace/src/app/api/webhooks/stripe/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/webhooks/stripe may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/webhooks/stripe/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/webhooks/stripe/route.ts",
+          "reason": "API route /api/webhooks/stripe may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/workflows/[id]/execute:/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/execute/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/workflows/[id]/execute may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/execute/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/execute/route.ts",
+          "reason": "API route /api/workflows/[id]/execute may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/api/workflows/[id]:/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /api/workflows/[id] may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/api/workflows/[id]/route.ts",
+          "reason": "API route /api/workflows/[id] may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ui-3-Route:/auth/callback:/Users/timinkan/projects/apimarketplace/src/app/auth/callback/route.ts",
+      "severity": "low",
+      "category": "ui",
+      "message": "API route /auth/callback may never be called (no matching callsite).",
+      "fix": "Confirm route is used (e.g. from server action or external).",
+      "filePath": "/Users/timinkan/projects/apimarketplace/src/app/auth/callback/route.ts",
+      "ruleId": "UI-3",
+      "evidence": [
+        {
+          "filePath": "/Users/timinkan/projects/apimarketplace/src/app/auth/callback/route.ts",
+          "reason": "API route /auth/callback may never be called (no matching callsite)."
+        }
+      ],
+      "confidence": "MEDIUM"
+    }
+  ],
+  "shipChecklist": [
+    {
+      "id": "env-001",
+      "label": "NEXT_PUBLIC_SITE_URL set",
+      "status": "pass",
+      "detail": null
+    },
+    {
+      "id": "env-002",
+      "label": "Supabase URL and anon key configured",
+      "status": "pass",
+      "detail": null
+    },
+    {
+      "id": "stripe-001",
+      "label": "Stripe webhook signing secret configured",
+      "status": "pass",
+      "detail": null
+    }
+  ],
+  "shipChecklistStatus": "ship",
+  "suppressedCount": 46
+}

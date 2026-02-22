@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -15,14 +16,15 @@ export default async function CollectionsPage() {
     .from('api_collections')
     .select('id, name, description, slug, is_public, created_at')
     .eq('user_id', user.id)
-    .order('updated_at', { ascending: false });
+    .order('updated_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <FolderOpen className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <FolderOpen className="h-6 w-6" />
             My Collections
           </h1>
           <p className="text-muted-foreground">
@@ -50,7 +52,7 @@ export default async function CollectionsPage() {
             <Link key={c.id} href={`/dashboard/collections/${c.id}`}>
               <Card className="hover:border-primary/50 transition-colors h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">{c.name}</CardTitle>
+                  <CardTitle className="text-base">{c.name}</CardTitle>
                   {c.description && (
                     <CardDescription className="line-clamp-2">{c.description}</CardDescription>
                   )}

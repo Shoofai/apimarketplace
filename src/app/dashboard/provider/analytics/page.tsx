@@ -125,8 +125,8 @@ export default function ProviderAnalyticsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <BarChart3 className="h-6 w-6" />
             Provider Analytics
           </h1>
           <p className="text-muted-foreground">Monitor your API performance and revenue</p>
@@ -176,7 +176,7 @@ export default function ProviderAnalyticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Revenue (period)</p>
-                <p className="text-3xl font-bold">${(data?.totalRevenue ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-xl font-bold">${(data?.totalRevenue ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center gap-1 mt-2 text-sm text-primary">
                   <TrendingUp className="w-4 h-4" />
                   <span>From invoices</span>
@@ -192,7 +192,7 @@ export default function ProviderAnalyticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Payout (est.)</p>
-                <p className="text-3xl font-bold">${(data?.totalPayout ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-xl font-bold">${(data?.totalPayout ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
                   <span>After platform fee</span>
                 </div>
@@ -207,7 +207,7 @@ export default function ProviderAnalyticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Active Subscribers</p>
-                <p className="text-3xl font-bold">{(data?.totalSubscribers ?? 0).toLocaleString()}</p>
+                <p className="text-xl font-bold">{(data?.totalSubscribers ?? 0).toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-2 text-sm text-primary">
                   <TrendingUp className="w-4 h-4" />
                   <span>Active subscriptions</span>
@@ -223,7 +223,7 @@ export default function ProviderAnalyticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">APIs</p>
-                <p className="text-3xl font-bold">{(data?.apis?.length ?? 0)}</p>
+                <p className="text-xl font-bold">{(data?.apis?.length ?? 0)}</p>
                 <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
                   <Activity className="w-4 h-4" />
                   <span>Published</span>
@@ -239,7 +239,7 @@ export default function ProviderAnalyticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Top APIs</p>
-                <p className="text-3xl font-bold">{(data?.topApisByRevenue?.length ?? 0)}</p>
+                <p className="text-xl font-bold">{(data?.topApisByRevenue?.length ?? 0)}</p>
                 <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
                   <TrendingUp className="w-4 h-4" />
                   <span>By revenue</span>
@@ -254,7 +254,7 @@ export default function ProviderAnalyticsPage() {
 
         {/* Revenue Trend */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Revenue Trend</h3>
+          <h3 className="text-base font-semibold mb-3">Revenue Trend</h3>
           <div className="h-80">
             <Line data={revenueData} options={chartOptions} />
           </div>
@@ -263,7 +263,7 @@ export default function ProviderAnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Subscriber Growth */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Subscriber Growth</h3>
+            <h3 className="text-base font-semibold mb-3">Subscriber Growth</h3>
             <div className="h-64">
               <Bar data={subscribersData} options={chartOptions} />
             </div>
@@ -271,7 +271,7 @@ export default function ProviderAnalyticsPage() {
 
           {/* Plan Distribution */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Plan Distribution</h3>
+            <h3 className="text-base font-semibold mb-3">Plan Distribution</h3>
             <div className="h-64">
               <Doughnut data={planDistribution} options={chartOptions} />
             </div>
@@ -280,7 +280,7 @@ export default function ProviderAnalyticsPage() {
 
         {/* Top APIs by Revenue */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Top APIs by Revenue</h3>
+          <h3 className="text-base font-semibold mb-3">Top APIs by Revenue</h3>
           <div className="h-80">
             <Bar data={endpointPerformance} options={chartOptions} />
           </div>
@@ -289,7 +289,7 @@ export default function ProviderAnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Subscriber cohort by month */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Subscriber cohort (by signup month)</h3>
+            <h3 className="text-base font-semibold mb-3">Subscriber cohort (by signup month)</h3>
             {cohortData.labels.length === 0 ? (
               <p className="text-muted-foreground text-sm">No cohort data in this period.</p>
             ) : (
@@ -301,7 +301,7 @@ export default function ProviderAnalyticsPage() {
 
           {/* Top endpoints */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Top endpoints by requests</h3>
+            <h3 className="text-base font-semibold mb-3">Top endpoints by requests</h3>
             {(data?.topEndpoints?.length ?? 0) === 0 ? (
               <p className="text-muted-foreground text-sm">No request data in this period.</p>
             ) : (
@@ -331,7 +331,7 @@ export default function ProviderAnalyticsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Subscriber cohort (by signup month)</h3>
+            <h3 className="text-base font-semibold mb-3">Subscriber cohort (by signup month)</h3>
             {cohortData.labels.length === 0 ? (
               <p className="text-muted-foreground text-sm">No cohort data in this period.</p>
             ) : (
@@ -341,7 +341,7 @@ export default function ProviderAnalyticsPage() {
             )}
           </Card>
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Top endpoints by requests</h3>
+            <h3 className="text-base font-semibold mb-3">Top endpoints by requests</h3>
             {(data?.topEndpoints?.length ?? 0) === 0 ? (
               <p className="text-muted-foreground text-sm">No request data in this period.</p>
             ) : (
@@ -371,7 +371,7 @@ export default function ProviderAnalyticsPage() {
 
         {/* Top Subscribers (placeholder – requires backend) */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Top Subscribers</h3>
+          <h3 className="text-base font-semibold mb-3">Top Subscribers</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-border">

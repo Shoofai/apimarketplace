@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/dashboard/PageHeader';
 import { UsageDashboard } from '@/components/features/usage/UsageDashboard';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -40,16 +41,12 @@ export default function DeveloperAnalyticsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-8 w-8" />
-            Developer Analytics
-          </h1>
-          <p className="text-muted-foreground">Monitor your API usage, performance, and costs</p>
-        </div>
-        <div className="flex gap-2">
+      <PageHeader
+        title="Developer Analytics"
+        description="Monitor your API usage, performance, and costs"
+        icon={BarChart3}
+        actions={
+          <div className="flex gap-2">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -82,8 +79,9 @@ export default function DeveloperAnalyticsPage() {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {error && (
         <p className="text-destructive text-sm">{error}</p>

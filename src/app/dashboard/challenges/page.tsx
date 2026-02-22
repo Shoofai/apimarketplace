@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -13,7 +14,8 @@ export default async function ChallengesPage() {
   const { data: challenges } = await supabase
     .from('developer_challenges')
     .select('id, title, description, starts_at, ends_at')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const now = new Date().toISOString();
   const active = (challenges ?? []).filter(
@@ -24,8 +26,8 @@ export default async function ChallengesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Trophy className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Trophy className="h-6 w-6" />
           Developer challenges
         </h1>
         <p className="text-muted-foreground">Compete and get on the leaderboard</p>

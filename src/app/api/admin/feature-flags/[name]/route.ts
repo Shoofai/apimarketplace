@@ -7,9 +7,10 @@ import { createClient } from '@/lib/supabase/server';
  */
 export async function PATCH(
   req: Request,
-  { params }: { params: { name: string } }
+  { params }: { params: Promise<{ name: string }> }
 ) {
   try {
+    const { name } = await params;
     const supabase = await createClient();
     const { is_enabled } = await req.json();
 
@@ -36,7 +37,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from('feature_flags')
       .update({ enabled_globally: is_enabled })
-      .eq('name', decodeURIComponent(params.name))
+      .eq('name', decodeURIComponent(name))
       .select()
       .single();
 

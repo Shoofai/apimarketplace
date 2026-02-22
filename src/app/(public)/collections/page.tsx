@@ -5,6 +5,7 @@ import { FolderOpen } from 'lucide-react';
 import { getPlatformName } from '@/lib/settings/platform-name';
 import { PageHero } from '@/components/landing/PageHero';
 import { Button } from '@/components/ui/button';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export async function generateMetadata() {
   const name = await getPlatformName();
@@ -20,7 +21,8 @@ export default async function PublicCollectionsPage() {
     .from('api_collections')
     .select('id, name, description, slug, created_at')
     .eq('is_public', true)
-    .order('updated_at', { ascending: false });
+    .order('updated_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="min-h-screen bg-background">

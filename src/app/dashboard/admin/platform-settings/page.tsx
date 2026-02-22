@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Palette } from 'lucide-react';
+import { Layout, Palette } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPlatformName } from '@/lib/settings/platform-name';
+import { getHeroVariant } from '@/lib/settings/hero-variant';
 import { PlatformNameForm } from './PlatformNameForm';
+import { HeroVariantForm } from './HeroVariantForm';
 
 export default async function PlatformSettingsPage() {
   const supabase = await createClient();
@@ -26,13 +28,16 @@ export default async function PlatformSettingsPage() {
     redirect('/dashboard');
   }
 
-  const platformName = await getPlatformName();
+  const [platformName, heroVariant] = await Promise.all([
+    getPlatformName(),
+    getHeroVariant(),
+  ]);
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Palette className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Palette className="h-6 w-6" />
           Platform Settings
         </h1>
         <p className="text-muted-foreground">
@@ -50,6 +55,22 @@ export default async function PlatformSettingsPage() {
         </CardHeader>
         <CardContent>
           <PlatformNameForm initialName={platformName} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Layout className="h-5 w-5" />
+            Hero variant
+          </CardTitle>
+          <CardDescription>
+            Choose which hero design is shown on the public landing page. Classic: original hero with
+            constellation and dual CTAs. Developer: developer-first hero with code block and trust strip.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <HeroVariantForm initialVariant={heroVariant} />
         </CardContent>
       </Card>
     </div>

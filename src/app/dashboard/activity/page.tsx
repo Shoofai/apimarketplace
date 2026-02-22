@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { PageHeader } from '@/components/dashboard/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +32,7 @@ export default async function ActivityPage() {
 
   const { data: activities } = await supabase
     .from('audit_logs')
-    .select('*')
+    .select('id, action, resource_type, status, created_at, metadata')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(50);
@@ -73,24 +74,18 @@ export default async function ActivityPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <PageHeader
+        title="Activity"
+        description="Your recent activity across the platform"
+        icon={Activity}
+        leading={
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Activity className="h-8 w-8" />
-              Activity
-            </h1>
-            <p className="text-muted-foreground">
-              Your recent activity across the platform
-            </p>
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       <Card>
         <CardContent className="p-6">

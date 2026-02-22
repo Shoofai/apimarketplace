@@ -36,7 +36,7 @@ export default function LiveActivityTicker({ variant = 'default' }: LiveActivity
     <div
       className={`flex items-center gap-3 rounded-xl px-4 py-3 backdrop-blur-sm ${
         isHero
-          ? 'border border-white/20 bg-white/10 dark:border-white/10 dark:bg-white/5'
+          ? 'border border-gray-200 bg-white/90 shadow-sm dark:border-white/10 dark:bg-white/5'
           : 'border border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-900/80'
       }`}
     >
@@ -47,7 +47,7 @@ export default function LiveActivityTicker({ variant = 'default' }: LiveActivity
         </span>
         <Zap className="h-4 w-4" />
       </span>
-      <span className={`text-sm font-medium ${isHero ? 'text-blue-200/90' : 'text-gray-500 dark:text-gray-400'}`}>
+      <span className={`text-sm font-medium ${isHero ? 'text-gray-600 dark:text-primary-200/90' : 'text-gray-500 dark:text-gray-400'}`}>
         Recent activity:
       </span>
       <AnimatePresence mode="wait">
@@ -57,12 +57,12 @@ export default function LiveActivityTicker({ variant = 'default' }: LiveActivity
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.3 }}
-          className={`text-sm font-medium ${isHero ? 'text-white' : 'text-gray-900 dark:text-white'}`}
+          className={`text-sm font-medium ${isHero ? 'text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white'}`}
         >
           {activity.text}
         </motion.span>
       </AnimatePresence>
-      <span className={`text-xs ${isHero ? 'text-blue-200/70' : 'text-gray-400 dark:text-gray-500'}`}>
+      <span className={`text-xs ${isHero ? 'text-gray-500 dark:text-primary-200/70' : 'text-gray-400 dark:text-gray-500'}`}>
         · {activity.city}
       </span>
     </div>

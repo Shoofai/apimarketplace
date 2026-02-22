@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +29,8 @@ export default async function ProviderVerificationPage() {
     .from('organizations')
     .select('id, name, slug, type, website, created_at, settings')
     .in('type', ['provider', 'both'])
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const verified = (settings: unknown): boolean => {
     if (settings && typeof settings === 'object' && 'verified' in settings) {
@@ -44,8 +46,8 @@ export default async function ProviderVerificationPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckCircle className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <CheckCircle className="h-6 w-6" />
           Provider verification
         </h1>
           <p className="text-muted-foreground">Approve or reject provider organizations</p>
@@ -63,7 +65,7 @@ export default async function ProviderVerificationPage() {
             <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pending.length}</div>
+            <div className="text-xl font-bold">{pending.length}</div>
             <p className="text-xs text-muted-foreground">Awaiting verification</p>
           </CardContent>
         </Card>
@@ -73,7 +75,7 @@ export default async function ProviderVerificationPage() {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{verifiedCount}</div>
+            <div className="text-xl font-bold">{verifiedCount}</div>
             <p className="text-xs text-muted-foreground">Provider organizations</p>
           </CardContent>
         </Card>

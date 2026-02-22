@@ -45,8 +45,8 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Crown className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Crown className="h-6 w-6" />
           Admin Dashboard
         </h1>
           <p className="text-muted-foreground">Platform operations and analytics</p>
@@ -85,7 +85,8 @@ export default async function AdminDashboardPage() {
 }
 
 async function AdminKPIs() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/admin/stats`, {
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const response = await fetch(`${base}/api/admin/stats`, {
     cache: 'no-store',
   });
 
@@ -103,7 +104,7 @@ async function AdminKPIs() {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${(kpis.gmv.last30d / 100).toFixed(2)}</div>
+          <div className="text-xl font-bold">${(kpis.gmv.last30d / 100).toFixed(2)}</div>
           <p className="text-xs text-muted-foreground">Gross Marketplace Volume</p>
         </CardContent>
       </Card>
@@ -114,7 +115,7 @@ async function AdminKPIs() {
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
+          <div className="text-xl font-bold">
             ${(kpis.platformRevenue.last30d / 100).toFixed(2)}
           </div>
           <p className="text-xs text-muted-foreground">3% of GMV (30d)</p>
@@ -127,7 +128,7 @@ async function AdminKPIs() {
           <Globe className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{kpis.activeApis}</div>
+          <div className="text-xl font-bold">{kpis.activeApis}</div>
           <p className="text-xs text-muted-foreground">{kpis.activeSubscriptions} subscriptions</p>
         </CardContent>
       </Card>
@@ -138,7 +139,7 @@ async function AdminKPIs() {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{kpis.totalUsers}</div>
+          <div className="text-xl font-bold">{kpis.totalUsers}</div>
           <p className="text-xs text-muted-foreground">
             {kpis.activeUsers.daily} active today
           </p>
@@ -151,7 +152,7 @@ async function AdminKPIs() {
           <Building2 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{kpis.totalOrgs}</div>
+          <div className="text-xl font-bold">{kpis.totalOrgs}</div>
           <p className="text-xs text-muted-foreground">Total organizations</p>
         </CardContent>
       </Card>
@@ -162,7 +163,7 @@ async function AdminKPIs() {
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{kpis.apiCalls.last24h.toLocaleString()}</div>
+          <div className="text-xl font-bold">{kpis.apiCalls.last24h.toLocaleString()}</div>
           <p className="text-xs text-muted-foreground">Last 24 hours</p>
         </CardContent>
       </Card>

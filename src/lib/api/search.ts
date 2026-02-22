@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Database } from '@/types/database.types';
 
 type API = Database['public']['Tables']['apis']['Row'];
@@ -242,7 +243,8 @@ export async function getCategories() {
       apis:apis(count)
     `
     )
-    .order('name');
+    .order('name')
+    .limit(DEFAULT_LIST_LIMIT);
 
   return data || [];
 }

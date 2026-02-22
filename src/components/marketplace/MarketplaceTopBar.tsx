@@ -41,7 +41,7 @@ export interface MarketplaceTopBarProps {
   sortOptions?: SortOption[];
   /** Build href when user selects a sort (preserves other params) */
   buildSortHref: (sortValue: string) => string;
-  /** Optional results text, e.g. "Showing 24 of 17,000 APIs" */
+  /** Optional results text, e.g. "Showing 24 of 10,000 APIs" */
   resultsCount?: string;
   /** Show "Filters" button (for mobile sheet) */
   showFiltersButton?: boolean;
@@ -56,7 +56,7 @@ export interface MarketplaceTopBarProps {
 
 export function MarketplaceTopBar({
   title,
-  searchPlaceholder = 'Search 17k+ APIs...',
+  searchPlaceholder = 'Search 10K+ APIs...',
   query,
   formId,
   sort,

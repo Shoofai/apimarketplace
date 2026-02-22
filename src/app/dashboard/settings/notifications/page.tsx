@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -30,9 +31,10 @@ export default async function NotificationPreferencesPage() {
   // Get existing preferences
   const { data: preferences } = await supabase
     .from('notification_preferences')
-    .select('*')
+    .select('id, event_type, user_id, organization_id, email_enabled, in_app_enabled, webhook_enabled, created_at, updated_at')
     .eq('user_id', userData.id)
-    .eq('organization_id', userData.current_organization_id);
+    .eq('organization_id', userData.current_organization_id)
+    .limit(DEFAULT_LIST_LIMIT);
 
   // Group events by category
   const eventsByCategory = {
@@ -63,8 +65,8 @@ export default async function NotificationPreferencesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Bell className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Bell className="h-6 w-6" />
           Notification Preferences
         </h1>
         <p className="text-muted-foreground">

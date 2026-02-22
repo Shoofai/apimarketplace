@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { PLATFORM_NAME_KEY } from '@/lib/settings/platform-name';
+import { DEFAULT_PLATFORM_NAME, PLATFORM_NAME_KEY } from '@/lib/settings/platform-name';
 
 /**
  * GET /api/admin/settings/platform-name
@@ -34,7 +34,7 @@ export async function GET() {
     .maybeSingle();
 
   const value = row?.value as { name?: string } | null;
-  const name = value?.name ?? 'apinergy';
+  const name = value?.name ?? DEFAULT_PLATFORM_NAME;
   return NextResponse.json({ name });
 }
 

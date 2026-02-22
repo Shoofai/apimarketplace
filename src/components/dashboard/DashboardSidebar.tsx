@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,10 @@ import {
   Gauge,
   Palette,
   Ticket,
+  ClipboardCheck,
+  PanelLeftClose,
+  PanelLeft,
+  Plug,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,6 +47,8 @@ interface DashboardSidebarProps {
       plan: string;
     };
   };
+  /** When true (e.g. in mobile sheet), sidebar is always expanded and has no collapse toggle */
+  forceExpanded?: boolean;
 }
 
 interface NavItem {
@@ -55,8 +62,26 @@ interface NavItem {
   comingSoon?: boolean;
 }
 
-export default function DashboardSidebar({ user }: DashboardSidebarProps) {
+const STORAGE_KEY = 'dashboard-sidebar-collapsed';
+
+export default function DashboardSidebar({ user, forceExpanded }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (forceExpanded) return;
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored !== null) setCollapsed(stored === 'true');
+  }, [forceExpanded]);
+
+  const toggle = () => {
+    setCollapsed((c) => {
+      const next = !c;
+      localStorage.setItem(STORAGE_KEY, String(next));
+      return next;
+    });
+  };
+
   const isAdmin = user.is_platform_admin;
   const orgType = user.organizations?.type;
   const orgPlan = user.organizations?.plan;
@@ -154,6 +179,11 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       href: '/dashboard/workflows',
       icon: Workflow,
       comingSoon: orgPlan === 'free',
+    },
+    {
+      title: 'API Builder',
+      href: '/dashboard/api-builder',
+      icon: Plug,
     },
     {
       title: 'Collaborative Testing',
@@ -258,6 +288,12 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       icon: Gauge,
       adminOnly: true,
     },
+    {
+      title: 'Production Readiness',
+      href: '/dashboard/admin/readiness',
+      icon: ClipboardCheck,
+      adminOnly: true,
+    },
   ];
 
   const filteredNavItems = navItems.filter((item) => {
@@ -266,16 +302,26 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     return true;
   });
 
+  const isCollapsed = !forceExpanded && collapsed;
+
   return (
-    <aside className="hidden lg:block w-64 border-r bg-card/50 min-h-[calc(100vh-4rem)] backdrop-blur-sm">
-      <nav className="p-4 space-y-6">
+    <aside
+      className={cn(
+        'flex flex-col shrink-0 border-r bg-card/50 min-h-[calc(100vh-4rem)] backdrop-blur-sm transition-[width] duration-200 ease-in-out',
+        forceExpanded ? 'w-64' : 'hidden lg:flex',
+        forceExpanded ? 'w-64' : isCollapsed ? 'lg:w-16' : 'lg:w-64'
+      )}
+    >
+      <nav className="p-3 space-y-4 flex-1 overflow-x-hidden overflow-y-auto">
         {/* Main Navigation */}
         <div>
-          <div className="px-3 mb-2">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Main
-            </h3>
-          </div>
+          {!isCollapsed && (
+            <div className="px-3 mb-2">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Main
+              </h3>
+            </div>
+          )}
           <div className="space-y-1">
             {filteredNavItems.map((item) => {
               const matches = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -289,8 +335,10 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
                 <Link
                   key={item.href}
                   href={item.comingSoon ? '#' : item.href}
+                  title={isCollapsed ? item.title : undefined}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                    isCollapsed ? 'justify-center px-2' : '',
                     isActive
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
@@ -298,17 +346,21 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
                   )}
                   onClick={(e) => item.comingSoon && e.preventDefault()}
                 >
-                  <Icon className={cn('h-4 w-4', isActive && 'text-primary-foreground')} />
-                  <span className="flex-1">{item.title}</span>
-                  {item.badge && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
-                      {item.badge}
-                    </Badge>
-                  )}
-                  {item.comingSoon && (
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
-                      Soon
-                    </Badge>
+                  <Icon className={cn('h-4 w-4 shrink-0', isActive && 'text-primary-foreground')} />
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1 truncate">{item.title}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">
+                          {item.badge}
+                        </Badge>
+                      )}
+                      {item.comingSoon && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 shrink-0">
+                          Soon
+                        </Badge>
+                      )}
+                    </>
                   )}
                 </Link>
               );
@@ -318,13 +370,15 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
 
         {/* Admin Section */}
         {isAdmin && (
-          <div>
-            <div className="px-3 mb-2">
-              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
-                <Crown className="h-3 w-3" />
-                Platform Admin
-              </h3>
-            </div>
+          <div className="border-t border-border mt-4 pt-4">
+            {!isCollapsed && (
+              <div className="px-3 mb-2">
+                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                  <Crown className="h-3 w-3" />
+                  Platform Admin
+                </h3>
+              </div>
+            )}
             <div className="space-y-1">
               {adminItems.map((item) => {
                 const matches = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -338,15 +392,17 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    title={isCollapsed ? item.title : undefined}
                     className={cn(
                       'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                      isCollapsed ? 'justify-center px-2' : '',
                       isActive
                         ? 'bg-primary text-primary-foreground shadow-sm'
                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                     )}
                   >
-                    <Icon className={cn('h-4 w-4', isActive && 'text-primary-foreground')} />
-                    <span>{item.title}</span>
+                    <Icon className={cn('h-4 w-4 shrink-0', isActive && 'text-primary-foreground')} />
+                    {!isCollapsed && <span className="truncate">{item.title}</span>}
                   </Link>
                 );
               })}
@@ -355,8 +411,8 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
         )}
 
         {/* Upgrade CTA for Free Users */}
-        {orgPlan === 'free' && (
-          <div className="px-3 pt-4">
+        {orgPlan === 'free' && !isCollapsed && (
+          <div className="border-t border-border mt-4 pt-4 px-3">
             <div className="p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
               <h4 className="font-semibold text-sm mb-1 flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4 text-primary" />
@@ -374,6 +430,31 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
           </div>
         )}
       </nav>
+
+      {/* Collapse toggle - hidden when in mobile sheet */}
+      {!forceExpanded && (
+        <div className="p-2 border-t">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggle}
+            className={cn(
+              'w-full gap-2 text-muted-foreground hover:text-foreground',
+              isCollapsed && 'justify-center px-0'
+            )}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+            <PanelLeft className="h-4 w-4" />
+          ) : (
+            <>
+              <PanelLeftClose className="h-4 w-4" />
+              <span className="text-xs">Collapse</span>
+            </>
+          )}
+        </Button>
+        </div>
+      )}
     </aside>
   );
 }

@@ -42,6 +42,7 @@ const tiers = [
       'Advanced analytics',
       'Priority support',
       'Custom rate limits',
+      'SSO integration',
       'Workflows & Collaborative Testing',
     ],
     cta: 'Upgrade to Pro',

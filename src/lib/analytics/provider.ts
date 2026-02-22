@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export interface ProviderAnalytics {
   apis: { id: string; name: string; slug: string }[];
@@ -37,7 +38,8 @@ export async function getProviderAnalytics(
     .from('apis')
     .select('id, name, slug')
     .eq('organization_id', organizationId)
-    .eq('status', 'published');
+    .eq('status', 'published')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const apiIds = (apis ?? []).map((a) => a.id);
   const filteredApiIds =
@@ -58,7 +60,8 @@ export async function getProviderAnalytics(
       .in('api_id', filteredApiIds)
       .gte('created_at', fromStr)
       .lte('created_at', toStr)
-      .eq('status', 'paid');
+      .eq('status', 'paid')
+      .limit(DEFAULT_LIST_LIMIT);
 
     (invoices ?? []).forEach((inv: { api_id?: string; total_amount?: number; total?: number; platform_fee?: number; created_at?: string }) => {
       const amt = Number(inv.total_amount ?? inv.total ?? 0);
@@ -74,7 +77,8 @@ export async function getProviderAnalytics(
       .from('api_subscriptions')
       .select('api_id, created_at')
       .in('api_id', filteredApiIds)
-      .eq('status', 'active');
+      .eq('status', 'active')
+      .limit(DEFAULT_LIST_LIMIT);
 
     (subs ?? []).forEach((s: { api_id?: string; created_at?: string }) => {
       if (s.api_id) apiSubscribers[s.api_id] = (apiSubscribers[s.api_id] ?? 0) + 1;
@@ -118,7 +122,8 @@ export async function getProviderAnalytics(
     .from('api_subscriptions')
     .select('pricing_plan_id, api_pricing_plans(name)')
     .in('api_id', filteredApiIds)
-    .eq('status', 'active');
+    .eq('status', 'active')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const planMap: Record<string, number> = {};
   (planCounts ?? []).forEach((r: { api_pricing_plans?: { name?: string } | { name?: string }[] }) => {
@@ -135,7 +140,8 @@ export async function getProviderAnalytics(
       .select('api_id, path')
       .in('api_id', filteredApiIds)
       .gte('created_at', fromStr)
-      .lte('created_at', toStr);
+      .lte('created_at', toStr)
+      .limit(DEFAULT_LIST_LIMIT);
     const pathCount: Record<string, { requests: number; apiId: string; path: string }> = {};
     (logRows ?? []).forEach((r: { api_id?: string; path?: string }) => {
       const apiId = r.api_id ?? '';

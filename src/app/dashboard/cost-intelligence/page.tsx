@@ -91,8 +91,8 @@ export default function CostIntelligencePage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <TrendingDown className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <TrendingDown className="h-6 w-6" />
             Cost Intelligence
           </h1>
           <p className="text-muted-foreground">
@@ -130,7 +130,7 @@ export default function CostIntelligencePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Current period spend</p>
-                  <p className="text-3xl font-bold">
+                  <p className="text-xl font-bold">
                     ${data.totalSpendCurrentPeriod.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </p>
                   <div
@@ -157,7 +157,7 @@ export default function CostIntelligencePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Previous period</p>
-                  <p className="text-3xl font-bold">
+                  <p className="text-xl font-bold">
                     ${data.totalSpendPreviousPeriod.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
@@ -168,7 +168,7 @@ export default function CostIntelligencePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Anomalies detected</p>
-                  <p className="text-3xl font-bold">{data.anomalies.length}</p>
+                  <p className="text-xl font-bold">{data.anomalies.length}</p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {data.anomalies.filter((a) => a.severity === 'critical').length} critical
                   </p>
@@ -183,7 +183,7 @@ export default function CostIntelligencePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Next month forecast</p>
-                  <p className="text-3xl font-bold">
+                  <p className="text-xl font-bold">
                     ${data.forecast.nextMonthAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1 capitalize">
@@ -199,7 +199,7 @@ export default function CostIntelligencePage() {
 
           {/* Spend over time */}
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Spend over time</h3>
+            <h3 className="text-base font-semibold mb-3">Spend over time</h3>
             <div className="h-80">
               <Line
                 data={spendChartData}
@@ -219,7 +219,7 @@ export default function CostIntelligencePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Anomalies */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5" />
                 Anomalies
               </h3>
@@ -253,7 +253,7 @@ export default function CostIntelligencePage() {
 
             {/* Savings opportunities */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
                 Savings opportunities
               </h3>

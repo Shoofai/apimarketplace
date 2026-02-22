@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requirePlatformAdmin } from '@/lib/auth/admin';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 /**
  * GET /api/admin/stats
@@ -64,7 +65,8 @@ export async function GET() {
     const { data: activeUserData } = await supabase
       .from('users')
       .select('last_active_at')
-      .not('last_active_at', 'is', null);
+      .not('last_active_at', 'is', null)
+      .limit(DEFAULT_LIST_LIMIT);
 
     const activeUsers = {
       daily: activeUserData?.filter((u) => new Date(u.last_active_at!).getTime() > now - day)

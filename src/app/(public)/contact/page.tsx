@@ -109,14 +109,14 @@ export default async function ContactPage() {
             </div>
           </div>
 
-          <h2>Community & Feedback</h2>
+          <h2 id="community">Community & Feedback</h2>
           <p className="text-muted-foreground">
             Connect with other developers and share feedback. We&apos;re building in public.
           </p>
           <ul>
             <li><strong>Feature requests:</strong> Submit via the contact quiz above with &quot;Feature Request&quot; in your message</li>
-            <li><strong>GitHub:</strong> <a href="#github" className="text-primary hover:underline">github.com</a> (coming soon)</li>
-            <li><strong>Discord:</strong> <a href="#discord" className="text-primary hover:underline">Join our server</a> (coming soon)</li>
+            <li><strong>GitHub:</strong> <a href="/contact#community" className="text-primary hover:underline">github.com</a> (coming soon)</li>
+            <li><strong>Discord:</strong> <a href="/contact#community" className="text-primary hover:underline">Join our server</a> (coming soon)</li>
           </ul>
 
           <h2>Frequently Asked Questions</h2>

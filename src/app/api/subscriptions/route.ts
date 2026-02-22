@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { generateApiKey, hashApiKey } from '@/lib/utils/api-key';
 import { logger } from '@/lib/utils/logger';
 
@@ -138,7 +139,8 @@ export async function GET(request: Request) {
       `
       )
       .eq('organization_id', context.organization_id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(DEFAULT_LIST_LIMIT);
 
     if (error) throw error;
 

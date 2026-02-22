@@ -9,8 +9,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default async function PlaygroundPage({
   searchParams,
 }: {
-  searchParams: { api?: string };
+  searchParams: Promise<{ api?: string }>;
 }) {
+  const resolved = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -23,11 +24,11 @@ export default async function PlaygroundPage({
 
   // Optionally load API details if api param is provided
   let apiData = null;
-  if (searchParams.api) {
+  if (resolved.api) {
     const { data } = await supabase
       .from('apis')
       .select('id, name, slug, openapi_spec')
-      .eq('id', searchParams.api)
+      .eq('id', resolved.api)
       .single();
     apiData = data;
   }
@@ -35,8 +36,8 @@ export default async function PlaygroundPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Zap className="h-6 w-6" />
           AI Code Playground
         </h1>
         <p className="text-muted-foreground">

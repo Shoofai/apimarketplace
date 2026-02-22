@@ -9,6 +9,7 @@ import { ActiveFilters } from '@/components/marketplace/ActiveFilters';
 import { MarketplaceTopBar } from '@/components/marketplace/MarketplaceTopBar';
 import { MarketplacePagination } from '@/components/marketplace/MarketplacePagination';
 import { Filter } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -123,9 +124,11 @@ export function MarketplaceContent({
       : undefined;
 
   const title = categoryName ?? 'API Marketplace';
+  const formatApiCount = (n: number) =>
+    n >= 1000 ? `${Math.floor(n / 1000)}K+` : n.toString();
   const searchPlaceholder = categoryName
     ? `Search ${categoryName} APIs...`
-    : 'Search 17k+ APIs...';
+    : `Search ${searchResults.total > 0 ? formatApiCount(searchResults.total) : '10K+'} APIs...`;
 
   return (
     <div className="space-y-0">
@@ -206,7 +209,7 @@ export function MarketplaceContent({
                   Try adjusting your search or filters
                 </p>
                 <Button asChild variant="outline">
-                  <a href="/marketplace">Clear filters</a>
+                  <Link href="/marketplace">Clear filters</Link>
                 </Button>
               </Card>
             ) : null}

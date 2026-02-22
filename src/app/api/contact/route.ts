@@ -20,6 +20,9 @@ export async function POST(request: Request) {
     const source_page = typeof body.source_page === 'string' ? body.source_page.trim().slice(0, 100) : null;
     const source_url = typeof body.source_url === 'string' ? body.source_url.trim().slice(0, 500) : null;
     const raw_report_type = typeof body.report_type === 'string' ? body.report_type.trim().slice(0, 50) : '';
+    // Phone: E.164 format, max 20 chars
+    const rawPhone = typeof body.phone === 'string' ? body.phone.trim() : '';
+    const phone = rawPhone && /^\+[0-9]{10,15}$/.test(rawPhone) ? rawPhone.slice(0, 20) : null;
 
     const ALLOWED_REPORT_TYPES = ['contact_form', 'aup_violation', 'security_report', 'dmca_takedown', 'billing_dispute'] as const;
     let report_type: (typeof ALLOWED_REPORT_TYPES)[number] = 'contact_form';
@@ -62,6 +65,7 @@ export async function POST(request: Request) {
           source_url,
           report_type,
           tags,
+          custom_fields: phone ? { phone } : null,
         })
         .select('id, ticket_number')
         .single();
@@ -110,6 +114,7 @@ export async function POST(request: Request) {
         source_url,
         report_type,
         tags,
+        custom_fields: phone ? { phone } : null,
       })
       .select('id, ticket_number')
       .single();

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const id = (await context.params).id;
@@ -14,7 +15,8 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     .from('challenge_submissions')
     .select('id, user_id, score, status, proof_description, created_at')
     .eq('challenge_id', id)
-    .order('score', { ascending: false, nullsFirst: false });
+    .order('score', { ascending: false, nullsFirst: false })
+    .limit(DEFAULT_LIST_LIMIT);
   const leaderboard = (submissions ?? []).slice(0, 20);
   return NextResponse.json({ challenge, submissions: submissions ?? [], leaderboard });
 }

@@ -27,14 +27,14 @@ export default async function PrivacySettingsPage() {
 
   const { data: exportRequests } = await supabase
     .from('data_export_requests')
-    .select('*')
+    .select('id, user_id, status, requested_at, completed_at, export_url, expires_at, created_at')
     .eq('user_id', userData?.id)
     .order('created_at', { ascending: false })
     .limit(5);
 
   const { data: deletionRequest } = await supabase
     .from('data_deletion_requests')
-    .select('*')
+    .select('id, user_id, status, grace_period_ends_at, requested_at, created_at')
     .eq('user_id', userData?.id)
     .eq('status', 'grace_period')
     .maybeSingle();
@@ -42,8 +42,8 @@ export default async function PrivacySettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Shield className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Shield className="h-6 w-6" />
           Privacy & Data
         </h1>
         <p className="text-muted-foreground">Manage your data and privacy settings</p>
@@ -77,7 +77,7 @@ export default async function PrivacySettingsPage() {
             Download Your Data
           </CardTitle>
           <CardDescription>
-            Request a copy of all your personal data (GDPR Right to Access). You'll receive a
+            Request a copy of all your personal data (GDPR Right to Access). You&apos;ll receive a
             download link via email within 24 hours.
           </CardDescription>
         </CardHeader>
@@ -99,9 +99,10 @@ export default async function PrivacySettingsPage() {
                       {new Date(req.created_at).toLocaleDateString()}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {req.file_size_bytes
-                        ? `${(req.file_size_bytes / 1024).toFixed(1)} KB`
-                        : 'Processing...'}
+                      {(() => {
+                        const bytes = (req as unknown as { file_size_bytes?: number }).file_size_bytes;
+                        return bytes != null ? `${(bytes / 1024).toFixed(1)} KB` : 'Processing...';
+                      })()}
                     </p>
                   </div>
                   <Badge

@@ -104,7 +104,7 @@ export function SecurityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{audit.last24h.total}</div>
+            <div className="text-xl font-bold">{audit.last24h.total}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {audit.last24h.failed} failed
             </p>
@@ -118,7 +118,7 @@ export function SecurityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{securityEvents.last24h}</div>
+            <div className="text-xl font-bold">{securityEvents.last24h}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {securityEvents.last7d} in last 7 days
             </p>
@@ -132,7 +132,7 @@ export function SecurityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{rateLimitViolations.last24h}</div>
+            <div className="text-xl font-bold">{rateLimitViolations.last24h}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {rateLimitViolations.last7d} in last 7 days
             </p>

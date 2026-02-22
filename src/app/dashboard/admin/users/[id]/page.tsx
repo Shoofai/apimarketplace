@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,8 +11,9 @@ import Link from 'next/link';
 export default async function AdminUserDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const {
@@ -36,8 +38,8 @@ export default async function AdminUserDetailPage({
 
   const { data: user, error: userError } = await admin
     .from('users')
-    .select('*')
-    .eq('id', params.id)
+    .select('id, full_name, email, updated_at, created_at, is_platform_admin')
+    .eq('id', id)
     .single();
 
   if (userError || !user) {
@@ -47,7 +49,8 @@ export default async function AdminUserDetailPage({
   const { data: memberships } = await admin
     .from('organization_members')
     .select('organization_id, role, organizations(id, name, slug, type, plan)')
-    .eq('user_id', params.id);
+    .eq('user_id', id)
+    .limit(DEFAULT_LIST_LIMIT);
 
   const displayName = user.full_name ?? user.email;
   const now = Date.now();
@@ -64,8 +67,8 @@ export default async function AdminUserDetailPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Users className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Users className="h-6 w-6" />
             User Details
           </h1>
           <p className="text-muted-foreground">View and manage user information</p>
@@ -80,7 +83,7 @@ export default async function AdminUserDetailPage({
                 <UserCircle className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-xl flex items-center gap-2">
+                <CardTitle className="text-base flex items-center gap-2">
                   {displayName}
                   {user.is_platform_admin && (
                     <Badge variant="default">

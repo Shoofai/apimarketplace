@@ -102,7 +102,7 @@ export function PerformanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{requests.last24h.toLocaleString()}</div>
+            <div className="text-xl font-bold">{requests.last24h.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {requests.last1h} in last hour
             </p>
@@ -116,7 +116,7 @@ export function PerformanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{errorRatePct}%</div>
+            <div className="text-xl font-bold">{errorRatePct}%</div>
             <p className="text-xs text-muted-foreground mt-1">
               {requests.errorCount24h} errors
             </p>
@@ -130,7 +130,7 @@ export function PerformanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-xl font-bold">
               {requests.p95Ms != null ? `${requests.p95Ms} ms` : '—'}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -149,7 +149,7 @@ export function PerformanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               {database.responseTimeMs != null ? `${database.responseTimeMs} ms` : '—'}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Response time</p>
@@ -166,7 +166,7 @@ export function PerformanceDashboard() {
             </Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               {redis.responseTimeMs != null ? `${redis.responseTimeMs} ms` : '—'}
             </div>
             <p className="text-xs text-muted-foreground mt-1">

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PageHeader } from '@/components/dashboard/PageHeader';
 import { getRecommendations } from '@/lib/recommendations/engine';
 import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
 import { DashboardOnboarding } from '@/components/onboarding/DashboardOnboarding';
@@ -71,34 +72,33 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <DashboardOnboarding />
-      {/* Welcome Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-4xl font-bold flex items-center gap-3 mb-2">
-            Welcome back, {userData.full_name}
-            {isAdmin && <Crown className="w-7 h-7 text-primary" />}
-          </h1>
+      <PageHeader
+        title={`Welcome back, ${userData.full_name}`}
+        description={
           <div className="flex items-center gap-3 text-muted-foreground">
-            <span className="text-lg">{org?.name}</span>
+            <span className="text-base">{org?.name}</span>
             <span className="text-muted-foreground/50">•</span>
             <Badge variant="outline" className="text-xs font-medium border-primary/30 text-primary">
               {org?.plan.charAt(0).toUpperCase() + org?.plan.slice(1)} Plan
             </Badge>
           </div>
-        </div>
-        {isAdmin && (
-          <Link href="/dashboard/admin">
-            <Button size="lg" className="gap-2">
-              <Crown className="w-4 h-4" />
-              Admin Dashboard
-            </Button>
-          </Link>
-        )}
-      </div>
+        }
+        icon={isAdmin ? Crown : undefined}
+        actions={
+          isAdmin ? (
+            <Link href="/dashboard/admin">
+              <Button size="lg" className="gap-2">
+                <Crown className="w-4 h-4" />
+                Admin Dashboard
+              </Button>
+            </Link>
+          ) : undefined
+        }
+      />
 
       {/* Platform Admin Section */}
       {isAdmin && (
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/5 to-accent/10 dark:from-primary/10 dark:via-primary/5 dark:to-accent/5">
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-cyan-500/5 to-accent/10 dark:from-primary/10 dark:via-cyan-500/5 dark:to-accent/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
               <Crown className="w-5 h-5 text-primary" />
@@ -137,25 +137,25 @@ export default async function DashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          Quick Actions
+        <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
+          <span className="text-primary [@supports(background-clip:text)]:bg-gradient-to-r [@supports(background-clip:text)]:from-primary [@supports(background-clip:text)]:to-cyan-500 [@supports(background-clip:text)]:bg-clip-text [@supports(background-clip:text)]:text-transparent">Quick Actions</span>
           <Zap className="w-5 h-5 text-primary" />
         </h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isProvider && (
             <>
               <Link href="/dashboard/apis/new" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                      <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                         <Box className="h-5 w-5" />
                       </div>
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="text-lg mb-2">Publish API</CardTitle>
+                    <CardTitle className="text-base mb-2">Publish API</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       Upload OpenAPI spec and create new API
                     </p>
@@ -164,7 +164,7 @@ export default async function DashboardPage() {
               </Link>
 
               <Link href="/dashboard/provider/analytics" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="text-lg mb-2">Provider Analytics</CardTitle>
+                    <CardTitle className="text-base mb-2">Provider Analytics</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       View revenue and subscriber metrics
                     </p>
@@ -187,17 +187,17 @@ export default async function DashboardPage() {
           {isConsumer && (
             <>
               <Link href="/marketplace" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                      <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                         <Box className="h-5 w-5" />
                       </div>
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="text-lg mb-2">Browse APIs</CardTitle>
+                    <CardTitle className="text-base mb-2">Browse APIs</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       Discover and subscribe to APIs
                     </p>
@@ -206,17 +206,17 @@ export default async function DashboardPage() {
               </Link>
 
               <Link href="/dashboard/sandbox" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                      <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                         <Code2 className="h-5 w-5" />
                       </div>
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="text-lg mb-2">API Sandbox</CardTitle>
+                    <CardTitle className="text-base mb-2">API Sandbox</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       Test APIs in isolated environment
                     </p>
@@ -227,26 +227,26 @@ export default async function DashboardPage() {
           )}
 
           <Link href="/dashboard/playground" className="group">
-            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+            <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                     <Zap className="h-5 w-5" />
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors" />
                 </div>
               </CardHeader>
               <CardContent>
-                <CardTitle className="text-lg mb-2">AI Playground</CardTitle>
+                <CardTitle className="text-base mb-2">AI Playground</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Generate code with Claude AI
+                  Generate code with AI
                 </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/dashboard/analytics" className="group">
-            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 h-full">
+            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <CardTitle className="text-lg mb-2">Analytics</CardTitle>
+                <CardTitle className="text-base mb-2">Analytics</CardTitle>
                 <p className="text-sm text-muted-foreground">
                   View usage and performance data
                 </p>
@@ -281,7 +281,7 @@ export default async function DashboardPage() {
 
       {/* Overview Stats */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Overview</h2>
+        <h2 className="text-xl font-bold mb-3">Overview</h2>
         <Suspense fallback={<StatsSkeleton />}>
           <DashboardStats userId={userData.id} orgId={org?.id} isProvider={isProvider} />
         </Suspense>
@@ -290,7 +290,7 @@ export default async function DashboardPage() {
       {/* Recent Activity */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Recent Activity</h2>
+          <h2 className="text-xl font-bold">Recent Activity</h2>
           <Link href="/dashboard/activity">
             <Button variant="ghost" size="sm">
               View All
@@ -389,13 +389,11 @@ async function DashboardStats({
     }
   }
 
-  const mockTrends = { value: 0, isPositive: true };
-
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {isProvider && (
         <>
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Published APIs
@@ -406,11 +404,7 @@ async function DashboardStats({
             </CardHeader>
             <CardContent>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold">{publishedAPIsCount}</div>
-                  <div className="flex items-center gap-1 text-xs text-success">
-                    <TrendingUp className="h-3 w-3" />
-                    <span>+{mockTrends.value}%</span>
-                  </div>
+                  <div className="text-xl font-bold">{publishedAPIsCount}</div>
                 </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Active in marketplace
@@ -418,7 +412,7 @@ async function DashboardStats({
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Subscribers
@@ -429,11 +423,7 @@ async function DashboardStats({
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold">{totalSubscribers}</div>
-                <div className="flex items-center gap-1 text-xs text-success">
-                  <TrendingUp className="h-3 w-3" />
-                  <span>+{mockTrends.value}%</span>
-                </div>
+                <div className="text-xl font-bold">{totalSubscribers}</div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Across all APIs
@@ -441,7 +431,7 @@ async function DashboardStats({
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Revenue (30d)
@@ -452,11 +442,7 @@ async function DashboardStats({
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-bold">{formatCurrency(providerRevenue)}</div>
-                <div className="flex items-center gap-1 text-xs text-success">
-                  <TrendingUp className="h-3 w-3" />
-                  <span>+{mockTrends.value}%</span>
-                </div>
+                <div className="text-xl font-bold">{formatCurrency(providerRevenue)}</div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Last 30 days
@@ -466,7 +452,7 @@ async function DashboardStats({
         </>
       )}
 
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             {isProvider ? 'API Calls (30d)' : 'Active Subscriptions'}
@@ -477,7 +463,7 @@ async function DashboardStats({
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <div className="text-3xl font-bold">
+            <div className="text-xl font-bold">
               {isProvider ? '—' : (subscriptionCount ?? 0)}
             </div>
             {!isProvider && apiCalls30d > 0 && (
@@ -494,7 +480,7 @@ async function DashboardStats({
 
       {!isProvider && (
         <>
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Monthly Spend
@@ -504,11 +490,11 @@ async function DashboardStats({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{formatCurrency(monthlySpend)}</div>
+              <div className="text-xl font-bold">{formatCurrency(monthlySpend)}</div>
               <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Success Rate
@@ -518,7 +504,7 @@ async function DashboardStats({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{successRate}%</div>
+              <div className="text-xl font-bold">{successRate}%</div>
               <p className="text-xs text-muted-foreground mt-2">API calls (30d)</p>
             </CardContent>
           </Card>
@@ -533,7 +519,7 @@ async function RecentActivity({ userId }: { userId: string }) {
 
   const { data: activities } = await supabase
     .from('audit_logs')
-    .select('*')
+    .select('id, action, resource_type, status, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(8);
@@ -613,11 +599,17 @@ async function RecentActivity({ userId }: { userId: string }) {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {activity.resource_type}
-                  {activity.metadata && typeof activity.metadata === 'object' && (
-                    <span className="text-xs ml-2">
-                      {Object.keys(activity.metadata).length} details
-                    </span>
-                  )}
+                  {(() => {
+                    const meta = (activity as Record<string, unknown>).metadata;
+                    if (meta && typeof meta === 'object' && meta !== null) {
+                      return (
+                        <span className="text-xs ml-2">
+                          {Object.keys(meta).length} details
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
                 </p>
               </div>
               <div className="text-xs text-muted-foreground flex-shrink-0">

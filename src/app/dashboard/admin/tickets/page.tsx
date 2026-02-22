@@ -13,8 +13,9 @@ const PAGE_SIZE = 25;
 export default async function AdminTicketsPage({
   searchParams,
 }: {
-  searchParams: { q?: string; status?: string; page?: string };
+  searchParams: Promise<{ q?: string; status?: string; page?: string }>;
 }) {
+  const resolved = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -36,7 +37,7 @@ export default async function AdminTicketsPage({
   }
 
   const admin = createAdminClient();
-  const page = Math.max(1, parseInt(searchParams.page || '1', 10));
+  const page = Math.max(1, parseInt(resolved.page || '1', 10));
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
@@ -46,13 +47,13 @@ export default async function AdminTicketsPage({
     .order('created_at', { ascending: false })
     .range(from, to);
 
-  if (searchParams.q?.trim()) {
-    const q = searchParams.q.trim();
+  if (resolved.q?.trim()) {
+    const q = resolved.q.trim();
     query = query.or(`ticket_number.ilike.%${q}%,submitter_email.ilike.%${q}%,subject.ilike.%${q}%`);
   }
 
-  if (searchParams.status?.trim()) {
-    query = query.eq('status', searchParams.status.trim());
+  if (resolved.status?.trim()) {
+    query = query.eq('status', resolved.status.trim());
   }
 
   const { data: tickets, count: totalCount } = await query;
@@ -73,8 +74,8 @@ export default async function AdminTicketsPage({
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Ticket className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Ticket className="h-6 w-6" />
             Support Tickets
           </h1>
           <p className="text-muted-foreground">Manage contact form submissions and support requests</p>
@@ -88,7 +89,7 @@ export default async function AdminTicketsPage({
             <Ticket className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalTickets || 0}</div>
+            <div className="text-xl font-bold">{totalTickets || 0}</div>
           </CardContent>
         </Card>
         <Card>
@@ -97,7 +98,7 @@ export default async function AdminTicketsPage({
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{newCount || 0}</div>
+            <div className="text-xl font-bold">{newCount || 0}</div>
           </CardContent>
         </Card>
         <Card>
@@ -105,7 +106,7 @@ export default async function AdminTicketsPage({
             <CardTitle className="text-sm font-medium">Page</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               {page} / {totalPages}
             </div>
           </CardContent>
@@ -123,16 +124,18 @@ export default async function AdminTicketsPage({
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
+                  type="search"
                   name="q"
-                  placeholder="Search ticket #, email, subject..."
-                  defaultValue={searchParams.q}
+                  placeholder={`Search ${(totalTickets ?? 0).toLocaleString()} tickets...`}
+                  defaultValue={resolved.q}
                   className="pl-9"
+                  aria-label="Search tickets by number, email, or subject"
                 />
               </div>
               <select
                 name="status"
                 className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                defaultValue={searchParams.status ?? ''}
+                defaultValue={resolved.status ?? ''}
               >
                 <option value="">All statuses</option>
                 <option value="new">New</option>
@@ -158,14 +161,14 @@ export default async function AdminTicketsPage({
               <div className="flex gap-2">
                 {page > 1 && (
                   <Link
-                    href={`/dashboard/admin/tickets?page=${page - 1}${searchParams.q ? `&q=${encodeURIComponent(searchParams.q)}` : ''}${searchParams.status ? `&status=${searchParams.status}` : ''}`}
+                    href={`/dashboard/admin/tickets?page=${page - 1}${resolved.q ? `&q=${encodeURIComponent(resolved.q)}` : ''}${resolved.status ? `&status=${resolved.status}` : ''}`}
                   >
                     <span className="text-sm text-primary hover:underline">Previous</span>
                   </Link>
                 )}
                 {page < totalPages && (
                   <Link
-                    href={`/dashboard/admin/tickets?page=${page + 1}${searchParams.q ? `&q=${encodeURIComponent(searchParams.q)}` : ''}${searchParams.status ? `&status=${searchParams.status}` : ''}`}
+                    href={`/dashboard/admin/tickets?page=${page + 1}${resolved.q ? `&q=${encodeURIComponent(resolved.q)}` : ''}${resolved.status ? `&status=${resolved.status}` : ''}`}
                   >
                     <span className="text-sm text-primary hover:underline">Next</span>
                   </Link>

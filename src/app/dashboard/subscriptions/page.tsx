@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,8 +60,8 @@ export default async function SubscriptionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Layers className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Layers className="h-6 w-6" />
             My Subscriptions
           </h1>
           <p className="text-muted-foreground">
@@ -80,7 +81,7 @@ export default async function SubscriptionsPage() {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            You're on the Free plan. Upgrade to Pro or Enterprise for higher limits and advanced features.{' '}
+            You&apos;re on the Free plan. Upgrade to Pro or Enterprise for higher limits and advanced features.{' '}
             <Link href="/pricing" className="underline font-medium">
               View Plans
             </Link>
@@ -131,7 +132,8 @@ async function SubscriptionsList({ orgId }: { orgId: string }) {
       )
     `)
     .eq('organization_id', orgId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (!subscriptions || subscriptions.length === 0) {
     return (
@@ -140,7 +142,7 @@ async function SubscriptionsList({ orgId }: { orgId: string }) {
           <div className="rounded-full bg-primary/10 p-6 mb-4">
             <Box className="h-12 w-12 text-primary" />
           </div>
-          <h3 className="text-xl font-semibold mb-2">No active subscriptions</h3>
+          <h3 className="text-lg font-semibold mb-2">No active subscriptions</h3>
           <p className="text-muted-foreground text-center mb-6 max-w-md">
             Browse the marketplace to discover and subscribe to APIs
           </p>
@@ -160,7 +162,8 @@ async function SubscriptionsList({ orgId }: { orgId: string }) {
   const { data: usageData } = await supabase
     .from('usage_records_daily')
     .select('subscription_id, total_calls')
-    .in('subscription_id', subscriptionIds);
+    .in('subscription_id', subscriptionIds)
+    .limit(DEFAULT_LIST_LIMIT);
 
   const usageMap = (usageData || []).reduce((acc: Record<string, number>, record) => {
     acc[record.subscription_id] = (acc[record.subscription_id] || 0) + record.total_calls;
@@ -230,7 +233,7 @@ function SubscriptionCard({ subscription, totalCalls }: { subscription: any; tot
                 <Box className="h-5 w-5" />
               </div>
               <div>
-                <CardTitle className="text-lg">{api?.name}</CardTitle>
+                <CardTitle className="text-base">{api?.name}</CardTitle>
                 <CardDescription className="flex items-center gap-2 mt-1">
                   by {org?.name}
                   <span className="text-muted-foreground/50">•</span>

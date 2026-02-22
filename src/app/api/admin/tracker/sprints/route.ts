@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { withPlatformAdmin } from '@/lib/auth/admin';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 /**
  * GET /api/admin/tracker/sprints
@@ -18,7 +19,8 @@ export const GET = withPlatformAdmin(async () => {
       deliverables:sprint_deliverables(id, name, is_completed)
     `
     )
-    .order('sprint_number');
+    .order('sprint_number')
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Box } from 'lucide-react';
 import { PublishWizard } from '@/components/apis/PublishWizard';
@@ -44,13 +45,14 @@ export default async function PublishAPIPage() {
   const { data: categories } = await supabase
     .from('api_categories')
     .select('id, name, slug')
-    .order('name');
+    .order('name')
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Box className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Box className="h-6 w-6" />
           Publish New API
         </h1>
         <p className="text-muted-foreground mt-1">

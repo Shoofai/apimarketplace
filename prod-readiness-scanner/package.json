@@ -1,0 +1,27 @@
+{
+  "name": "prod-readiness-scanner",
+  "version": "1.0.0",
+  "description": "Production readiness scanner for Next.js + TypeScript + Supabase apps",
+  "private": true,
+  "type": "module",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "prod-readiness-scanner": "dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "scan": "node dist/cli/index.js scan",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "ts-morph": "^24.0.0",
+    "minimatch": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

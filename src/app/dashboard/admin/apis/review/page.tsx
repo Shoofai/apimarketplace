@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,7 +40,8 @@ export default async function APIReviewQueuePage() {
     `
     )
     .in('status', ['draft', 'in_review'])
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const pendingCount = reviewAPIs?.filter((api) => api.status === 'in_review').length || 0;
   const draftCount = reviewAPIs?.filter((api) => api.status === 'draft').length || 0;
@@ -48,8 +50,8 @@ export default async function APIReviewQueuePage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Box className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Box className="h-6 w-6" />
             API Review Queue
           </h1>
           <p className="text-muted-foreground">Review and approve API submissions</p>
@@ -72,7 +74,7 @@ export default async function APIReviewQueuePage() {
             <Clock className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingCount}</div>
+            <div className="text-xl font-bold">{pendingCount}</div>
             <p className="text-xs text-muted-foreground">Awaiting review</p>
           </CardContent>
         </Card>
@@ -83,7 +85,7 @@ export default async function APIReviewQueuePage() {
             <AlertCircle className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{draftCount}</div>
+            <div className="text-xl font-bold">{draftCount}</div>
             <p className="text-xs text-muted-foreground">Not yet submitted</p>
           </CardContent>
         </Card>
@@ -94,7 +96,7 @@ export default async function APIReviewQueuePage() {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               {reviewAPIs?.filter((api) => api.status === 'published').length || 0}
             </div>
             <p className="text-xs text-muted-foreground">Live APIs</p>

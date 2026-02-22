@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { APICard } from '@/components/marketplace/APICard';
@@ -22,7 +23,8 @@ export default async function PublicCollectionPage({ params }: { params: Promise
     .from('api_collection_items')
     .select('api_id')
     .eq('collection_id', id)
-    .order('sort_order');
+    .order('sort_order')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const apiIds = (items ?? []).map((r) => (r as { api_id: string }).api_id);
   let apis: unknown[] = [];
@@ -36,7 +38,8 @@ export default async function PublicCollectionPage({ params }: { params: Promise
         pricing_plans:api_pricing_plans(price_monthly)
       `)
       .in('id', apiIds)
-      .eq('status', 'published');
+      .eq('status', 'published')
+      .limit(DEFAULT_LIST_LIMIT);
     apis = (data ?? []).map((api: { pricing_plans?: { price_monthly?: number }[] }) => {
       const prices = api.pricing_plans?.map((p) => p.price_monthly ?? 0) ?? [];
       return {

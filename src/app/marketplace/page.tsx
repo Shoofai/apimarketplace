@@ -19,9 +19,9 @@ function parseTags(searchParams: Record<string, string | string[] | undefined>):
 }
 
 export default async function MarketplacePage(props: {
-  searchParams: { q?: string; category?: string; sort?: string; page?: string; minRating?: string; freeOnly?: string; tag?: string; tags?: string; priceMin?: string; priceMax?: string };
+  searchParams: Promise<{ q?: string; category?: string; sort?: string; page?: string; minRating?: string; freeOnly?: string; tag?: string; tags?: string; priceMin?: string; priceMax?: string }>;
 }) {
-  const { searchParams } = props;
+  const searchParams = await props.searchParams;
   const query = searchParams.q || '';
   const category = searchParams.category;
   const sort = (searchParams.sort as 'popular' | 'rating' | 'newest' | 'price_asc' | 'price_desc') || 'popular';

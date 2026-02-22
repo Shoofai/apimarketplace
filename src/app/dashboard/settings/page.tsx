@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { PageHeader } from '@/components/dashboard/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -89,16 +90,11 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-        <Settings className="h-8 w-8" />
-        Settings
-      </h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences
-        </p>
-      </div>
+      <PageHeader
+        title="Settings"
+        description="Manage your account settings and preferences"
+        icon={Settings}
+      />
 
       {/* Settings Sections Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -114,7 +110,7 @@ export default async function SettingsPage() {
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg">{section.title}</CardTitle>
+                        <CardTitle className="text-base">{section.title}</CardTitle>
                         {section.badge && (
                           <span className="text-xs text-muted-foreground">
                             {section.badge}

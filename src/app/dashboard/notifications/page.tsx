@@ -23,7 +23,7 @@ export default async function NotificationsPage() {
 
   const { data: notifications } = await supabase
     .from('notifications')
-    .select('*')
+    .select('id, title, body, link, event_type, is_read, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(100);
@@ -38,8 +38,8 @@ export default async function NotificationsPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Bell className="h-8 w-8" />
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Bell className="h-6 w-6" />
               Notifications
             </h1>
             <p className="text-muted-foreground">

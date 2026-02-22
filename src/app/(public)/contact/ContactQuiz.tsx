@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { PhoneInputField } from '@/components/ui/phone-input';
 import {
   Code2,
   Store,
@@ -103,6 +104,7 @@ export function ContactQuiz() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [company, setCompany] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -168,6 +170,7 @@ export function ContactQuiz() {
         body: JSON.stringify({
           name: name.trim() || undefined,
           email: email.trim(),
+          phone: phone || undefined,
           company: company.trim() || undefined,
           message: message.trim() || undefined,
           inquiry_type: inquiryTypeVal,
@@ -320,6 +323,13 @@ export function ContactQuiz() {
                   />
                 </div>
               </div>
+              <PhoneInputField
+                id="quiz-phone"
+                label="Phone (optional)"
+                value={phone}
+                onChange={setPhone}
+                placeholder="(555) 123-4567"
+              />
               <div className="space-y-2 text-left">
                 <Label htmlFor="quiz-company">Company (optional)</Label>
                 <Input

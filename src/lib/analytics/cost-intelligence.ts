@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export interface CostAnomaly {
   id: string;
@@ -80,7 +81,8 @@ export async function getCostIntelligence(
     .eq('organization_id', organizationId)
     .in('status', ['paid', 'pending'])
     .gte('created_at', fromStr)
-    .lte('created_at', toStr);
+    .lte('created_at', toStr)
+    .limit(DEFAULT_LIST_LIMIT);
 
   const { data: previousInvoices } = await supabase
     .from('invoices')
@@ -88,7 +90,8 @@ export async function getCostIntelligence(
     .eq('organization_id', organizationId)
     .in('status', ['paid', 'pending'])
     .gte('created_at', prevFromStr)
-    .lte('created_at', prevToStr);
+    .lte('created_at', prevToStr)
+    .limit(DEFAULT_LIST_LIMIT);
 
   const toNum = (v: unknown) => Number(v ?? 0);
   const currentTotal = (currentInvoices ?? []).reduce((s, i) => s + toNum(i.total), 0);
@@ -171,7 +174,8 @@ export async function getCostIntelligence(
     .from('api_subscriptions')
     .select('id, api:apis!api_subscriptions_api_id_fkey(name)')
     .eq('organization_id', organizationId)
-    .eq('status', 'active');
+    .eq('status', 'active')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const subIds = (subs ?? []).map((s: { id: string }) => s.id);
   const subToCalls: Record<string, number> = {};
@@ -181,7 +185,8 @@ export async function getCostIntelligence(
       .select('subscription_id')
       .in('subscription_id', subIds)
       .gte('created_at', fromStr)
-      .lte('created_at', toStr);
+      .lte('created_at', toStr)
+      .limit(DEFAULT_LIST_LIMIT);
     (requestCounts ?? []).forEach((r: { subscription_id?: string }) => {
       const id = r.subscription_id ?? '';
       subToCalls[id] = (subToCalls[id] ?? 0) + 1;

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +42,8 @@ export default async function APIClaimsQueuePage() {
     `
     )
     .eq('status', 'claim_pending')
-    .order('claim_requested_at', { ascending: false });
+    .order('claim_requested_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const count = claimAPIs?.length ?? 0;
 
@@ -49,8 +51,8 @@ export default async function APIClaimsQueuePage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <FileQuestion className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <FileQuestion className="h-6 w-6" />
             API Claims
           </h1>
           <p className="text-muted-foreground">

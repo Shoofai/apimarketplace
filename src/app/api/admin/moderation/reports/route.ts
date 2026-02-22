@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requirePlatformAdmin } from '@/lib/auth/admin';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 export async function GET(request: Request) {
   try {
@@ -18,7 +19,8 @@ export async function GET(request: Request) {
   let query = supabase
     .from('content_reports')
     .select('id, resource_type, resource_id, reason, status, created_at, reviewed_at, reviewed_by, notes, reporter_id')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (status && ['pending', 'dismissed', 'action_taken'].includes(status)) {
     query = query.eq('status', status);
@@ -32,7 +34,8 @@ export async function GET(request: Request) {
   const { data: users } = await supabase
     .from('users')
     .select('id, full_name')
-    .in('id', reporterIds);
+    .in('id', reporterIds)
+    .limit(DEFAULT_LIST_LIMIT);
 
   const userMap = new Map((users ?? []).map((u: { id: string; full_name?: string }) => [u.id, u.full_name ?? 'Unknown']));
 

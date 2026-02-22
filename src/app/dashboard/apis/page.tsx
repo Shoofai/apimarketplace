@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
+import { PageHeader } from '@/components/dashboard/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,46 +74,52 @@ export default async function MyAPIsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Box className="h-8 w-8" />
-            My APIs
-          </h1>
-          <p className="text-muted-foreground">
-            Manage and monitor your published APIs
-          </p>
-        </div>
-        <Link href="/dashboard/apis/publish">
-          <Button size="lg" className="gap-2">
-            <Plus className="h-5 w-5" />
-            Publish New API
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="My APIs"
+        description="Manage and monitor your published APIs"
+        icon={Box}
+        actions={
+          <Link href="/dashboard/apis/publish">
+            <Button size="lg" className="gap-2">
+              <Plus className="h-5 w-5" />
+              Publish New API
+            </Button>
+          </Link>
+        }
+      />
 
       {/* Search and Filters */}
-      <div className="flex items-center gap-4">
+      <form action="/dashboard/apis" method="get" className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search APIs..." className="pl-10" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            type="search"
+            name="q"
+            placeholder="Search your APIs..."
+            defaultValue={resolved.q ?? ''}
+            className="pl-10"
+            aria-label="Search APIs by name or description"
+          />
         </div>
-      </div>
+        <Button type="submit" variant="secondary">Search</Button>
+      </form>
 
       {/* APIs List */}
       <Suspense fallback={<APIsListSkeleton />}>
-        <APIsList orgId={org.id} orgSlug={org.slug ?? 'api'} />
+        <APIsList orgId={org.id} orgSlug={org.slug ?? 'api'} query={resolved.q} />
       </Suspense>
     </div>
   );
 }
 
-async function APIsList({ orgId, orgSlug }: { orgId: string; orgSlug: string }) {
+function escapeIlike(q: string): string {
+  return q.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
+}
+
+async function APIsList({ orgId, orgSlug, query }: { orgId: string; orgSlug: string; query?: string }) {
   const supabase = await createClient();
 
-  // Get APIs with subscriber counts
-  const { data: apis } = await supabase
+  let queryBuilder = supabase
     .from('apis')
     .select(`
       id,
@@ -125,7 +133,15 @@ async function APIsList({ orgId, orgSlug }: { orgId: string; orgSlug: string }) 
       categories
     `)
     .eq('organization_id', orgId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
+
+  if (query?.trim()) {
+    const pattern = `%${escapeIlike(query.trim())}%`;
+    queryBuilder = queryBuilder.or(`name.ilike.${pattern},description.ilike.${pattern}`);
+  }
+
+  const { data: apis } = await queryBuilder;
 
   if (!apis || apis.length === 0) {
     return (
@@ -134,7 +150,7 @@ async function APIsList({ orgId, orgSlug }: { orgId: string; orgSlug: string }) 
           <div className="rounded-full bg-primary/10 p-6 mb-4">
             <Box className="h-12 w-12 text-primary" />
           </div>
-          <h3 className="text-xl font-semibold mb-2">No APIs yet</h3>
+          <h3 className="text-lg font-semibold mb-2">No APIs yet</h3>
           <p className="text-muted-foreground text-center mb-6 max-w-md">
             Get started by publishing your first API to the marketplace
           </p>
@@ -155,7 +171,8 @@ async function APIsList({ orgId, orgSlug }: { orgId: string; orgSlug: string }) 
     .from('api_subscriptions')
     .select('api_id')
     .in('api_id', apiIds)
-    .eq('status', 'active');
+    .eq('status', 'active')
+    .limit(DEFAULT_LIST_LIMIT);
 
   const subscriberMap = (subscriptionCounts || []).reduce((acc: Record<string, number>, sub) => {
     acc[sub.api_id] = (acc[sub.api_id] || 0) + 1;
@@ -209,7 +226,7 @@ function APICard({ api, orgSlug, subscriberCount }: { api: any; orgSlug: string;
                 {getStatusLabel(api.status)}
               </Badge>
             </div>
-            <CardTitle className="text-lg mb-1">{api.name}</CardTitle>
+            <CardTitle className="text-base mb-1">{api.name}</CardTitle>
             <CardDescription className="line-clamp-2">
               {api.description || 'No description provided'}
             </CardDescription>

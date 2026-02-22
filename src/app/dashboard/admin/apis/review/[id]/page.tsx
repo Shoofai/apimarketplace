@@ -10,8 +10,9 @@ import { APIReviewActions } from './APIReviewActions';
 export default async function APIReviewDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const {
@@ -41,7 +42,7 @@ export default async function APIReviewDetailPage({
       categories(id, name)
     `
     )
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error || !api) {
@@ -62,8 +63,8 @@ export default async function APIReviewDetailPage({
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Box className="h-8 w-8" />
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Box className="h-6 w-6" />
               Review API
             </h1>
             <p className="text-muted-foreground">Approve or reject API submission</p>
@@ -78,7 +79,7 @@ export default async function APIReviewDetailPage({
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
-              <CardTitle className="text-xl flex items-center gap-2">
+              <CardTitle className="text-base flex items-center gap-2">
                 {api.name}
                 <Badge variant={api.status === 'in_review' ? 'default' : 'secondary'}>
                   {api.status}

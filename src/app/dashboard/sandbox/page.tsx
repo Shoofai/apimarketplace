@@ -63,8 +63,8 @@ export default function SandboxPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <TestTube2 className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <TestTube2 className="h-6 w-6" />
             API Testing Console
           </h1>
           <p className="text-muted-foreground">Test API endpoints with a powerful request builder</p>
@@ -85,13 +85,13 @@ export default function SandboxPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Request Builder */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Request</h2>
+          <h2 className="text-base font-semibold mb-2">Request</h2>
           <RequestBuilder onSend={handleSendRequest} isLoading={isLoading} initialRequest={initialRequest} />
         </div>
 
         {/* Response Viewer */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Response</h2>
+          <h2 className="text-base font-semibold mb-2">Response</h2>
           <ResponseViewer response={response} isLoading={isLoading} />
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function SandboxPage() {
       {/* Request History */}
       {history.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold mb-3">Recent Requests</h2>
+          <h2 className="text-base font-semibold mb-2">Recent Requests</h2>
           <div className="space-y-2">
             {history.slice(0, 5).map((item, i) => (
               <div

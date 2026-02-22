@@ -7,14 +7,15 @@ import { createClient } from '@/lib/supabase/server';
  */
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const { data: versions, error: versionsError } = await supabase
     .from('api_versions')
     .select('id, version, changelog, is_default, status, created_at')
-    .eq('api_id', params.id)
+    .eq('api_id', id)
     .order('created_at', { ascending: false });
 
   if (versionsError) {
@@ -29,7 +30,7 @@ export async function GET(
   const { data: api, error: apiError } = await supabase
     .from('apis')
     .select('version, updated_at')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (apiError || !api) {

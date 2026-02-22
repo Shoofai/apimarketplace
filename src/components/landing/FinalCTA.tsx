@@ -19,11 +19,11 @@ export default function FinalCTA() {
   };
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 py-24 sm:py-32">
+    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 py-24 sm:py-32">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-transparent to-transparent" />
-      <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-accent-500/20 blur-3xl" />
+      <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-primary-500/20 blur-3xl" />
       <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-primary-500/20 blur-3xl" />
 
       {/* Content */}
@@ -36,7 +36,7 @@ export default function FinalCTA() {
           {/* Badge */}
           <div className="flex justify-center">
             <span className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20">
-              ⚡ Join 10,000+ API providers already scaling
+              ⚡ Join 10,000+ API providers and 500K+ developers
             </span>
           </div>
 
@@ -48,17 +48,17 @@ export default function FinalCTA() {
           </h2>
 
           {/* Subheadline */}
-          <p className="section-subheading mx-auto max-w-2xl text-blue-100">
+          <p className="section-subheading mx-auto max-w-2xl text-primary-100">
             Start monetizing your APIs today. No credit card required. Free forever for developers.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
             <Button
-              variant="gradient"
+              variant="cta"
               size="xl"
               asChild
-              className="group h-14 bg-white px-8 text-lg text-primary-900 shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] transition-all hover:scale-105 hover:bg-gray-50 hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.7)]"
+              className="group h-14 px-8 text-lg shadow-glow-cta transition-all hover:scale-105"
             >
               <Link href="/signup" onClick={() => handleCTAClick('final_start_free_trial')}>
                 Get Started Free

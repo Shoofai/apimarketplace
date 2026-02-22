@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,14 +22,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { VersionSelector } from './VersionSelector';
+import { ReadinessSection } from './ReadinessSection';
 
 interface APIDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function APIDetailPage({ params }: APIDetailPageProps) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const {
@@ -77,10 +78,11 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       organizations:organization_id (
         id,
         name,
-        slug
+        slug,
+        plan
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error || !api) {
@@ -96,8 +98,9 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
   const { data: apiVersions } = await supabase
     .from('api_versions')
     .select('id, version, changelog, is_default, status, created_at')
-    .eq('api_id', params.id)
-    .order('created_at', { ascending: false });
+    .eq('api_id', id)
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const versions =
     apiVersions && apiVersions.length > 0
@@ -126,9 +129,10 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
   const { data: pricingPlans } = await supabase
     .from('api_pricing_plans')
     .select('id, name, included_calls, rate_limit_per_second, rate_limit_per_day, rate_limit_per_month')
-    .eq('api_id', params.id)
+    .eq('api_id', id)
     .eq('is_active', true)
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="space-y-8">
@@ -141,8 +145,8 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Box className="h-8 w-8" />
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Box className="h-6 w-6" />
               {api.name}
             </h1>
             <Badge variant={api.status === 'published' ? 'default' : 'secondary'}>
@@ -169,7 +173,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
       {/* Stats Overview */}
       <Suspense fallback={<StatsCardsSkeleton />}>
-        <StatsCards apiId={params.id} />
+        <StatsCards apiId={id} />
       </Suspense>
 
       {/* Tabs */}
@@ -181,13 +185,14 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
+          <TabsTrigger value="readiness">Production Readiness</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">API Information</CardTitle>
+                <CardTitle className="text-base">API Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -225,7 +230,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
+                <CardTitle className="text-base">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link href={`/docs/${(api.organizations as { slug?: string })?.slug ?? 'api'}/${api.slug}`}>
@@ -252,7 +257,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             {pricingPlans && pricingPlans.length > 0 && (
               <Card className="md:col-span-2">
                 <CardHeader>
-                  <CardTitle className="text-lg">Rate Limits & Quotas</CardTitle>
+                  <CardTitle className="text-base">Rate Limits & Quotas</CardTitle>
                   <CardDescription>
                     Limits per pricing plan (used by gateway)
                   </CardDescription>
@@ -348,7 +353,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
         <TabsContent value="subscribers" className="space-y-6">
           <Suspense fallback={<SubscribersListSkeleton />}>
-            <SubscribersList apiId={params.id} />
+            <SubscribersList apiId={id} />
           </Suspense>
         </TabsContent>
 
@@ -393,6 +398,13 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="readiness" className="space-y-6">
+          <ReadinessSection
+            apiId={id}
+            orgPlan={(api.organizations as { plan?: string } | null)?.plan}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );
@@ -422,7 +434,7 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{subscriberCount || 0}</div>
+          <div className="text-xl font-bold">{subscriberCount || 0}</div>
           <p className="text-xs text-muted-foreground mt-1">
             Across all plans
           </p>
@@ -437,7 +449,7 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <BarChart3 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{totalCalls}</div>
+          <div className="text-xl font-bold">{totalCalls}</div>
           <p className="text-xs text-muted-foreground mt-1">
             This month
           </p>
@@ -452,7 +464,7 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">${revenue}</div>
+          <div className="text-xl font-bold">${revenue}</div>
           <p className="text-xs text-muted-foreground mt-1">
             vs. last month
           </p>
@@ -467,7 +479,7 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <Clock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">0ms</div>
+          <div className="text-xl font-bold">0ms</div>
           <p className="text-xs text-muted-foreground mt-1">
             Last 24 hours
           </p>
@@ -494,7 +506,8 @@ async function SubscribersList({ apiId }: { apiId: string }) {
       )
     `)
     .eq('api_id', apiId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   if (!subscriptions || subscriptions.length === 0) {
     return (

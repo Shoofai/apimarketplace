@@ -8,7 +8,8 @@ import { dispatchNotification } from '@/lib/notifications/dispatcher';
  * Reject an API claim: reset to unclaimed
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
     const supabase = await createClient();
     const body = await req.json().catch(() => ({}));
     const reason = (body as { reason?: string })?.reason ?? 'No reason provided';
@@ -16,7 +17,7 @@ export const PATCH = withPlatformAdmin(
     const { data: api, error: fetchError } = await supabase
       .from('apis')
       .select('id, name, status, claimed_by_organization_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (fetchError || !api) {
@@ -41,7 +42,7 @@ export const PATCH = withPlatformAdmin(
         claimed_at: null,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select('*, organizations(name)')
       .single();
 

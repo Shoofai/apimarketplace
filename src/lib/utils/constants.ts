@@ -143,6 +143,9 @@ export const PAGINATION = {
   MAX_PAGE_SIZE: 100,
 } as const;
 
+/** Default limit for list queries (no cursor/offset yet). Bounds unbounded selects. */
+export const DEFAULT_LIST_LIMIT = 50;
+
 // Rate limiting defaults
 export const RATE_LIMITS = {
   API_ROUTE_DEFAULT: 100, // requests per minute

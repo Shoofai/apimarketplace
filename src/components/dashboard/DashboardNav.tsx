@@ -82,7 +82,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
-            <DashboardSidebar user={navUser} />
+            <DashboardSidebar user={navUser} forceExpanded />
           </SheetContent>
         </Sheet>
 

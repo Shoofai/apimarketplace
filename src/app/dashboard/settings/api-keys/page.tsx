@@ -41,8 +41,8 @@ export default async function APIKeysPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Key className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Key className="h-6 w-6" />
             API Keys
           </h1>
           <p className="text-muted-foreground">
@@ -115,7 +115,7 @@ export default async function APIKeysPage() {
       {/* Security Notice */}
       <Card className="border-warning/50 bg-warning/5">
         <CardHeader>
-          <CardTitle className="text-lg">Security Best Practices</CardTitle>
+          <CardTitle className="text-base">Security Best Practices</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <ul className="list-disc list-inside space-y-1 text-muted-foreground">

@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -24,7 +25,8 @@ export default async function ChallengeDetailPage({ params }: { params: Promise<
     .from('challenge_submissions')
     .select('id, user_id, score, status, proof_description, created_at')
     .eq('challenge_id', id)
-    .order('score', { ascending: false, nullsFirst: false });
+    .order('score', { ascending: false, nullsFirst: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const mySubmission = (submissions ?? []).find((s) => (s as { user_id: string }).user_id === user.id);
 
@@ -34,8 +36,8 @@ export default async function ChallengeDetailPage({ params }: { params: Promise<
         <Link href="/dashboard/challenges"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
       </Button>
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Trophy className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Trophy className="h-6 w-6" />
           {(challenge as { title: string }).title}
         </h1>
         {(challenge as { description?: string }).description && (

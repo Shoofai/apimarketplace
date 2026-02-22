@@ -7,8 +7,9 @@ import { withPlatformAdmin } from '@/lib/auth/admin';
  * Update sprint status and notes
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
+      const { id } = await params;
       const supabase = await createClient();
       const body = await req.json().catch(() => ({}));
       const { status, notes } = body;
@@ -27,7 +28,7 @@ export const PATCH = withPlatformAdmin(
       const { data, error } = await supabase
         .from('implementation_sprints')
         .update(updates)
-        .eq('id', params.id)
+        .eq('id', id)
         .select()
         .single();
 

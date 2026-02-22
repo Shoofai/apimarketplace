@@ -132,7 +132,7 @@ export default function Comparison() {
           className="mb-16 text-center"
         >
           <h2 className="section-heading mb-6 text-gray-900 dark:text-white">
-            Why We're Different
+            Why We&apos;re Different
           </h2>
           <p className="section-subheading mx-auto mb-8 max-w-3xl text-gray-600 dark:text-gray-300">
             Others solve one problem. We solve them all. Compare for yourself.
@@ -169,9 +169,9 @@ export default function Comparison() {
                         {competitor.name}
                       </div>
                       {competitor.isUs && (
-                        <div className="mt-1 flex items-center gap-1 text-xs text-primary-600">
+                        <div className="mt-1 flex items-center gap-1 text-xs text-primary-600 dark:text-primary-400">
                           <Zap className="h-3 w-3" />
-                          <span>That's us!</span>
+                          <span>That&apos;s us!</span>
                         </div>
                       )}
                     </div>
@@ -194,35 +194,35 @@ export default function Comparison() {
                         <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                     ) : (
-                      <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
+                      <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
                   <td className="p-6 text-center">
                     {feature.rapidapi ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
-                      <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
+                      <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
                   <td className="p-6 text-center">
                     {feature.stripe ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
-                      <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
+                      <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
                   <td className="p-6 text-center">
                     {feature.postman ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
-                      <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
+                      <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
                   <td className="p-6 text-center">
                     {feature.kong ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
-                      <X className="mx-auto h-6 w-6 text-gray-300 dark:text-gray-600" />
+                      <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
                 </tr>
@@ -236,12 +236,12 @@ export default function Comparison() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 rounded-2xl border-2 border-primary-200 bg-gradient-to-br from-primary-50 to-accent-50 p-8 text-center dark:border-primary-800 dark:from-primary-950/50 dark:to-accent-950/50"
+          className="mt-12 rounded-2xl border-2 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-50 p-8 text-center dark:border-primary-700 dark:from-gray-800 dark:to-gray-900"
         >
           <h3 className="mb-2 text-2xl font-semibold text-gray-900 dark:text-white">
             The Only All-in-One Solution
           </h3>
-          <p className="mx-auto max-w-2xl leading-relaxed text-gray-700 dark:text-gray-300">
+          <p className="mx-auto max-w-2xl leading-relaxed text-gray-700 dark:text-gray-200">
             Stop paying for 5 separate tools. Get discovery, integration, monetization, gateway,
             and analytics in one platform.
           </p>

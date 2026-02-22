@@ -44,7 +44,7 @@ export function useUser(): UseUserReturn {
         if (currentUser) {
           const { data: profileData, error: profileError } = await supabase
             .from('users')
-            .select('*')
+            .select('id, email, full_name, avatar_url, current_organization_id, is_platform_admin, onboarding_completed, preferences, created_at, updated_at')
             .eq('id', currentUser.id)
             .single();
 
@@ -75,11 +75,11 @@ export function useUser(): UseUserReturn {
         // Fetch updated profile
         const { data: profileData } = await supabase
           .from('users')
-          .select('*')
+          .select('id, email, full_name, avatar_url, current_organization_id, is_platform_admin, onboarding_completed, preferences, created_at, updated_at')
           .eq('id', currentUser.id)
           .single();
 
-        setProfile(profileData);
+        setProfile(profileData as UserProfile | null);
       } else {
         setProfile(null);
       }

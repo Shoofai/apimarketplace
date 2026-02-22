@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CategoryIcon } from '@/lib/utils/category-icons';
 import { LayoutGrid } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 export type Category = { id: string; name: string; slug: string; count?: number };
@@ -246,12 +247,12 @@ export function FilterSidebar({
         <Button type="submit" form={standaloneForm ? undefined : formId} className="w-full">
           Apply Filters
         </Button>
-        <a
+        <Link
           href="/marketplace"
           className="text-sm text-muted-foreground underline hover:text-foreground text-center"
         >
           Clear all filters
-        </a>
+        </Link>
       </div>
     </>
   );

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -14,14 +15,15 @@ export default async function ForumPage() {
   const { data: topics } = await supabase
     .from('forum_topics')
     .select('id, title, slug, category, created_at')
-    .order('updated_at', { ascending: false });
+    .order('updated_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <MessageSquare className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <MessageSquare className="h-6 w-6" />
             Community forum
           </h1>
           <p className="text-muted-foreground">Discuss APIs and share tips</p>

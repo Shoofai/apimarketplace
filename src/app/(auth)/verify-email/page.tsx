@@ -14,7 +14,7 @@ export default async function VerifyEmailPage() {
         </div>
         <h2 className="text-2xl font-bold">Verify your email</h2>
         <p className="text-muted-foreground mt-2">
-          We've sent a verification link to your email
+          We&apos;ve sent a verification link to your email
         </p>
       </div>
 
@@ -27,7 +27,7 @@ export default async function VerifyEmailPage() {
 
       <div className="space-y-4">
         <p className="text-sm text-center text-muted-foreground">
-          Once verified, you'll be able to sign in and start using {platformName}.
+          Once verified, you&apos;ll be able to sign in and start using {platformName}.
         </p>
 
         <Button variant="outline" className="w-full" asChild>

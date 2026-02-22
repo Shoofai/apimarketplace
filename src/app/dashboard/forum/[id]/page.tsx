@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -26,7 +27,8 @@ export default async function ForumTopicPage({ params }: { params: Promise<{ id:
     .select('id, user_id, body, created_at')
     .eq('topic_id', id)
     .is('hidden_at', null)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="space-y-6">
@@ -34,8 +36,8 @@ export default async function ForumTopicPage({ params }: { params: Promise<{ id:
         <Link href="/dashboard/forum"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
       </Button>
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <MessageSquare className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <MessageSquare className="h-6 w-6" />
           {(topic as { title: string }).title}
         </h1>
         {(topic as { category?: string }).category && (

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPlatformName } from '@/lib/settings/platform-name';
+import { DEFAULT_PLATFORM_NAME, getPlatformName } from '@/lib/settings/platform-name';
 
 /**
  * GET /api/settings/platform-name
@@ -9,7 +9,7 @@ export async function GET() {
   try {
     const name = await getPlatformName();
     return NextResponse.json({ name });
-  } catch (e) {
-    return NextResponse.json({ name: 'apinergy' }, { status: 200 });
+  } catch {
+    return NextResponse.json({ name: DEFAULT_PLATFORM_NAME }, { status: 200 });
   }
 }

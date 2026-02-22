@@ -1,0 +1,1 @@
+{"version":3,"file":"boundaries.d.ts","sourceRoot":"","sources":["../../src/core/boundaries.ts"],"names":[],"mappings":"AAAA;;GAEG;AASH,MAAM,WAAW,YAAY;IAC3B,QAAQ,EAAE,OAAO,CAAC;IAClB,cAAc,EAAE,OAAO,CAAC;CACzB;AAED,wBAAgB,eAAe,CAAC,QAAQ,EAAE,MAAM,GAAG,YAAY,CAyB9D"}

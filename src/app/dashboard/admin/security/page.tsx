@@ -35,8 +35,8 @@ export default async function AdminSecurityPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Shield className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Shield className="h-6 w-6" />
             Security Monitoring
           </h1>
           <p className="text-muted-foreground">

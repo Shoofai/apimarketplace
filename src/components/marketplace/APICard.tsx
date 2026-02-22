@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -60,30 +61,39 @@ export function APICard({ api }: APICardProps) {
   return (
     <Card
       className={cn(
-        'flex flex-col p-4 min-h-[280px] border border-border bg-card',
-        'transition-all duration-200 hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5'
+        'relative overflow-hidden flex flex-col p-5 min-h-[300px] rounded-2xl border border-border bg-card',
+        'transition-all duration-300 ease-out group',
+        'hover:border-primary/40 hover:shadow-xl hover:-translate-y-2'
       )}
     >
+      {/* Top accent strip */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-cyan-500/80 to-accent" />
+
       {/* Logo top, centered */}
-      <div className="flex justify-center mb-3">
-        <div className="w-16 h-16 rounded-lg border border-border bg-muted/30 dark:bg-muted/10 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
+      <div className="flex justify-center mb-3 pt-1">
+        <div className="relative w-20 h-20 rounded-xl border border-border bg-muted/30 dark:bg-muted/10 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-md">
           {api.logo_url ? (
-            <img
+            <Image
               src={api.logo_url}
               alt={api.name}
-              className="w-full h-full object-cover"
+              fill
+              sizes="80px"
+              className="object-cover"
             />
           ) : (
-            <span className="text-2xl font-semibold bg-gradient-to-br from-primary/20 to-accent/20 text-primary dark:text-primary-foreground">
-              {api.name.charAt(0).toUpperCase()}
-            </span>
+            <>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/20 to-accent/40" />
+              <span className="relative z-10 text-2xl font-bold text-primary dark:text-primary-foreground">
+                {api.name.charAt(0).toUpperCase()}
+              </span>
+            </>
           )}
         </div>
       </div>
 
       {/* Title + Org */}
       <div className="text-center mb-2 min-h-[2.5rem]">
-        <h3 className="font-semibold text-foreground truncate px-1" title={api.name}>
+        <h3 className="text-lg font-bold text-foreground truncate px-1" title={api.name}>
           {api.name}
         </h3>
         <p className="text-xs text-muted-foreground truncate px-1">
@@ -112,20 +122,20 @@ export function APICard({ api }: APICardProps) {
       {/* Stats row */}
       <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground mb-2">
         {rating > 0 && (
-          <div className="flex items-center gap-0.5">
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
             <span className="font-medium text-foreground">{rating.toFixed(1)}</span>
             {reviewCount > 0 && <span>({reviewCount})</span>}
           </div>
         )}
         {subscriberCount > 0 && (
-          <div className="flex items-center gap-0.5">
-            <Users className="w-3.5 h-3.5" />
-            <span>{subscriberCount.toLocaleString()}</span>
+          <div className="flex items-center gap-1">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            <span className="font-medium">{subscriberCount.toLocaleString()}</span>
           </div>
         )}
         {totalCalls > 0 && (
-          <span>{totalCalls.toLocaleString()} calls</span>
+          <span className="font-medium">{totalCalls.toLocaleString()} calls</span>
         )}
       </div>
 

@@ -105,7 +105,7 @@ export default function SocialProof() {
         >
           {testimonials.map((testimonial, index) => (
             <Card key={index} className="relative h-full p-8 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
-              <Quote className="absolute right-6 top-6 h-10 w-10 text-primary-100 dark:text-primary-900/50" />
+              <Quote className="absolute right-6 top-6 h-10 w-10 text-primary-500 dark:text-primary-900/50" />
               <div className="mb-6 flex text-yellow-400 dark:text-yellow-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" />

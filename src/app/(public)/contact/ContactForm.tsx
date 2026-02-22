@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { PhoneInputField } from '@/components/ui/phone-input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export function ContactForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,13 +26,14 @@ export function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message }),
+        body: JSON.stringify({ name, email, phone: phone || undefined, subject, message }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error ?? 'Failed to send');
       setSent(true);
       setName('');
       setEmail('');
+      setPhone('');
       setSubject('');
       setMessage('');
     } catch (err) {
@@ -84,6 +87,13 @@ export function ContactForm() {
               />
             </div>
           </div>
+          <PhoneInputField
+            id="contact-phone"
+            label="Phone (optional)"
+            value={phone}
+            onChange={setPhone}
+            placeholder="(555) 123-4567"
+          />
           <div className="space-y-2">
             <Label htmlFor="contact-subject">Subject</Label>
             <Input

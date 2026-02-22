@@ -39,8 +39,8 @@ export default async function ProfileSettingsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <User className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <User className="h-6 w-6" />
           Profile Settings
         </h1>
         <p className="text-muted-foreground">

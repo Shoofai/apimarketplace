@@ -66,8 +66,8 @@ export default async function APIClaimDetailPage({
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <FileQuestion className="h-8 w-8" />
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <FileQuestion className="h-6 w-6" />
               Review API Claim
             </h1>
             <p className="text-muted-foreground">Approve or reject this claim request</p>
@@ -80,7 +80,7 @@ export default async function APIClaimDetailPage({
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
-              <CardTitle className="text-xl flex items-center gap-2">
+              <CardTitle className="text-base flex items-center gap-2">
                 {api.name}
                 <Badge variant="default">Claim Pending</Badge>
               </CardTitle>

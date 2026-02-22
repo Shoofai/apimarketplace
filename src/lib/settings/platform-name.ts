@@ -2,12 +2,12 @@ import { cache } from 'react';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 const PLATFORM_NAME_KEY = 'platform_name';
-const DEFAULT_PLATFORM_NAME = 'apinergy';
+const DEFAULT_PLATFORM_NAME = 'Apinergy';
 
 /**
  * Get the platform display name from admin settings (app_settings).
  * Used as the single source of truth for the application name across the app.
- * Defaults to "apinergy" if not set.
+ * Defaults to "Apinergy" if not set.
  */
 export const getPlatformName = cache(async (): Promise<string> => {
   const supabase = createAdminClient();

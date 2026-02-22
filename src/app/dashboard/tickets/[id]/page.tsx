@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +24,7 @@ export default async function MyTicketDetailPage({
 
   const { data: ticket } = await supabase
     .from('support_tickets')
-    .select('*')
+    .select('id, ticket_number, subject, status, message, created_at, updated_at')
     .eq('id', id)
     .or(`submitter_user_id.eq.${user.id},submitter_email.eq.${user.email}`)
     .single();
@@ -34,9 +35,10 @@ export default async function MyTicketDetailPage({
 
   const { data: messages } = await supabase
     .from('ticket_messages')
-    .select('*')
+    .select('id, ticket_id, message, created_at, author_user_id, author_name, author_email, is_staff')
     .eq('ticket_id', id)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const statusColors: Record<string, string> = {
     new: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
@@ -105,7 +107,10 @@ export default async function MyTicketDetailPage({
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">Category</p>
-              <p className="text-sm">{ticket.inquiry_type} / {ticket.category}</p>
+              <p className="text-sm">
+              {String((ticket as Record<string, unknown>).inquiry_type || 'general')} /{' '}
+              {String((ticket as Record<string, unknown>).category || 'support')}
+            </p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Created</p>

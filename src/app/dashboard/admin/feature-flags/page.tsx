@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flag } from 'lucide-react';
@@ -28,14 +29,15 @@ export default async function FeatureFlagsPage() {
   // Get all feature flags
   const { data: flags } = await supabase
     .from('feature_flags')
-    .select('*')
-    .order('name');
+    .select('id, name, description, enabled_globally')
+    .order('name')
+    .limit(DEFAULT_LIST_LIMIT);
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Flag className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Flag className="h-6 w-6" />
           Feature Flags
         </h1>
         <p className="text-muted-foreground">Control platform features and behavior</p>

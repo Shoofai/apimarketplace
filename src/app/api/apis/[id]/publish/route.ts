@@ -13,8 +13,9 @@ import { NotFoundError, ForbiddenError } from '@/lib/utils/errors';
  */
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Require api.publish permission
     const context = await requirePermission('api.publish');
@@ -24,7 +25,7 @@ export async function POST(
     const { data: api, error: fetchError } = await supabase
       .from('apis')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (fetchError || !api) {
@@ -56,7 +57,7 @@ export async function POST(
     const { data: pricingPlans } = await supabase
       .from('api_pricing_plans')
       .select('id')
-      .eq('api_id', params.id)
+      .eq('api_id', id)
       .limit(1);
 
     if (!pricingPlans || pricingPlans.length === 0) {
@@ -73,12 +74,12 @@ export async function POST(
         status: 'published',
         published_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
     if (updateError) {
-      logger.error('Failed to update API status', { error: updateError, apiId: params.id });
+      logger.error('Failed to update API status', { error: updateError, apiId: id });
       throw updateError;
     }
 
@@ -86,18 +87,18 @@ export async function POST(
     const kongEnabled = process.env.ENABLE_KONG === 'true';
     if (kongEnabled) {
       try {
-        await routeProvisioner.provisionApi(params.id);
-        logger.info('API provisioned in Kong', { apiId: params.id });
+        await routeProvisioner.provisionApi(id);
+        logger.info('API provisioned in Kong', { apiId: id });
       } catch (kongError) {
         // Rollback status if Kong provisioning fails
         await supabase
           .from('apis')
           .update({ status: 'draft', published_at: null })
-          .eq('id', params.id);
+          .eq('id', id);
 
         logger.error('Kong provisioning failed, rolled back publish', {
           error: kongError,
-          apiId: params.id,
+          apiId: id,
         });
 
         return NextResponse.json(
@@ -113,7 +114,7 @@ export async function POST(
       organization_id: context.organization_id,
       action: 'api.published',
       resource_type: 'api',
-      resource_id: params.id,
+      resource_id: id,
       status: 'success',
       metadata: {
         api_name: api.name,
@@ -127,7 +128,7 @@ export async function POST(
       message: 'API successfully published to marketplace',
     });
   } catch (error) {
-    logger.error('Error publishing API', { error, apiId: params.id });
+    logger.error('Error publishing API', { error, apiId: id });
 
     if (error instanceof NotFoundError || error instanceof ForbiddenError) {
       return NextResponse.json(

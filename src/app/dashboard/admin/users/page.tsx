@@ -13,8 +13,9 @@ const PAGE_SIZE = 25;
 export default async function UserManagementPage({
   searchParams,
 }: {
-  searchParams: { q?: string; page?: string };
+  searchParams: Promise<{ q?: string; page?: string }>;
 }) {
+  const resolved = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -36,7 +37,7 @@ export default async function UserManagementPage({
   }
 
   const admin = createAdminClient();
-  const page = Math.max(1, parseInt(searchParams.page || '1', 10));
+  const page = Math.max(1, parseInt(resolved.page || '1', 10));
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
@@ -46,8 +47,8 @@ export default async function UserManagementPage({
     .order('created_at', { ascending: false })
     .range(from, to);
 
-  if (searchParams.q?.trim()) {
-    const q = searchParams.q.trim();
+  if (resolved.q?.trim()) {
+    const q = resolved.q.trim();
     query = query.or(`full_name.ilike.%${q}%,email.ilike.%${q}%`);
   }
 
@@ -78,8 +79,8 @@ export default async function UserManagementPage({
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Users className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Users className="h-6 w-6" />
             User Management
           </h1>
           <p className="text-muted-foreground">Manage platform users and permissions</p>
@@ -94,7 +95,7 @@ export default async function UserManagementPage({
             <UserCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalUsers || 0}</div>
+            <div className="text-xl font-bold">{totalUsers || 0}</div>
           </CardContent>
         </Card>
 
@@ -104,7 +105,7 @@ export default async function UserManagementPage({
             <Clock className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeUsers || 0}</div>
+            <div className="text-xl font-bold">{activeUsers || 0}</div>
           </CardContent>
         </Card>
 
@@ -114,7 +115,7 @@ export default async function UserManagementPage({
             <Shield className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{adminCount ?? 0}</div>
+            <div className="text-xl font-bold">{adminCount ?? 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -131,14 +132,16 @@ export default async function UserManagementPage({
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                type="search"
                 name="q"
-                placeholder="Search users..."
-                defaultValue={searchParams.q}
+                placeholder={`Search ${(totalUsers ?? 0).toLocaleString()} users...`}
+                defaultValue={resolved.q}
                 className="pl-10"
+                aria-label="Search users by name or email"
               />
             </div>
             <Button type="submit">Search</Button>
-            {searchParams.q?.trim() && (
+            {resolved.q?.trim() && (
               <Link href="/dashboard/admin/users">
                 <Button type="button" variant="outline">
                   Clear
@@ -164,11 +167,11 @@ export default async function UserManagementPage({
             <div className="text-center py-12 text-muted-foreground">
               <UserCircle className="h-12 w-12 mx-auto mb-4 opacity-20" />
               <p>
-                {searchParams.q?.trim()
-                  ? `No users match "${searchParams.q.trim()}". Clear the search to see all users.`
+                {resolved.q?.trim()
+                  ? `No users match "${resolved.q.trim()}". Clear the search to see all users.`
                   : 'No users found'}
               </p>
-              {searchParams.q?.trim() && (
+              {resolved.q?.trim() && (
                 <Link href="/dashboard/admin/users">
                   <Button variant="outline" size="sm" className="mt-4">
                     Clear search
@@ -245,7 +248,7 @@ export default async function UserManagementPage({
                       href={
                         page > 1
                           ? `/dashboard/admin/users?${new URLSearchParams({
-                              ...(searchParams.q?.trim() && { q: searchParams.q.trim() }),
+                              ...(resolved.q?.trim() && { q: resolved.q.trim() }),
                               page: String(page - 1),
                             })}`
                           : '#'
@@ -259,7 +262,7 @@ export default async function UserManagementPage({
                       href={
                         page < totalPages
                           ? `/dashboard/admin/users?${new URLSearchParams({
-                              ...(searchParams.q?.trim() && { q: searchParams.q.trim() }),
+                              ...(resolved.q?.trim() && { q: resolved.q.trim() }),
                               page: String(page + 1),
                             })}`
                           : '#'

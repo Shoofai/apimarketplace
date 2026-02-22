@@ -44,8 +44,8 @@ export default async function BillingPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CreditCard className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <CreditCard className="h-6 w-6" />
           Billing & Subscription
         </h1>
         <p className="text-muted-foreground">
@@ -72,7 +72,7 @@ export default async function BillingPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Monthly Cost</span>
-              <span className="text-2xl font-bold">
+              <span className="text-xl font-bold">
                 ${org?.plan === 'enterprise' ? '499' : org?.plan === 'pro' ? '49' : '0'}
               </span>
             </div>

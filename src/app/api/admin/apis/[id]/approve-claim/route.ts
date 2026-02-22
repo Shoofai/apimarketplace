@@ -8,13 +8,14 @@ import { dispatchNotification } from '@/lib/notifications/dispatcher';
  * Approve an API claim: transfer ownership to claiming org, set status to draft
  */
 export const PATCH = withPlatformAdmin(
-  async (req: Request, { params }: { params: { id: string } }) => {
+  async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
     const supabase = await createClient();
 
     const { data: api, error: fetchError } = await supabase
       .from('apis')
       .select('id, name, status, claimed_by_organization_id, organization_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (fetchError || !api) {
@@ -40,7 +41,7 @@ export const PATCH = withPlatformAdmin(
         claim_requested_at: null,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select('*, organizations(name)')
       .single();
 

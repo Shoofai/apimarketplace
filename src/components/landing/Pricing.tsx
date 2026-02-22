@@ -16,7 +16,7 @@ const pricingTiers = [
     features: [
       { name: 'Up to 10,000 API calls/month', included: true },
       { name: 'Access to 10,000+ APIs', included: true },
-      { name: 'AI code generation (10 uses/mo)', included: true },
+      { name: 'AI code generation (50/day)', included: true },
       { name: 'Basic analytics', included: true },
       { name: 'Community support', included: true },
       { name: 'Advanced analytics', included: false },
@@ -38,6 +38,7 @@ const pricingTiers = [
       { name: 'Priority email support', included: true },
       { name: 'Custom rate limits', included: true },
       { name: 'SSO integration', included: true },
+      { name: 'Workflows & Collaborative Testing', included: true },
       { name: 'White-label option', included: false },
     ],
     cta: 'Start Pro Trial',
@@ -76,7 +77,7 @@ export default function Pricing() {
   };
 
   return (
-    <section ref={ref} className="bg-gradient-to-br from-gray-50 to-blue-50 py-24 dark:from-gray-950 dark:to-gray-900 sm:py-32">
+    <section ref={ref} className="bg-gradient-to-br from-gray-50 to-gray-100 py-24 dark:from-gray-950 dark:to-gray-900 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -134,7 +135,7 @@ export default function Pricing() {
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 px-6 py-2 text-sm font-bold tracking-wide text-white shadow-lg shadow-primary-500/30">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2 text-sm font-bold tracking-wide text-white shadow-lg shadow-primary-500/30">
                     Most Popular
                   </div>
                 )}
@@ -168,11 +169,11 @@ export default function Pricing() {
                       {feature.included ? (
                         <Check className="h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-400" />
                       ) : (
-                        <X className="h-5 w-5 flex-shrink-0 text-gray-300 dark:text-gray-600" />
+                        <X className="h-5 w-5 flex-shrink-0 text-gray-500 dark:text-gray-600" />
                       )}
                       <span
                         className={`text-sm ${
-                          feature.included ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500'
+                          feature.included ? 'text-gray-700 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'
                         }`}
                       >
                         {feature.name}

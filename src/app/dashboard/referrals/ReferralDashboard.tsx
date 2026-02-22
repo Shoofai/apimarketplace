@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,11 @@ interface ReferralDashboardProps {
 }
 
 export function ReferralDashboard({ referrals, signedUpCount, shareCode }: ReferralDashboardProps) {
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/signup?ref=${shareCode}` : '';
+  const [shareUrl, setShareUrl] = useState('');
+
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}/signup?ref=${shareCode}`);
+  }, [shareCode]);
 
   function copyLink() {
     const url = `${window.location.origin}/signup?ref=${shareCode}`;
@@ -27,7 +32,7 @@ export function ReferralDashboard({ referrals, signedUpCount, shareCode }: Refer
             <CardDescription>Share this link. When someone signs up, you both earn rewards.</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
-            <Input readOnly value={shareUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/signup?ref=${shareCode}`} className="font-mono text-sm" />
+            <Input readOnly value={shareUrl} placeholder="Loading..." className="font-mono text-sm" />
             <Button onClick={copyLink}>Copy</Button>
           </CardContent>
         </Card>
@@ -37,7 +42,7 @@ export function ReferralDashboard({ referrals, signedUpCount, shareCode }: Refer
             <CardDescription>Sign-ups from your link</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{signedUpCount}</p>
+            <p className="text-xl font-bold">{signedUpCount}</p>
           </CardContent>
         </Card>
       </div>

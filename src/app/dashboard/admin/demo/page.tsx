@@ -27,8 +27,8 @@ export default async function AdminDemoPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Database className="h-8 w-8" />
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Database className="h-6 w-6" />
             Demo and Data
           </h1>
           <p className="text-muted-foreground">

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { APICard } from '@/components/marketplace/APICard';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,8 @@ export default async function FavoritesPage() {
     .from('api_favorites')
     .select('api_id')
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(DEFAULT_LIST_LIMIT);
 
   const apiIds = (rows ?? []).map((r) => r.api_id);
   let apis: any[] = [];
@@ -36,7 +38,8 @@ export default async function FavoritesPage() {
         pricing_plans:api_pricing_plans(price_monthly)
       `
       )
-      .in('id', apiIds);
+      .in('id', apiIds)
+      .limit(DEFAULT_LIST_LIMIT);
     apis = (data ?? []).map((api: any) => {
       const prices = api.pricing_plans?.map((p: { price_monthly?: number }) => p.price_monthly ?? 0) ?? [];
       return {
@@ -50,8 +53,8 @@ export default async function FavoritesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Heart className="h-8 w-8" />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Heart className="h-6 w-6" />
           My Favorites
         </h1>
         <p className="text-muted-foreground">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSupabase } from './useSupabase';
 import type { Tables } from '@/types/database.types';
 import type { UserRole } from '@/lib/utils/constants';
@@ -28,7 +28,7 @@ export function useOrganization(): UseOrganizationReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const loadOrganization = async () => {
+  const loadOrganization = useCallback(async () => {
     try {
       setLoading(true);
       const {
@@ -82,7 +82,7 @@ export function useOrganization(): UseOrganizationReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     loadOrganization();
@@ -102,7 +102,7 @@ export function useOrganization(): UseOrganizationReturn {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabase, loadOrganization]);
 
   const switchOrganization = async (organizationId: string) => {
     try {

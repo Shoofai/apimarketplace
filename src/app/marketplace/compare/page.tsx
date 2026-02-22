@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { getPlatformName } from '@/lib/settings/platform-name';
 
 interface ComparePageProps {
-  searchParams: { apis?: string };
+  searchParams: Promise<{ apis?: string }>;
 }
 
 export async function generateMetadata() {
@@ -18,7 +18,8 @@ export async function generateMetadata() {
 }
 
 export default async function ComparePage({ searchParams }: ComparePageProps) {
-  const apisParam = searchParams.apis ?? '';
+  const resolved = await searchParams;
+  const apisParam = resolved.apis ?? '';
   const ids = apisParam
     .split(',')
     .map((s) => s.trim())
