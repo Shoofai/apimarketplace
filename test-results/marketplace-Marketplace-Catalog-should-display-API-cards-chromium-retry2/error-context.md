@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e6]:
+        - link "Back to Homepage" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - generic [ref=e10]: Back to Homepage
+        - generic [ref=e11]:
+          - generic [ref=e12]:
+            - generic [ref=e14]: 🚀
+            - heading "Apinergy" [level=1] [ref=e15]
+          - paragraph [ref=e16]: The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at scale.
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - img [ref=e20]
+          - generic [ref=e24]:
+            - heading "AI Code Generation" [level=3] [ref=e25]
+            - paragraph [ref=e26]: Generate integration code instantly with AI
+        - generic [ref=e27]:
+          - img [ref=e29]
+          - generic [ref=e31]:
+            - heading "Real-Time Testing" [level=3] [ref=e32]
+            - paragraph [ref=e33]: Test APIs collaboratively with your team
+        - generic [ref=e34]:
+          - img [ref=e36]
+          - generic [ref=e38]:
+            - heading "Enterprise Ready" [level=3] [ref=e39]
+            - paragraph [ref=e40]: GDPR compliant, SOC 2 ready, with full RBAC
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: Stripe Connect
+          - generic [ref=e44]: Get paid in minutes
+        - generic [ref=e45]:
+          - generic [ref=e46]: OpenAPI → Docs
+          - generic [ref=e47]: AI-generated docs
+        - generic [ref=e48]:
+          - generic [ref=e49]: Usage-based billing
+          - generic [ref=e50]: Built-in metering
+    - generic [ref=e51]:
+      - button "Toggle theme" [ref=e53] [cursor=pointer]:
+        - img
+        - generic [ref=e54]: Toggle theme
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - heading "Welcome back" [level=2] [ref=e58]
+          - paragraph [ref=e60]: Sign in to your account to continue
+        - generic [ref=e61]:
+          - button "Continue with GitHub" [ref=e62] [cursor=pointer]:
+            - img
+            - text: Continue with GitHub
+          - button "Continue with Google" [ref=e63] [cursor=pointer]:
+            - img
+            - text: Continue with Google
+        - generic [ref=e67]: Or continue with email
+        - generic [ref=e68]:
+          - generic [ref=e69]:
+            - text: Email
+            - textbox "Email" [ref=e70]:
+              - /placeholder: you@example.com
+          - generic [ref=e71]:
+            - text: Password
+            - textbox "Password" [ref=e72]:
+              - /placeholder: ••••••••
+          - link "Forgot password?" [ref=e74] [cursor=pointer]:
+            - /url: /forgot-password
+          - button "Sign in" [ref=e75] [cursor=pointer]
+        - generic [ref=e76]:
+          - text: Don't have an account?
+          - link "Sign up" [ref=e77] [cursor=pointer]:
+            - /url: /signup
+  - alert [ref=e78]
+  - dialog "Cookie consent" [ref=e79]:
+    - generic [ref=e80]:
+      - paragraph [ref=e81]:
+        - text: We use cookies to provide authentication, preferences, and analytics. By continuing you agree to our
+        - link "Cookie Policy" [ref=e82] [cursor=pointer]:
+          - /url: /legal/cookies
+        - text: .
+      - generic [ref=e83]:
+        - button "Accept" [ref=e84] [cursor=pointer]
+        - link "Customize" [ref=e85] [cursor=pointer]:
+          - /url: /legal/cookie-settings
+          - button "Customize" [ref=e86]
+        - button "Decline" [ref=e87] [cursor=pointer]
+```

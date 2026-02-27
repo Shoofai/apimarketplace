@@ -29,6 +29,7 @@ interface FilterSidebarProps {
   priceMax: number | undefined;
   minRating: number | undefined;
   tags: string[];
+  productType?: 'api' | 'dataset' | 'all';
   /** Open sections by default: categories. Price open if price filter active. */
   defaultOpenSections?: string[];
   /** Form id to associate with external submit (optional) */
@@ -64,6 +65,7 @@ export function FilterSidebar({
   priceMax,
   minRating,
   tags,
+  productType = 'all',
   defaultOpenSections = ['categories'],
   formId = 'marketplace-filters',
   standaloneForm = false,
@@ -78,6 +80,30 @@ export function FilterSidebar({
 
   const content = (
     <>
+      {/* Product Type */}
+      <div className="flex rounded-md border border-border overflow-hidden mb-3">
+        {(['all', 'api', 'dataset'] as const).map((pt) => (
+          <label
+            key={pt}
+            className={cn(
+              'flex-1 text-center text-xs py-1.5 cursor-pointer transition-colors select-none',
+              productType === pt
+                ? 'bg-primary text-primary-foreground font-medium'
+                : 'text-muted-foreground hover:bg-accent'
+            )}
+          >
+            <input
+              type="radio"
+              name="productType"
+              value={pt}
+              defaultChecked={productType === pt}
+              className="sr-only"
+            />
+            {pt === 'all' ? 'All' : pt === 'api' ? 'APIs' : 'Datasets'}
+          </label>
+        ))}
+      </div>
+
       <Accordion
         type="multiple"
         defaultValue={accordionDefault}

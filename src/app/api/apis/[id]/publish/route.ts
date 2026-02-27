@@ -109,6 +109,29 @@ export async function POST(
       }
     }
 
+    // Generate/refresh embedding for NL discovery (best-effort, non-blocking)
+    try {
+      const { buildApiEmbeddingText, upsertAPIEmbedding } = await import('@/lib/ai/embeddings');
+      const { data: apiMeta } = await supabase
+        .from('apis')
+        .select('id, name, description, short_description, category:api_categories(name), tags')
+        .eq('id', id)
+        .single();
+      if (apiMeta) {
+        const cat = Array.isArray((apiMeta as any).category)
+          ? (apiMeta as any).category[0]
+          : (apiMeta as any).category;
+        const text = buildApiEmbeddingText({
+          name: apiMeta.name,
+          description: apiMeta.description,
+          short_description: apiMeta.short_description,
+          category: cat?.name ?? null,
+          tags: (apiMeta as any).tags ?? null,
+        });
+        upsertAPIEmbedding(apiMeta.id, text).catch(() => {});
+      }
+    } catch { /* embedding is optional */ }
+
     // Log the publish action
     await supabase.from('audit_logs').insert({
       user_id: context.user.id,

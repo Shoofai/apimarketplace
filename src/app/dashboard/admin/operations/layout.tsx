@@ -6,6 +6,7 @@ const tabs = [
   { label: 'Performance', href: `${BASE}/performance` },
   { label: 'Readiness', href: `${BASE}/readiness` },
   { label: 'Health', href: `${BASE}/health` },
+  { label: 'Deployment', href: `${BASE}/deployment` },
 ];
 
 export default function AdminOperationsLayout({

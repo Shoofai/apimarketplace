@@ -17,7 +17,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { reason } = await req.json();
+    let reason: string | null = null;
+    const contentType = req.headers.get('content-type') ?? '';
+    if (contentType.includes('application/json')) {
+      try {
+        const body = await req.json();
+        reason = typeof body?.reason === 'string' ? body.reason.trim().slice(0, 2000) : null;
+      } catch {
+        // invalid JSON body; reason stays null
+      }
+    } else {
+      const form = await req.formData();
+      const raw = form.get('reason');
+      reason = typeof raw === 'string' ? raw.trim().slice(0, 2000) : null;
+    }
 
     const { data: userData } = await supabase
       .from('users')

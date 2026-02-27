@@ -5,6 +5,37 @@ import { createClient } from '@/lib/supabase/server';
 import { AuthError, NotFoundError, ForbiddenError } from '@/lib/utils/errors';
 
 /**
+ * Get a single workflow by id.
+ * GET /api/workflows/[id]
+ */
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const context = await requireAuth();
+    const { id } = await params;
+    const supabase = await createClient();
+
+    const { data: workflow, error } = await supabase
+      .from('workflow_definitions')
+      .select('id, name, description, status, nodes, edges, created_at, updated_at')
+      .eq('id', id)
+      .eq('organization_id', context.organization_id)
+      .single();
+
+    if (error || !workflow) {
+      throw new NotFoundError('Workflow not found');
+    }
+    return NextResponse.json({ workflow });
+  } catch (e: unknown) {
+    if (e instanceof AuthError) return NextResponse.json({ error: e.message }, { status: 401 });
+    if (e instanceof NotFoundError) return NextResponse.json({ error: e.message }, { status: 404 });
+    throw e;
+  }
+}
+
+/**
  * Update a workflow.
  * PATCH /api/workflows/[id]
  */

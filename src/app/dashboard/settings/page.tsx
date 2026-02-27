@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Cookie,
   Settings,
+  ClipboardList,
+  Scale,
 } from 'lucide-react';
 
 export default async function SettingsPage() {
@@ -84,6 +86,20 @@ export default async function SettingsPage() {
       description: 'Two-factor authentication and session management',
       icon: Lock,
       href: '/dashboard/settings/security',
+      badge: null,
+    },
+    {
+      title: 'Audit Log',
+      description: 'Compliance record of all actions in your organization',
+      icon: ClipboardList,
+      href: '/dashboard/settings/audit-log',
+      badge: null,
+    },
+    {
+      title: 'Governance',
+      description: 'Spend caps, approved API lists, and rate limit policies',
+      icon: Scale,
+      href: '/dashboard/settings/governance',
       badge: null,
     },
   ];

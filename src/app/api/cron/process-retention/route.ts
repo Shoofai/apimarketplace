@@ -51,7 +51,7 @@ async function runProcess() {
   }
 
   const retentionMonths = parseInt(process.env.API_REQUESTS_LOG_RETENTION_MONTHS ?? '12', 10) || 12;
-  const { data: dropped, error: rpcError } = await admin.rpc('drop_old_api_requests_log_partitions', {
+  const { data: dropped, error: rpcError } = await (admin as any).rpc('drop_old_api_requests_log_partitions', {
     retention_months: retentionMonths,
   });
   if (!rpcError && typeof dropped === 'number') droppedPartitions = dropped;

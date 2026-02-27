@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Users, ExternalLink, Globe } from 'lucide-react';
+import { Star, Users, ExternalLink, Globe, Database, FileDown, RefreshCw, FileText, ShieldCheck } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/formatting';
 import { APIDetailSubscribe, ChoosePlanButton } from '@/components/marketplace/APIDetailSubscribe';
 import { ClaimButton } from '@/components/marketplace/ClaimButton';
@@ -13,6 +13,8 @@ import { ReviewForm } from '@/components/marketplace/ReviewForm';
 import { ReportButton } from '@/components/reports/ReportButton';
 import { getSimilarAPIs } from '@/lib/recommendations/engine';
 import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
+import { SDKGenerator } from '@/components/marketplace/SDKGenerator';
+import { SLAStatus } from '@/components/marketplace/SLAStatus';
 import Link from 'next/link';
 
 interface APIDetailPageProps {
@@ -52,7 +54,8 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
       endpoints:api_endpoints(*),
       reviews:api_reviews(
         *, user:users(full_name, avatar_url)
-      )
+      ),
+      api_specs(openapi_raw)
     `
     )
     .eq('slug', api_slug)
@@ -179,14 +182,51 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
       {/* Tabs Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dataset metadata */}
+        {(api as any).product_type === 'dataset' && (() => {
+          const dm = ((api as any).dataset_metadata ?? {}) as {
+            file_format?: string; file_size_bytes?: number; update_frequency?: string;
+            delivery_method?: string; sample_url?: string; license?: string; schema_preview?: string;
+          };
+          const formatBytes = (b?: number) => {
+            if (!b) return '';
+            if (b < 1024) return `${b} B`;
+            if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+            if (b < 1024 * 1024 * 1024) return `${(b / 1024 / 1024).toFixed(1)} MB`;
+            return `${(b / 1024 / 1024 / 1024).toFixed(1)} GB`;
+          };
+          return (
+            <div className="rounded-lg border bg-teal-50 dark:bg-teal-950/20 border-teal-200 dark:border-teal-800 p-4 flex flex-wrap gap-4 items-center">
+              <Badge variant="outline" className="bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30 gap-1">
+                <Database className="h-3 w-3" /> Dataset
+              </Badge>
+              {dm.file_format && <span className="text-sm text-muted-foreground">Format: <strong>{dm.file_format.toUpperCase()}</strong></span>}
+              {dm.file_size_bytes && <span className="text-sm text-muted-foreground">Size: <strong>{formatBytes(dm.file_size_bytes)}</strong></span>}
+              {dm.update_frequency && <span className="text-sm text-muted-foreground flex items-center gap-1"><RefreshCw className="h-3 w-3" /> <strong>{dm.update_frequency}</strong></span>}
+              {dm.delivery_method && <span className="text-sm text-muted-foreground">Delivery: <strong>{dm.delivery_method}</strong></span>}
+              {dm.license && <span className="text-sm text-muted-foreground flex items-center gap-1"><ShieldCheck className="h-3 w-3" /> {dm.license}</span>}
+              {dm.sample_url && (
+                <a href={dm.sample_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-teal-700 dark:text-teal-300 underline hover:no-underline ml-auto">
+                  <FileDown className="h-4 w-4" /> Download Sample
+                </a>
+              )}
+            </div>
+          );
+        })()}
+
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="endpoints">
-              Endpoints ({api.endpoints?.length || 0})
-            </TabsTrigger>
+            {(api as any).product_type === 'dataset' ? (
+              <TabsTrigger value="schema">Schema</TabsTrigger>
+            ) : (
+              <TabsTrigger value="endpoints">
+                Endpoints ({api.endpoints?.length || 0})
+              </TabsTrigger>
+            )}
             {api.status !== 'unclaimed' && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
             <TabsTrigger value="docs">Documentation</TabsTrigger>
+            {(api as any).product_type !== 'dataset' && <TabsTrigger value="sdk">SDK</TabsTrigger>}
             <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
             <TabsTrigger value="status">Status</TabsTrigger>
           </TabsList>
@@ -268,6 +308,56 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
               </Button>
             </div>
           </TabsContent>
+
+          {/* Schema Tab (datasets only) */}
+          {(api as any).product_type === 'dataset' && (() => {
+            const dm = ((api as any).dataset_metadata ?? {}) as {
+              file_format?: string; schema_preview?: string; sample_url?: string;
+              delivery_method?: string; update_frequency?: string; license?: string;
+            };
+            return (
+              <TabsContent value="schema">
+                <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6 space-y-6">
+                  <div>
+                    <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-teal-600" /> Dataset Schema
+                    </h2>
+                    {dm.schema_preview ? (
+                      <pre className="rounded-lg bg-muted p-4 text-xs overflow-x-auto whitespace-pre-wrap font-mono">{dm.schema_preview}</pre>
+                    ) : (
+                      <p className="text-muted-foreground">No schema preview available.</p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm border-t pt-4">
+                    {dm.file_format && (
+                      <div><span className="text-muted-foreground">Format</span><p className="font-semibold mt-0.5">{dm.file_format.toUpperCase()}</p></div>
+                    )}
+                    {dm.update_frequency && (
+                      <div><span className="text-muted-foreground">Update frequency</span><p className="font-semibold mt-0.5">{dm.update_frequency}</p></div>
+                    )}
+                    {dm.delivery_method && (
+                      <div><span className="text-muted-foreground">Delivery method</span><p className="font-semibold mt-0.5 capitalize">{dm.delivery_method}</p></div>
+                    )}
+                    {dm.license && (
+                      <div><span className="text-muted-foreground">License</span><p className="font-semibold mt-0.5">{dm.license}</p></div>
+                    )}
+                  </div>
+                  {dm.sample_url && (
+                    <div className="border-t pt-4">
+                      <a
+                        href={dm.sample_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 underline hover:no-underline"
+                      >
+                        <FileDown className="h-4 w-4" /> Download Sample File
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            );
+          })()}
 
           {/* Endpoints Tab */}
           <TabsContent value="endpoints">
@@ -390,6 +480,17 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             </div>
           </TabsContent>
 
+          {/* SDK Tab */}
+          <TabsContent value="sdk">
+            {(() => {
+              const specRow = (api as any).api_specs;
+              const hasSpec = Boolean(
+                Array.isArray(specRow) ? specRow[0]?.openapi_raw : specRow?.openapi_raw
+              );
+              return <SDKGenerator apiId={api.id} apiName={api.name} hasSpec={hasSpec} />;
+            })()}
+          </TabsContent>
+
           {/* Reviews Tab */}
           <TabsContent value="reviews">
             <div className="space-y-6">
@@ -435,15 +536,18 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           </TabsContent>
 
           <TabsContent value="status" className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <p className="text-gray-700 mb-4">
-                View uptime, latency, and incident history for this API.
-              </p>
-              <Button asChild>
-                <Link href={`/marketplace/${org_slug}/${api_slug}/status`}>
-                  Open status page
-                </Link>
-              </Button>
+            <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6 border space-y-6">
+              <SLAStatus apiId={api.id} />
+              <div className="pt-2 border-t">
+                <p className="text-gray-600 dark:text-muted-foreground text-sm mb-3">
+                  View the full uptime, latency, and incident history.
+                </p>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`/marketplace/${org_slug}/${api_slug}/status`}>
+                    Open status page
+                  </Link>
+                </Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

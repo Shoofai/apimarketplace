@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Github } from 'lucide-react';
+import { Github, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -78,6 +78,27 @@ export default function LoginPage() {
     }
   };
 
+  const [ssoDomain, setSsoDomain] = useState('');
+  const [showSsoInput, setShowSsoInput] = useState(false);
+
+  const handleSsoLogin = async () => {
+    if (!ssoDomain.trim()) {
+      setShowSsoInput(true);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const { error: ssoError } = await supabase.auth.signInWithSSO({
+        domain: ssoDomain.trim(),
+      });
+      if (ssoError) throw ssoError;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'SSO sign-in failed');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -134,6 +155,34 @@ export default function LoginPage() {
           Continue with Google
         </Button>
       </div>
+
+      {showSsoInput && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={ssoDomain}
+            onChange={(e) => setSsoDomain(e.target.value)}
+            placeholder="yourcompany.com"
+            className="flex-1 rounded-md border px-3 py-2 text-sm bg-background"
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSsoLogin(); }}
+          />
+          <Button size="sm" onClick={handleSsoLogin} disabled={loading}>
+            Continue
+          </Button>
+        </div>
+      )}
+
+      {!showSsoInput && (
+        <Button
+          variant="outline"
+          className="w-full border-border hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
+          onClick={handleSsoLogin}
+          disabled={loading}
+        >
+          <Building2 className="mr-2 h-4 w-4" />
+          Sign in with SSO
+        </Button>
+      )}
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

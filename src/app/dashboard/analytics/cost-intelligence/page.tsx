@@ -25,8 +25,11 @@ import {
   Sparkles,
   RefreshCw,
   Target,
+  ArrowDown,
+  ExternalLink,
 } from 'lucide-react';
-import type { CostIntelligence as CostIntelligenceType } from '@/lib/analytics/cost-intelligence';
+import Link from 'next/link';
+import type { CostIntelligence as CostIntelligenceType, SavingsOpportunity } from '@/lib/analytics/cost-intelligence';
 
 ChartJS.register(
   CategoryScale,
@@ -263,20 +266,60 @@ export default function CostIntelligencePage() {
                 </p>
               ) : (
                 <ul className="space-y-3">
-                  {data.savingsOpportunities.map((s) => (
+                  {data.savingsOpportunities.map((s: SavingsOpportunity) => (
                     <li
                       key={s.id}
                       className="flex items-start gap-3 p-3 rounded-lg border bg-card text-card-foreground"
                     >
-                      <Badge variant="outline" className="shrink-0 capitalize">
-                        {s.type.replace('_', ' ')}
-                      </Badge>
-                      <div className="min-w-0">
+                      <div className="shrink-0 mt-0.5">
+                        {s.type === 'downgrade' ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20">
+                            <ArrowDown className="h-3 w-3" />
+                            Downgrade
+                          </span>
+                        ) : s.type === 'alternative' ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20">
+                            <ExternalLink className="h-3 w-3" />
+                            Alternative
+                          </span>
+                        ) : (
+                          <Badge variant="outline" className="capitalize">
+                            {s.type.replace(/_/g, ' ')}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">{s.title}</p>
                         <p className="text-xs text-muted-foreground mt-1">{s.description}</p>
-                        <p className="text-sm font-semibold text-green-600 dark:text-green-500 mt-2">
-                          Est. ${s.estimatedMonthlySavings}/mo savings
-                        </p>
+                        <div className="flex items-center justify-between mt-2">
+                          <p className="text-sm font-semibold text-green-600 dark:text-green-500">
+                            Est. ${s.estimatedMonthlySavings}/mo savings
+                          </p>
+                          {s.type === 'downgrade' && s.subscriptionId && (
+                            <Link
+                              href="/dashboard/discover/subscriptions"
+                              className="text-xs text-primary hover:underline"
+                            >
+                              View subscription →
+                            </Link>
+                          )}
+                          {s.type === 'alternative' && s.alternativeApiOrgSlug && s.alternativeApiSlug && (
+                            <Link
+                              href={`/marketplace/${s.alternativeApiOrgSlug}/${s.alternativeApiSlug}`}
+                              className="text-xs text-primary hover:underline"
+                            >
+                              View alternative →
+                            </Link>
+                          )}
+                          {s.type === 'unused' && s.subscriptionId && (
+                            <Link
+                              href="/dashboard/discover/subscriptions"
+                              className="text-xs text-primary hover:underline"
+                            >
+                              Manage →
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </li>
                   ))}

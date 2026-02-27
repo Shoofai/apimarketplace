@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,12 +18,15 @@ import {
   Copy,
   Check,
   Download,
-  RotateCcw,
   Code2,
   MessageSquare,
   Zap,
+  PlusCircle,
+  Save,
+  History,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { MessageContent } from './MessageContent';
 
 interface AIPlaygroundProps {
   apiId?: string;
@@ -37,6 +40,15 @@ interface Message {
   timestamp: Date;
 }
 
+interface SessionSummary {
+  id: string;
+  api_id: string | null;
+  language: string | null;
+  messages: unknown;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
 export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlaygroundProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -44,7 +56,27 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
   const [selectedLanguage, setSelectedLanguage] = useState(language);
   const [mode, setMode] = useState<'generate' | 'explain' | 'debug'>('generate');
   const [copied, setCopied] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<SessionSummary[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const loadSessions = useCallback(async () => {
+    setSessionsLoading(true);
+    try {
+      const res = await fetch('/api/ai/sessions');
+      if (res.ok) {
+        const { sessions: list } = await res.json();
+        setSessions(list ?? []);
+      }
+    } finally {
+      setSessionsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -76,7 +108,7 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
 
       const body =
         mode === 'generate'
-          ? { apiId: apiId || undefined, userPrompt: input, language: selectedLanguage, sessionId: `session-${Date.now()}` }
+          ? { apiId: apiId || undefined, userPrompt: input, language: selectedLanguage, sessionId: sessionId ?? undefined }
           : mode === 'explain'
             ? { code: input, language: selectedLanguage }
             : { code: input, error: 'User reported issue', language: selectedLanguage };
@@ -146,9 +178,55 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const clearChat = () => {
+  const newChat = () => {
     setMessages([]);
     setInput('');
+    setSessionId(null);
+  };
+
+  const saveSession = async () => {
+    const payload = {
+      id: sessionId ?? undefined,
+      apiId: apiId ?? undefined,
+      language: selectedLanguage,
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+        timestamp: m.timestamp.toISOString(),
+      })),
+    };
+    const res = await fetch('/api/ai/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: `Failed to save session: ${err.error || res.statusText}`, timestamp: new Date() },
+      ]);
+      return;
+    }
+    const { session } = await res.json();
+    setSessionId(session.id);
+    await loadSessions();
+  };
+
+  const loadSession = async (id: string) => {
+    const res = await fetch(`/api/ai/sessions/${id}`);
+    if (!res.ok) return;
+    const { session } = await res.json();
+    const msgs = Array.isArray(session.messages) ? session.messages : [];
+    setMessages(
+      msgs.map((m: { role: string; content: string; timestamp?: string }) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
+      }))
+    );
+    setSessionId(session.id);
+    if (session.language) setSelectedLanguage(session.language);
   };
 
   const downloadCode = () => {
@@ -167,7 +245,7 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
   };
 
   return (
-    <div className="h-[calc(100vh-12rem)] flex flex-col gap-4">
+    <div className="h-[calc(100dvh-12rem)] flex flex-col gap-4">
       {/* Controls */}
       <Card>
         <CardContent className="p-4">
@@ -222,9 +300,30 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
             </Badge>
 
             <div className="flex gap-2">
-              <Button variant="ghost" size="icon" onClick={clearChat} title="Clear chat">
-                <RotateCcw className="h-4 w-4" />
+              <Button variant="ghost" size="icon" onClick={newChat} title="New chat">
+                <PlusCircle className="h-4 w-4" />
               </Button>
+              <Button variant="ghost" size="icon" onClick={saveSession} title="Save session" disabled={messages.length === 0}>
+                <Save className="h-4 w-4" />
+              </Button>
+              <Select
+                value={sessionId ?? '__none__'}
+                onValueChange={(v) => (v === '__none__' ? setSessionId(null) : loadSession(v))}
+                disabled={sessionsLoading}
+              >
+                <SelectTrigger className="w-[11rem] min-w-[11rem]" title="Load session">
+                  <History className="h-4 w-4 mr-1 shrink-0" />
+                  <SelectValue placeholder="Load session" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">Current chat</SelectItem>
+                  {sessions.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {new Date(s.updated_at || s.created_at || 0).toLocaleDateString()} · {Array.isArray(s.messages) ? s.messages.length : 0} messages
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {messages.length > 0 && (
                 <>
                   <Button
@@ -316,9 +415,13 @@ export function AIPlayground({ apiId, apiSpec, language = 'javascript' }: AIPlay
                         : 'bg-muted'
                     }`}
                   >
-                    <pre className="whitespace-pre-wrap font-sans text-sm">
-                      {message.content}
-                    </pre>
+                    {message.role === 'assistant' ? (
+                      <MessageContent content={message.content} language={selectedLanguage} />
+                    ) : (
+                      <pre className="whitespace-pre-wrap font-sans text-sm">
+                        {message.content}
+                      </pre>
+                    )}
                     <p className="text-xs opacity-60 mt-2">
                       {message.timestamp.toLocaleTimeString()}
                     </p>

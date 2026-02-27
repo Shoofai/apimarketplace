@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { APICard } from '@/components/marketplace/APICard';
+import { DatasetCard } from '@/components/marketplace/DatasetCard';
 import { CompareBar } from '@/components/marketplace/CompareBar';
 import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
 import { FilterSidebar, type Category as FilterCategory } from '@/components/marketplace/FilterSidebar';
@@ -12,6 +13,7 @@ import { Filter } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { SemanticSearch } from '@/components/marketplace/SemanticSearch';
 import {
   Sheet,
   SheetContent,
@@ -37,6 +39,7 @@ interface MarketplaceContentProps {
   tags: string[];
   priceMin: number | undefined;
   priceMax: number | undefined;
+  productType?: 'api' | 'dataset' | 'all';
   searchParams: Record<string, string | undefined>;
 }
 
@@ -69,6 +72,7 @@ export function MarketplaceContent({
   tags,
   priceMin,
   priceMax,
+  productType = 'all',
   searchParams,
 }: MarketplaceContentProps) {
   const [filtersSheetOpen, setFiltersSheetOpen] = useState(false);
@@ -82,6 +86,7 @@ export function MarketplaceContent({
     tags: tags.length > 0 ? tags : undefined,
     priceMin,
     priceMax,
+    productType: productType !== 'all' ? productType : undefined,
   };
 
   const categoryHref = (catId: string | null) => {
@@ -151,6 +156,7 @@ export function MarketplaceContent({
                 priceMax={priceMax}
                 minRating={minRating}
                 tags={tags}
+                productType={productType}
                 formId={FORM_ID}
               />
             </div>
@@ -169,6 +175,11 @@ export function MarketplaceContent({
               showFiltersButton
               onOpenFilters={() => setFiltersSheetOpen(true)}
             />
+
+            {/* Natural language AI search */}
+            <div className="pb-2">
+              <SemanticSearch />
+            </div>
 
             <ActiveFilters
               query={query || undefined}
@@ -189,9 +200,13 @@ export function MarketplaceContent({
 
             {searchResults.apis.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {searchResults.apis.map((api) => (
-                  <APICard key={api.id} api={api} />
-                ))}
+                {searchResults.apis.map((api) =>
+                  (api as any).product_type === 'dataset' ? (
+                    <DatasetCard key={api.id} api={api as any} />
+                  ) : (
+                    <APICard key={api.id} api={api} />
+                  )
+                )}
               </div>
             ) : null}
 
@@ -245,6 +260,7 @@ export function MarketplaceContent({
               priceMax={priceMax}
               minRating={minRating}
               tags={tags}
+              productType={productType}
               formId={FORM_ID}
               standaloneForm
               onCategoryClick={(catId) => {

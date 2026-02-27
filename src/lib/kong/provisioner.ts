@@ -28,7 +28,7 @@ export class RouteProvisioner {
         .from('apis')
         .select(`
           *,
-          organization:organizations(slug),
+          organization:organizations!apis_organization_id_fkey(slug),
           pricing_plans:api_pricing_plans(*)
         `)
         .eq('id', apiId)

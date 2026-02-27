@@ -14,23 +14,53 @@ import { Textarea } from '@/components/ui/textarea';
 interface RequestBuilderProps {
   onSend: (request: any) => void;
   isLoading?: boolean;
-  initialRequest?: { url?: string; method?: string; subscriptionId?: string };
+  initialRequest?: {
+    url?: string;
+    method?: string;
+    subscriptionId?: string;
+    headers?: Record<string, string>;
+    body?: unknown;
+  };
 }
 
 export function RequestBuilder({ onSend, isLoading, initialRequest }: RequestBuilderProps) {
   const [method, setMethod] = useState(initialRequest?.method || 'GET');
   const [url, setUrl] = useState(initialRequest?.url || '');
-  const [headers, setHeaders] = useState<Array<{ key: string; value: string }>>([
-    { key: 'Content-Type', value: 'application/json' },
-  ]);
+  const [headers, setHeaders] = useState<Array<{ key: string; value: string }>>(() => {
+    if (initialRequest?.headers && Object.keys(initialRequest.headers).length > 0) {
+      return Object.entries(initialRequest.headers).map(([key, value]) => ({ key, value }));
+    }
+    return [{ key: 'Content-Type', value: 'application/json' }];
+  });
   const [params, setParams] = useState<Array<{ key: string; value: string }>>([]);
-  const [body, setBody] = useState('');
+  const [body, setBody] = useState(() =>
+    initialRequest?.body !== undefined && initialRequest?.body !== null
+      ? typeof initialRequest.body === 'string'
+        ? initialRequest.body
+        : JSON.stringify(initialRequest.body, null, 2)
+      : ''
+  );
   const [auth, setAuth] = useState({ type: 'none', value: '' });
 
   useEffect(() => {
-    if (initialRequest?.url) setUrl(initialRequest.url);
-    if (initialRequest?.method) setMethod(initialRequest.method);
-  }, [initialRequest?.url, initialRequest?.method]);
+    if (initialRequest?.url !== undefined) setUrl(initialRequest.url);
+    if (initialRequest?.method !== undefined) setMethod(initialRequest.method);
+    if (initialRequest?.headers && Object.keys(initialRequest.headers).length > 0) {
+      setHeaders(Object.entries(initialRequest.headers).map(([key, value]) => ({ key, value })));
+    }
+    if (initialRequest?.body !== undefined && initialRequest?.body !== null) {
+      setBody(
+        typeof initialRequest.body === 'string'
+          ? initialRequest.body
+          : JSON.stringify(initialRequest.body, null, 2)
+      );
+    }
+  }, [
+    initialRequest?.url,
+    initialRequest?.method,
+    initialRequest?.headers,
+    initialRequest?.body,
+  ]);
 
   const handleSend = () => {
     const request = {

@@ -1,6 +1,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import type { User } from '@supabase/supabase-js';
+import type { Database } from '@/types/database.types';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -27,6 +29,27 @@ export async function createClient() {
             // Handle cookie removal errors
           }
         },
+      },
+    }
+  );
+}
+
+/**
+ * Creates a Supabase client pre-authenticated with a JWT bearer token.
+ * Used by CLI and VS Code extension to make authenticated API calls
+ * without browser cookies.
+ */
+export function createClientWithToken(accessToken: string) {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
       },
     }
   );

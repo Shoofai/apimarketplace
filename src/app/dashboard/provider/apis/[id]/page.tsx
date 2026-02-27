@@ -23,6 +23,12 @@ import {
 import Link from 'next/link';
 import { VersionSelector } from './VersionSelector';
 import { ReadinessSection } from './ReadinessSection';
+import { ProviderApiAnalyticsTab } from './ProviderApiAnalyticsTab';
+import { ProviderApiEndpointsTab } from './ProviderApiEndpointsTab';
+import { ProviderApiPricingTab } from './ProviderApiPricingTab';
+import { ProviderApiContractsTab } from './ProviderApiContractsTab';
+import { SubmitForReviewButton } from './SubmitForReviewButton';
+import { ProviderSLATab } from './ProviderSLATab';
 
 interface APIDetailPageProps {
   params: Promise<{ id: string }>;
@@ -128,11 +134,26 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
   // Pricing plans (rate limits & quotas for provider view)
   const { data: pricingPlans } = await supabase
     .from('api_pricing_plans')
-    .select('id, name, included_calls, rate_limit_per_second, rate_limit_per_day, rate_limit_per_month')
+    .select('id, name, included_calls, rate_limit_per_second, rate_limit_per_day, rate_limit_per_month, sort_order')
     .eq('api_id', id)
     .eq('is_active', true)
     .order('sort_order', { ascending: true })
     .limit(DEFAULT_LIST_LIMIT);
+
+  // Endpoints from api_endpoints table (or will show empty state)
+  const { data: apiEndpoints } = await supabase
+    .from('api_endpoints')
+    .select('id, method, path, summary')
+    .eq('api_id', id)
+    .order('path', { ascending: true })
+    .limit(200);
+
+  const endpoints = (apiEndpoints ?? []).map((e) => ({
+    id: e.id,
+    method: e.method,
+    path: e.path,
+    summary: e.summary ?? null,
+  }));
 
   return (
     <div className="space-y-8">
@@ -158,6 +179,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           </p>
         </div>
         <div className="flex gap-2">
+          <SubmitForReviewButton apiId={id} currentStatus={api.status} />
           <Link href={`/docs/${(api.organizations as { slug?: string })?.slug ?? 'api'}/${api.slug}`}>
             <Button variant="outline">
               <FileText className="h-4 w-4 mr-2" />
@@ -185,7 +207,9 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
+          <TabsTrigger value="contracts">Contracts</TabsTrigger>
           <TabsTrigger value="readiness">Production Readiness</TabsTrigger>
+          <TabsTrigger value="sla">SLA</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -358,45 +382,31 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analytics</CardTitle>
-              <CardDescription>
-                Detailed analytics and performance metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              Analytics dashboard coming soon
-            </CardContent>
-          </Card>
+          <ProviderApiAnalyticsTab apiId={id} />
         </TabsContent>
 
         <TabsContent value="endpoints">
-          <Card>
-            <CardHeader>
-              <CardTitle>API Endpoints</CardTitle>
-              <CardDescription>
-                All available endpoints from OpenAPI specification
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              Endpoint documentation coming soon
-            </CardContent>
-          </Card>
+          <ProviderApiEndpointsTab endpoints={endpoints} />
         </TabsContent>
 
         <TabsContent value="pricing">
-          <Card>
-            <CardHeader>
-              <CardTitle>Pricing Tiers</CardTitle>
-              <CardDescription>
-                Manage subscription plans and pricing
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              Pricing management coming soon
-            </CardContent>
-          </Card>
+          <ProviderApiPricingTab
+            apiId={id}
+            initialPlans={(pricingPlans ?? []).map((p) => ({
+              id: p.id,
+              name: p.name,
+              slug: (p as { slug?: string }).slug,
+              included_calls: p.included_calls,
+              rate_limit_per_second: p.rate_limit_per_second,
+              rate_limit_per_day: p.rate_limit_per_day,
+              rate_limit_per_month: p.rate_limit_per_month,
+              sort_order: (p as { sort_order?: number }).sort_order,
+            }))}
+          />
+        </TabsContent>
+
+        <TabsContent value="contracts">
+          <ProviderApiContractsTab apiId={id} endpoints={endpoints} />
         </TabsContent>
 
         <TabsContent value="readiness" className="space-y-6">
@@ -404,6 +414,10 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
             apiId={id}
             orgPlan={(api.organizations as { plan?: string } | null)?.plan}
           />
+        </TabsContent>
+
+        <TabsContent value="sla">
+          <ProviderSLATab apiId={id} />
         </TabsContent>
       </Tabs>
     </div>
@@ -413,16 +427,59 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 async function StatsCards({ apiId }: { apiId: string }) {
   const supabase = await createClient();
 
-  // Get subscriber count
+  const now = new Date();
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10);
+  const last24hStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 13);
+
   const { count: subscriberCount } = await supabase
     .from('api_subscriptions')
     .select('*', { count: 'exact', head: true })
     .eq('api_id', apiId)
     .eq('status', 'active');
 
-  // Get total API calls (mock for now)
-  const totalCalls = 0;
-  const revenue = 0;
+  let totalCalls = 0;
+  const { data: usageRows } = await supabase
+    .from('usage_records_daily')
+    .select('total_calls, avg_latency_ms')
+    .eq('api_id', apiId)
+    .gte('day', thisMonthStart)
+    .lte('day', thisMonthEnd)
+    .limit(100);
+  if (usageRows?.length) {
+    totalCalls = usageRows.reduce((sum, r) => sum + (Number(r.total_calls) || 0), 0);
+  }
+
+  let revenue = 0;
+  const { data: lineItems } = await supabase
+    .from('invoice_line_items')
+    .select('amount, invoice_id')
+    .eq('api_id', apiId)
+    .limit(500);
+  if (lineItems?.length) {
+    const invoiceIds = [...new Set((lineItems as { invoice_id: string }[]).map((li) => li.invoice_id))];
+    const { data: paidInvoices } = await supabase
+      .from('invoices')
+      .select('id')
+      .in('id', invoiceIds)
+      .eq('status', 'paid')
+      .gte('created_at', `${thisMonthStart}T00:00:00Z`)
+      .lte('created_at', `${thisMonthEnd}T23:59:59Z`);
+    const paidIds = new Set((paidInvoices ?? []).map((i: { id: string }) => i.id));
+    revenue = (lineItems as { amount: number; invoice_id: string }[])
+      .filter((li) => paidIds.has(li.invoice_id))
+      .reduce((sum, li) => sum + (Number(li.amount) || 0), 0);
+  }
+
+  let avgLatencyMs: number | null = null;
+  if (usageRows?.length) {
+    const withLatency = usageRows.filter((r) => r.avg_latency_ms != null);
+    if (withLatency.length) {
+      avgLatencyMs = Math.round(
+        withLatency.reduce((s, r) => s + Number(r.avg_latency_ms), 0) / withLatency.length
+      );
+    }
+  }
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -449,7 +506,7 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <BarChart3 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-xl font-bold">{totalCalls}</div>
+          <div className="text-xl font-bold">{totalCalls.toLocaleString()}</div>
           <p className="text-xs text-muted-foreground mt-1">
             This month
           </p>
@@ -464,9 +521,9 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-xl font-bold">${revenue}</div>
+          <div className="text-xl font-bold">${revenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
           <p className="text-xs text-muted-foreground mt-1">
-            vs. last month
+            This month (paid invoices)
           </p>
         </CardContent>
       </Card>
@@ -479,9 +536,9 @@ async function StatsCards({ apiId }: { apiId: string }) {
           <Clock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-xl font-bold">0ms</div>
+          <div className="text-xl font-bold">{avgLatencyMs != null ? `${avgLatencyMs}ms` : '—'}</div>
           <p className="text-xs text-muted-foreground mt-1">
-            Last 24 hours
+            This month (from usage)
           </p>
         </CardContent>
       </Card>

@@ -33,7 +33,7 @@ export function CompareBar() {
   const href = `/marketplace/compare?apis=${ids.join(',')}`;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed left-1/2 -translate-x-1/2 z-50 bottom-[max(1.5rem,env(safe-area-inset-bottom))]">
       <Button asChild size="lg" className="shadow-lg">
         <Link href={href}>
           <Scale className="h-5 w-5 mr-2" />

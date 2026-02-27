@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - button "Toggle theme" [ref=e5] [cursor=pointer]:
+      - img
+      - generic [ref=e6]: Toggle theme
+    - link "Back" [ref=e7] [cursor=pointer]:
+      - /url: /
+      - img [ref=e8]
+      - generic [ref=e10]: Back
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: 🚀
+          - heading "Apinergy" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Enterprise API Marketplace & Governance
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - heading "Welcome back" [level=2] [ref=e19]
+          - paragraph [ref=e21]: Sign in to your account to continue
+        - generic [ref=e22]:
+          - button "Continue with GitHub" [ref=e23] [cursor=pointer]:
+            - img
+            - text: Continue with GitHub
+          - button "Continue with Google" [ref=e24] [cursor=pointer]:
+            - img
+            - text: Continue with Google
+        - generic [ref=e28]: Or continue with email
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - text: Email
+            - textbox "Email" [ref=e31]:
+              - /placeholder: you@example.com
+          - generic [ref=e32]:
+            - text: Password
+            - textbox "Password" [ref=e33]:
+              - /placeholder: ••••••••
+          - link "Forgot password?" [ref=e35] [cursor=pointer]:
+            - /url: /forgot-password
+          - button "Sign in" [ref=e36] [cursor=pointer]
+        - generic [ref=e37]:
+          - text: Don't have an account?
+          - link "Sign up" [ref=e38] [cursor=pointer]:
+            - /url: /signup
+  - alert [ref=e39]
+  - dialog "Cookie consent" [ref=e40]:
+    - generic [ref=e41]:
+      - paragraph [ref=e42]:
+        - text: We use cookies to provide authentication, preferences, and analytics. By continuing you agree to our
+        - link "Cookie Policy" [ref=e43] [cursor=pointer]:
+          - /url: /legal/cookies
+        - text: .
+      - generic [ref=e44]:
+        - button "Accept" [ref=e45] [cursor=pointer]
+        - link "Customize" [ref=e46] [cursor=pointer]:
+          - /url: /legal/cookie-settings
+          - button "Customize" [ref=e47]
+        - button "Decline" [ref=e48] [cursor=pointer]
+```

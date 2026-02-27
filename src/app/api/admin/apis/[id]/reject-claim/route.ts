@@ -1,5 +1,7 @@
 // Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { createClient } from '@/lib/supabase/server';
 import { withPlatformAdmin } from '@/lib/auth/admin';
 import { dispatchNotification } from '@/lib/notifications/dispatcher';

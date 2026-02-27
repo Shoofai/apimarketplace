@@ -36,6 +36,7 @@ export default function CollaborativeTestingPage() {
   const [chatInput, setChatInput] = useState('');
   const [currentRequest, setCurrentRequest] = useState<any>({});
   const [response, setResponse] = useState<any>(null);
+  const [sending, setSending] = useState(false);
 
   // Create new session
   async function createSession() {
@@ -148,6 +149,42 @@ export default function CollaborativeTestingPage() {
       event_type: 'request_changed',
       payload: request,
     });
+  }
+
+  // Execute request via proxy and broadcast response to all participants
+  async function executeAndBroadcastResponse(request: any) {
+    if (!session) return;
+    setSending(true);
+    try {
+      const res = await fetch('/api/proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          method: request.method || 'GET',
+          url: request.url,
+          headers: request.headers || {},
+          body: request.body,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      const payload =
+        res.ok
+          ? {
+              status: data.status,
+              headers: data.headers || {},
+              data: data.body,
+              latency: data.latency,
+            }
+          : { status: res.status, headers: {}, data: data.error || res.statusText, latency: 0 };
+      await supabase.from('collab_events').insert({
+        session_id: session.id,
+        event_type: 'response_shared',
+        payload,
+      });
+      setResponse(payload);
+    } finally {
+      setSending(false);
+    }
   }
 
   // Send chat message
@@ -280,10 +317,11 @@ export default function CollaborativeTestingPage() {
         <div className="space-y-4">
           {/* Request Builder */}
           <RequestBuilder
-            onSend={(req) => {
+            onSend={async (req) => {
               broadcastRequest(req);
-              // Execute request logic here
+              await executeAndBroadcastResponse(req);
             }}
+            isLoading={sending}
             initialRequest={followMode ? currentRequest : undefined}
           />
 

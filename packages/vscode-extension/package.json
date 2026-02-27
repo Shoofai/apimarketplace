@@ -1,0 +1,107 @@
+{
+  "name": "kineticapi",
+  "displayName": "Kinetic API Marketplace",
+  "description": "Discover, test, and generate code for marketplace APIs directly in VS Code and Cursor.",
+  "version": "0.1.0",
+  "publisher": "kineticapi",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": ["api", "marketplace", "rest", "sdk", "kinetic"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kineticapi.auth",
+        "title": "Kinetic: Sign In",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "kineticapi.logout",
+        "title": "Kinetic: Sign Out"
+      },
+      {
+        "command": "kineticapi.search",
+        "title": "Kinetic: Search APIs",
+        "icon": "$(search)"
+      },
+      {
+        "command": "kineticapi.generateSnippet",
+        "title": "Kinetic: Generate Code Snippet",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "kineticapi.testEndpoint",
+        "title": "Kinetic: Test API Endpoint",
+        "icon": "$(play)"
+      },
+      {
+        "command": "kineticapi.refreshTree",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kineticapi",
+          "title": "Kinetic APIs",
+          "icon": "$(cloud)"
+        }
+      ]
+    },
+    "views": {
+      "kineticapi": [
+        {
+          "id": "kineticapi.apiExplorer",
+          "name": "API Explorer",
+          "icon": "$(cloud)",
+          "contextualTitle": "Kinetic API Marketplace"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "kineticapi.search",
+          "when": "view == kineticapi.apiExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kineticapi.refreshTree",
+          "when": "view == kineticapi.apiExplorer",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Kinetic API",
+      "properties": {
+        "kineticapi.platformUrl": {
+          "type": "string",
+          "default": "https://api.kineticapi.com",
+          "description": "Kinetic API Marketplace platform URL (override for self-hosted instances)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc --project tsconfig.json",
+    "watch": "tsc --project tsconfig.json --watch",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}

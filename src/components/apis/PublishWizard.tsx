@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { Loader2, ArrowRight, ArrowLeft, Check, Database, Code2 } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -35,7 +35,7 @@ interface PublishWizardProps {
   categories: Category[];
 }
 
-const STEPS = ['Basic Info', 'OpenAPI', 'Pricing', 'Review'];
+const STEPS = ['Basic Info', 'Details', 'Pricing', 'Review'];
 
 export function PublishWizard({ categories }: PublishWizardProps) {
   const router = useRouter();
@@ -50,10 +50,22 @@ export function PublishWizard({ categories }: PublishWizardProps) {
   const [description, setDescription] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
 
+  const [productType, setProductType] = useState<'api' | 'dataset'>('api');
+
+  // API fields
   const [openApiRaw, setOpenApiRaw] = useState('');
   const [openApiFormat, setOpenApiFormat] = useState<'json' | 'yaml'>('json');
   const [parseError, setParseError] = useState<string | null>(null);
   const [endpointCount, setEndpointCount] = useState<number | null>(null);
+
+  // Dataset fields
+  const [dataFileFormat, setDataFileFormat] = useState('');
+  const [dataSizeBytes, setDataSizeBytes] = useState('');
+  const [dataUpdateFrequency, setDataUpdateFrequency] = useState('');
+  const [dataDeliveryMethod, setDataDeliveryMethod] = useState<'download' | 'stream'>('download');
+  const [dataSampleUrl, setDataSampleUrl] = useState('');
+  const [dataLicense, setDataLicense] = useState('');
+  const [dataSchemaPreview, setDataSchemaPreview] = useState('');
 
   const [plans, setPlans] = useState<PricingPlan[]>([
     { name: 'Free', price_monthly: 0, description: '', included_calls: 1000, rate_limit_per_day: 1000, features: [] },
@@ -68,7 +80,7 @@ export function PublishWizard({ categories }: PublishWizardProps) {
 
   const validateStep0 = () => {
     if (!name.trim()) return 'Name is required';
-    if (!baseUrl.trim()) return 'Base URL is required';
+    if (productType === 'api' && !baseUrl.trim()) return 'Base URL is required';
     if (!slug.trim()) return 'Slug is required';
     return null;
   };
@@ -141,8 +153,21 @@ export function PublishWizard({ categories }: PublishWizardProps) {
           short_description: shortDescription.trim() || undefined,
           description: description.trim() || undefined,
           base_url: baseUrl.trim(),
-          openapi_raw: openApiRaw.trim() || undefined,
-          openapi_format: openApiFormat,
+          product_type: productType,
+          ...(productType === 'dataset' ? {
+            dataset_metadata: {
+              file_format: dataFileFormat.trim() || undefined,
+              file_size_bytes: dataSizeBytes ? Number(dataSizeBytes) : undefined,
+              update_frequency: dataUpdateFrequency.trim() || undefined,
+              delivery_method: dataDeliveryMethod,
+              sample_url: dataSampleUrl.trim() || undefined,
+              license: dataLicense.trim() || undefined,
+              schema_preview: dataSchemaPreview.trim() || undefined,
+            },
+          } : {
+            openapi_raw: openApiRaw.trim() || undefined,
+            openapi_format: openApiFormat,
+          }),
           pricing_plans: plans.map((p) => ({
             name: p.name || 'Plan',
             price_monthly: p.price_monthly ?? 0,
@@ -198,8 +223,36 @@ export function PublishWizard({ categories }: PublishWizardProps) {
 
         {step === 0 && (
           <div className="space-y-4">
+            {/* Product type toggle */}
             <div>
-              <Label htmlFor="name">API Name</Label>
+              <Label>Product Type</Label>
+              <div className="flex gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setProductType('api')}
+                  className={`flex-1 flex items-center gap-2 justify-center rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
+                    productType === 'api'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border text-muted-foreground hover:bg-accent'
+                  }`}
+                >
+                  <Code2 className="h-4 w-4" /> API
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProductType('dataset')}
+                  className={`flex-1 flex items-center gap-2 justify-center rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
+                    productType === 'dataset'
+                      ? 'border-teal-600 bg-teal-500/10 text-teal-700 dark:text-teal-300'
+                      : 'border-border text-muted-foreground hover:bg-accent'
+                  }`}
+                >
+                  <Database className="h-4 w-4" /> Dataset
+                </button>
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="name">{productType === 'dataset' ? 'Dataset' : 'API'} Name</Label>
               <Input
                 id="name"
                 value={name}
@@ -231,15 +284,17 @@ export function PublishWizard({ categories }: PublishWizardProps) {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="base_url">Base URL</Label>
-              <Input
-                id="base_url"
-                value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
-                placeholder="https://api.example.com"
-              />
-            </div>
+            {productType === 'api' && (
+              <div>
+                <Label htmlFor="base_url">Base URL</Label>
+                <Input
+                  id="base_url"
+                  value={baseUrl}
+                  onChange={(e) => setBaseUrl(e.target.value)}
+                  placeholder="https://api.example.com"
+                />
+              </div>
+            )}
             <div>
               <Label htmlFor="short_desc">Short description</Label>
               <Input
@@ -262,7 +317,7 @@ export function PublishWizard({ categories }: PublishWizardProps) {
           </div>
         )}
 
-        {step === 1 && (
+        {step === 1 && productType === 'api' && (
           <div className="space-y-4">
             <div>
               <Label>OpenAPI spec (optional)</Label>
@@ -286,6 +341,56 @@ export function PublishWizard({ categories }: PublishWizardProps) {
               {endpointCount !== null && !parseError && (
                 <p className="text-sm text-muted-foreground mt-1">{endpointCount} endpoints detected</p>
               )}
+            </div>
+          </div>
+        )}
+
+        {step === 1 && productType === 'dataset' && (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Provide metadata about your dataset so buyers can evaluate it before subscribing.</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label>File format</Label>
+                <Input value={dataFileFormat} onChange={(e) => setDataFileFormat(e.target.value)} placeholder="CSV, JSON, Parquet…" className="mt-1" />
+              </div>
+              <div>
+                <Label>File size (bytes)</Label>
+                <Input type="number" min={0} value={dataSizeBytes} onChange={(e) => setDataSizeBytes(e.target.value)} placeholder="e.g. 104857600" className="mt-1" />
+              </div>
+              <div>
+                <Label>Update frequency</Label>
+                <Input value={dataUpdateFrequency} onChange={(e) => setDataUpdateFrequency(e.target.value)} placeholder="Daily, Weekly, Static…" className="mt-1" />
+              </div>
+              <div>
+                <Label>Delivery method</Label>
+                <Select value={dataDeliveryMethod} onValueChange={(v: 'download' | 'stream') => setDataDeliveryMethod(v)}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="download">Download</SelectItem>
+                    <SelectItem value="stream">Stream</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Sample / download URL</Label>
+                <Input value={dataSampleUrl} onChange={(e) => setDataSampleUrl(e.target.value)} placeholder="https://…" className="mt-1" />
+              </div>
+              <div>
+                <Label>License</Label>
+                <Input value={dataLicense} onChange={(e) => setDataLicense(e.target.value)} placeholder="CC BY 4.0, MIT, Proprietary…" className="mt-1" />
+              </div>
+            </div>
+            <div>
+              <Label>Schema preview (optional)</Label>
+              <Textarea
+                className="mt-1 font-mono text-sm"
+                rows={6}
+                value={dataSchemaPreview}
+                onChange={(e) => setDataSchemaPreview(e.target.value)}
+                placeholder={'{"fields": [{"name": "id", "type": "integer"}, …]}'}
+              />
             </div>
           </div>
         )}
@@ -362,13 +467,29 @@ export function PublishWizard({ categories }: PublishWizardProps) {
 
         {step === 3 && (
           <div className="space-y-4">
-            <div className="rounded-lg border p-4">
-              <h3 className="font-semibold">{name || 'API Name'}</h3>
+            <div className="rounded-lg border p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                {productType === 'dataset' ? <Database className="h-4 w-4 text-teal-600" /> : <Code2 className="h-4 w-4 text-primary" />}
+                <h3 className="font-semibold">{name || 'Name'}</h3>
+                <span className="text-xs text-muted-foreground capitalize px-1.5 py-0.5 rounded bg-muted">{productType}</span>
+              </div>
               <p className="text-sm text-muted-foreground">{shortDescription || 'No description'}</p>
-              <p className="text-xs text-muted-foreground mt-2">Base URL: {baseUrl}</p>
-              <p className="text-xs text-muted-foreground">
-                {endpointCount != null ? `${endpointCount} endpoints` : 'No OpenAPI'} · {plans.length} plan(s)
-              </p>
+              {productType === 'api' && (
+                <>
+                  <p className="text-xs text-muted-foreground">Base URL: {baseUrl}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {endpointCount != null ? `${endpointCount} endpoints` : 'No OpenAPI'} · {plans.length} plan(s)
+                  </p>
+                </>
+              )}
+              {productType === 'dataset' && (
+                <div className="text-xs text-muted-foreground space-y-0.5">
+                  {dataFileFormat && <p>Format: {dataFileFormat}</p>}
+                  {dataUpdateFrequency && <p>Update frequency: {dataUpdateFrequency}</p>}
+                  {dataDeliveryMethod && <p>Delivery: {dataDeliveryMethod}</p>}
+                  <p>{plans.length} pricing plan(s)</p>
+                </div>
+              )}
             </div>
           </div>
         )}

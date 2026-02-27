@@ -1,0 +1,106 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e6]:
+        - link "Back to Homepage" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - generic [ref=e10]: Back to Homepage
+        - generic [ref=e11]:
+          - generic [ref=e12]:
+            - generic [ref=e14]: 🚀
+            - heading "Apinergy" [level=1] [ref=e15]
+          - paragraph [ref=e16]: The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at scale.
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - img [ref=e20]
+          - generic [ref=e24]:
+            - heading "AI Code Generation" [level=3] [ref=e25]
+            - paragraph [ref=e26]: Generate integration code instantly with AI
+        - generic [ref=e27]:
+          - img [ref=e29]
+          - generic [ref=e31]:
+            - heading "Real-Time Testing" [level=3] [ref=e32]
+            - paragraph [ref=e33]: Test APIs collaboratively with your team
+        - generic [ref=e34]:
+          - img [ref=e36]
+          - generic [ref=e38]:
+            - heading "Enterprise Ready" [level=3] [ref=e39]
+            - paragraph [ref=e40]: GDPR compliant, SOC 2 ready, with full RBAC
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: Stripe Connect
+          - generic [ref=e44]: Get paid in minutes
+        - generic [ref=e45]:
+          - generic [ref=e46]: OpenAPI → Docs
+          - generic [ref=e47]: AI-generated docs
+        - generic [ref=e48]:
+          - generic [ref=e49]: Usage-based billing
+          - generic [ref=e50]: Built-in metering
+    - generic [ref=e51]:
+      - button "Toggle theme" [ref=e53] [cursor=pointer]:
+        - img
+        - generic [ref=e54]: Toggle theme
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - heading "Create your account" [level=2] [ref=e58]
+          - paragraph [ref=e59]: Get started with Apinergy today
+        - generic [ref=e60]:
+          - button "Continue with GitHub" [ref=e61] [cursor=pointer]:
+            - img
+            - text: Continue with GitHub
+          - button "Continue with Google" [ref=e62] [cursor=pointer]:
+            - img
+            - text: Continue with Google
+        - generic [ref=e66]: Or continue with email
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - text: Full Name
+            - textbox "Full Name" [ref=e69]:
+              - /placeholder: John Doe
+          - generic [ref=e70]:
+            - text: Organization Name
+            - textbox "Organization Name" [ref=e71]:
+              - /placeholder: Acme Inc
+            - paragraph [ref=e72]: This will be your organization's display name
+          - generic [ref=e73]:
+            - text: Email
+            - textbox "Email" [active] [ref=e74]:
+              - /placeholder: you@example.com
+              - text: invalid-email
+          - generic [ref=e75]:
+            - text: Password
+            - textbox "Password" [ref=e76]:
+              - /placeholder: ••••••••
+              - text: password123
+            - paragraph [ref=e77]: At least 8 characters, 1 uppercase, 1 number
+          - button "Create account" [ref=e78] [cursor=pointer]
+        - generic [ref=e79]:
+          - text: Already have an account?
+          - link "Sign in" [ref=e80] [cursor=pointer]:
+            - /url: /login
+        - paragraph [ref=e81]:
+          - text: By creating an account, you agree to our
+          - link "Terms of Service" [ref=e82] [cursor=pointer]:
+            - /url: /legal/terms
+          - text: and
+          - link "Privacy Policy" [ref=e83] [cursor=pointer]:
+            - /url: /legal/privacy
+  - alert [ref=e84]
+  - dialog "Cookie consent" [ref=e85]:
+    - generic [ref=e86]:
+      - paragraph [ref=e87]:
+        - text: We use cookies to provide authentication, preferences, and analytics. By continuing you agree to our
+        - link "Cookie Policy" [ref=e88] [cursor=pointer]:
+          - /url: /legal/cookies
+        - text: .
+      - generic [ref=e89]:
+        - button "Accept" [ref=e90] [cursor=pointer]
+        - link "Customize" [ref=e91] [cursor=pointer]:
+          - /url: /legal/cookie-settings
+          - button "Customize" [ref=e92]
+        - button "Decline" [ref=e93] [cursor=pointer]
+```

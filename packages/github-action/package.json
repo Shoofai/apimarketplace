@@ -1,0 +1,16 @@
+{
+  "name": "@kineticapi/check-sla",
+  "version": "1.0.0",
+  "description": "GitHub Action: fail CI if an upstream Kinetic API Marketplace API has a degraded SLA",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && node scripts/bundle.js",
+    "prebuild": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

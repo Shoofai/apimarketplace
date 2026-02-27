@@ -1,0 +1,45 @@
+name: 'Kinetic API SLA Check'
+description: 'Fail a CI pipeline if an upstream API on the Kinetic API Marketplace has a degraded SLA.'
+author: 'Kinetic API'
+
+branding:
+  icon: 'activity'
+  color: 'blue'
+
+inputs:
+  api-id:
+    description: 'The Kinetic API Marketplace UUID of the API to check (e.g. from the API detail page URL).'
+    required: true
+  platform-url:
+    description: 'Kinetic API Marketplace platform URL.'
+    required: false
+    default: 'https://api.kineticapi.com'
+  api-token:
+    description: 'Bearer token for authentication. Store as a repository secret (e.g. secrets.KINETIC_TOKEN).'
+    required: true
+  fail-on-breach:
+    description: 'Set to "false" to report SLA status without failing the job.'
+    required: false
+    default: 'true'
+  min-uptime:
+    description: 'Optional: Fail if uptime is below this percentage (e.g. "99.0"). Overrides the API-defined target.'
+    required: false
+  max-latency-p95:
+    description: 'Optional: Fail if P95 latency (ms) exceeds this value. Overrides the API-defined target.'
+    required: false
+
+outputs:
+  sla-status:
+    description: '"ok" or "breached"'
+  uptime:
+    description: 'Uptime percentage of the last measurement window'
+  latency-p95:
+    description: 'P95 latency (ms) of the last measurement window'
+  violations-count:
+    description: 'Number of unacknowledged SLA violations'
+  within-sla:
+    description: '"true" or "false"'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

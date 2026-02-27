@@ -48,7 +48,7 @@ export function FloatingQuickActions({ user }: FloatingQuickActionsProps) {
   return (
     <div
       className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2 lg:hidden"
-      style={{ marginBottom: 'var(--cookie-banner-height, 0)' }}
+      style={{ marginBottom: 'max(var(--cookie-banner-height, 0px), env(safe-area-inset-bottom, 0px))' }}
     >
       {open && (
         <div className="flex flex-col gap-1 rounded-lg border bg-card p-1 shadow-lg">

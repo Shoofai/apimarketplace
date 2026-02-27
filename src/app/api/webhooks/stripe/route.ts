@@ -6,6 +6,7 @@ import { stripe } from '@/lib/stripe/client';
 import { markInvoicePaid, handlePaymentFailed } from '@/lib/stripe/billing';
 import { handleConnectAccountUpdate } from '@/lib/stripe/connect';
 import { logger } from '@/lib/utils/logger';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -43,6 +44,47 @@ export async function POST(request: Request) {
 
   try {
     switch (event.type) {
+      // Checkout session completed (e.g. credit purchase one-time payment)
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const meta = session.metadata ?? {};
+
+        if (meta.type === 'credit_purchase' && meta.organization_id) {
+          const adminSb = createAdminClient();
+          const orgId = meta.organization_id;
+          const totalCredits = (parseInt(meta.credits ?? '0') || 0) + (parseInt(meta.bonus_credits ?? '0') || 0);
+
+          // Get current balance
+          const { data: existing } = await adminSb
+            .from('credit_balances')
+            .select('balance')
+            .eq('organization_id', orgId)
+            .maybeSingle();
+
+          const currentBalance = existing?.balance ?? 0;
+          const newBalance = currentBalance + totalCredits;
+
+          // Upsert credit balance
+          await adminSb.from('credit_balances').upsert({
+            organization_id: orgId,
+            balance: newBalance,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'organization_id' });
+
+          // Insert ledger row
+          await adminSb.from('credit_ledger').insert({
+            organization_id: orgId,
+            amount: totalCredits,
+            type: 'purchase',
+            description: `Credit package purchase (${totalCredits} credits) — Checkout ${session.id}`,
+            balance_after: newBalance,
+          } as any);
+
+          logger.info('Credit purchase completed', { orgId, totalCredits, newBalance });
+        }
+        break;
+      }
+
       // Invoice payment succeeded
       case 'invoice.paid': {
         const invoice = event.data.object as Stripe.Invoice;

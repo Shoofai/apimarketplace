@@ -19,7 +19,7 @@ function parseTags(searchParams: Record<string, string | string[] | undefined>):
 }
 
 export default async function MarketplacePage(props: {
-  searchParams: Promise<{ q?: string; category?: string; sort?: string; page?: string; minRating?: string; freeOnly?: string; tag?: string; tags?: string; priceMin?: string; priceMax?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; sort?: string; page?: string; minRating?: string; freeOnly?: string; tag?: string; tags?: string; priceMin?: string; priceMax?: string; productType?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams.q || '';
@@ -31,6 +31,8 @@ export default async function MarketplacePage(props: {
   const tags = parseTags(searchParams as Record<string, string | string[] | undefined>);
   const priceMin = searchParams.priceMin != null ? parseFloat(searchParams.priceMin) : undefined;
   const priceMax = searchParams.priceMax != null ? parseFloat(searchParams.priceMax) : undefined;
+  const productTypeRaw = searchParams.productType ?? 'all';
+  const productType = (['api', 'dataset', 'all'].includes(productTypeRaw) ? productTypeRaw : 'all') as 'api' | 'dataset' | 'all';
 
   const [categories, searchResults, recommendations] = await Promise.all([
     getCategories(),
@@ -44,6 +46,7 @@ export default async function MarketplacePage(props: {
       tags: tags.length > 0 ? tags : undefined,
       priceMin: priceMin != null && !Number.isNaN(priceMin) ? priceMin : undefined,
       priceMax: priceMax != null && !Number.isNaN(priceMax) ? priceMax : undefined,
+      productType,
     }),
     getRecommendations(6),
   ]);
@@ -62,6 +65,7 @@ export default async function MarketplacePage(props: {
       tags={tags}
       priceMin={priceMin != null && !Number.isNaN(priceMin) ? priceMin : undefined}
       priceMax={priceMax != null && !Number.isNaN(priceMax) ? priceMax : undefined}
+      productType={productType}
       searchParams={searchParams}
     />
   );

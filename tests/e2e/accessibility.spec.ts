@@ -1,38 +1,32 @@
 import { test, expect } from '@playwright/test';
-import { injectAxe, checkA11y } from 'axe-playwright';
+import AxeBuilder from '@axe-core/playwright';
+
+async function expectNoA11yViolations(page: import('@playwright/test').Page, options?: { rules?: string[] }) {
+  const builder = new AxeBuilder({ page });
+  if (options?.rules?.length) builder.withRules(options.rules);
+  const results = await builder.analyze();
+  expect(results.violations, results.violations.length ? JSON.stringify(results.violations, null, 2) : '').toHaveLength(0);
+}
 
 test.describe('Accessibility', () => {
   test('homepage should have no accessibility violations', async ({ page }) => {
     await page.goto('/');
-    await injectAxe(page);
-    await checkA11y(page, undefined, {
-      detailedReport: true,
-      detailedReportOptions: { html: true },
-    });
+    await expectNoA11yViolations(page);
   });
 
   test('marketplace should have no accessibility violations', async ({ page }) => {
     await page.goto('/marketplace');
-    await injectAxe(page);
-    await checkA11y(page, undefined, {
-      detailedReport: true,
-    });
+    await expectNoA11yViolations(page);
   });
 
   test('login page should have no accessibility violations', async ({ page }) => {
     await page.goto('/login');
-    await injectAxe(page);
-    await checkA11y(page, undefined, {
-      detailedReport: true,
-    });
+    await expectNoA11yViolations(page);
   });
 
   test('signup page should have no accessibility violations', async ({ page }) => {
     await page.goto('/signup');
-    await injectAxe(page);
-    await checkA11y(page, undefined, {
-      detailedReport: true,
-    });
+    await expectNoA11yViolations(page);
   });
 
   test('should have proper heading hierarchy', async ({ page }) => {
@@ -87,13 +81,6 @@ test.describe('Accessibility', () => {
 
   test('should have sufficient color contrast', async ({ page }) => {
     await page.goto('/');
-    await injectAxe(page);
-    
-    // Check specifically for color contrast issues
-    await checkA11y(page, undefined, {
-      rules: {
-        'color-contrast': { enabled: true },
-      },
-    });
+    await expectNoA11yViolations(page, { rules: ['color-contrast'] });
   });
 });

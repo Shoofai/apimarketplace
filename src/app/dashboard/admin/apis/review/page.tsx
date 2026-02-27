@@ -4,8 +4,23 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Box, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Box, Clock, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+
 import Link from 'next/link';
+
+function ScoreBadge({ score }: { score: number | null }) {
+  if (score === null) return null;
+  const color =
+    score >= 75 ? 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20'
+    : score >= 50 ? 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20'
+    : 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20';
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${color}`}>
+      <Sparkles className="h-3 w-3" />
+      AI {score}/100
+    </span>
+  );
+}
 
 export default async function APIReviewQueuePage() {
   const supabase = await createClient();
@@ -36,7 +51,8 @@ export default async function APIReviewQueuePage() {
       *,
       organizations(name, type, plan),
       categories(name),
-      pricing_plans(count)
+      pricing_plans(count),
+      api_review_scores(overall_score)
     `
     )
     .in('status', ['draft', 'in_review'])
@@ -124,7 +140,7 @@ export default async function APIReviewQueuePage() {
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
                 >
                   <div className="flex-1">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <h3 className="font-semibold">{api.name}</h3>
                       <Badge
                         variant={api.status === 'in_review' ? 'default' : 'secondary'}
@@ -134,6 +150,13 @@ export default async function APIReviewQueuePage() {
                       {api.organizations?.plan === 'enterprise' && (
                         <Badge variant="outline">⭐ Enterprise</Badge>
                       )}
+                      {(() => {
+                        const scoreRow = (api as any).api_review_scores;
+                        const score = Array.isArray(scoreRow)
+                          ? scoreRow[0]?.overall_score
+                          : scoreRow?.overall_score;
+                        return <ScoreBadge score={score ?? null} />;
+                      })()}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
                       {api.organizations?.name} • {api.categories?.name}

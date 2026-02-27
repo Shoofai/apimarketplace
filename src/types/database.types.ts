@@ -16,27 +16,56 @@ export type Database = {
     Tables: {
       affiliate_links: {
         Row: {
+          api_id: string | null
+          click_count: number
           code: string
           commission_percent: number
+          conversion_count: number
           created_at: string | null
           id: string
+          is_active: boolean
+          landing_url: string | null
           organization_id: string
         }
         Insert: {
+          api_id?: string | null
+          click_count?: number
           code: string
           commission_percent?: number
+          conversion_count?: number
           created_at?: string | null
           id?: string
+          is_active?: boolean
+          landing_url?: string | null
           organization_id: string
         }
         Update: {
+          api_id?: string | null
+          click_count?: number
           code?: string
           commission_percent?: number
+          conversion_count?: number
           created_at?: string | null
           id?: string
+          is_active?: boolean
+          landing_url?: string | null
           organization_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "affiliate_links_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_links_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "affiliate_links_organization_id_fkey"
             columns: ["organization_id"]
@@ -368,6 +397,105 @@ export type Database = {
           },
         ]
       }
+      api_bundle_items: {
+        Row: {
+          api_id: string
+          bundle_id: string
+          id: string
+          sort_order: number
+        }
+        Insert: {
+          api_id: string
+          bundle_id: string
+          id?: string
+          sort_order?: number
+        }
+        Update: {
+          api_id?: string
+          bundle_id?: string
+          id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_bundle_items_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_bundle_items_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_bundle_items_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "api_bundles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_bundles: {
+        Row: {
+          created_at: string
+          description: string | null
+          discount_percent: number
+          id: string
+          logo_url: string | null
+          name: string
+          organization_id: string | null
+          price_monthly: number
+          settings: Json
+          slug: string
+          status: string
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          discount_percent?: number
+          id?: string
+          logo_url?: string | null
+          name: string
+          organization_id?: string | null
+          price_monthly: number
+          settings?: Json
+          slug: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          discount_percent?: number
+          id?: string
+          logo_url?: string | null
+          name?: string
+          organization_id?: string | null
+          price_monthly?: number
+          settings?: Json
+          slug?: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_bundles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_categories: {
         Row: {
           api_count: number | null
@@ -633,6 +761,42 @@ export type Database = {
             columns: ["endpoint_id"]
             isOneToOne: false
             referencedRelation: "api_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_embeddings: {
+        Row: {
+          api_id: string
+          embedding: string
+          embedding_text: string
+          updated_at: string
+        }
+        Insert: {
+          api_id: string
+          embedding: string
+          embedding_text?: string
+          updated_at?: string
+        }
+        Update: {
+          api_id?: string
+          embedding?: string
+          embedding_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_embeddings_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_embeddings_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "apis"
             referencedColumns: ["id"]
           },
         ]
@@ -917,6 +1081,7 @@ export type Database = {
           is_active: boolean | null
           is_custom: boolean | null
           name: string
+          price_in_credits: number | null
           price_monthly: number | null
           price_per_call: number | null
           rate_limit_per_day: number | null
@@ -936,6 +1101,7 @@ export type Database = {
           is_active?: boolean | null
           is_custom?: boolean | null
           name: string
+          price_in_credits?: number | null
           price_monthly?: number | null
           price_per_call?: number | null
           rate_limit_per_day?: number | null
@@ -955,6 +1121,7 @@ export type Database = {
           is_active?: boolean | null
           is_custom?: boolean | null
           name?: string
+          price_in_credits?: number | null
           price_monthly?: number | null
           price_per_call?: number | null
           rate_limit_per_day?: number | null
@@ -1047,6 +1214,68 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "api_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_readiness_reports: {
+        Row: {
+          api_id: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          organization_id: string
+          payload: Json
+          scope: string
+          score: number | null
+        }
+        Insert: {
+          api_id: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          organization_id: string
+          payload?: Json
+          scope: string
+          score?: number | null
+        }
+        Update: {
+          api_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          organization_id?: string
+          payload?: Json
+          scope?: string
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_readiness_reports_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_readiness_reports_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_readiness_reports_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_readiness_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -1372,6 +1601,57 @@ export type Database = {
         }
         Relationships: []
       }
+      api_review_scores: {
+        Row: {
+          api_id: string
+          created_at: string
+          docs_coverage: number
+          error_handling: number
+          id: string
+          overall_score: number
+          spec_completeness: number
+          summary: string
+          versioning: number
+        }
+        Insert: {
+          api_id: string
+          created_at?: string
+          docs_coverage: number
+          error_handling: number
+          id?: string
+          overall_score: number
+          spec_completeness: number
+          summary?: string
+          versioning: number
+        }
+        Update: {
+          api_id?: string
+          created_at?: string
+          docs_coverage?: number
+          error_handling?: number
+          id?: string
+          overall_score?: number
+          spec_completeness?: number
+          summary?: string
+          versioning?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_review_scores_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_review_scores_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_reviews: {
         Row: {
           api_id: string
@@ -1576,7 +1856,11 @@ export type Database = {
           avg_rating: number | null
           base_url: string
           category_id: string | null
+          claim_requested_at: string | null
+          claimed_at: string | null
+          claimed_by_organization_id: string | null
           created_at: string | null
+          dataset_metadata: Json
           description: string | null
           gateway_service_id: string | null
           id: string
@@ -1586,6 +1870,8 @@ export type Database = {
           openapi_raw: string | null
           openapi_spec: Json | null
           organization_id: string
+          original_url: string | null
+          product_type: string
           published_at: string | null
           settings: Json | null
           slug: string
@@ -1601,7 +1887,11 @@ export type Database = {
           avg_rating?: number | null
           base_url: string
           category_id?: string | null
+          claim_requested_at?: string | null
+          claimed_at?: string | null
+          claimed_by_organization_id?: string | null
           created_at?: string | null
+          dataset_metadata?: Json
           description?: string | null
           gateway_service_id?: string | null
           id?: string
@@ -1611,6 +1901,8 @@ export type Database = {
           openapi_raw?: string | null
           openapi_spec?: Json | null
           organization_id: string
+          original_url?: string | null
+          product_type?: string
           published_at?: string | null
           settings?: Json | null
           slug: string
@@ -1626,7 +1918,11 @@ export type Database = {
           avg_rating?: number | null
           base_url?: string
           category_id?: string | null
+          claim_requested_at?: string | null
+          claimed_at?: string | null
+          claimed_by_organization_id?: string | null
           created_at?: string | null
+          dataset_metadata?: Json
           description?: string | null
           gateway_service_id?: string | null
           id?: string
@@ -1636,6 +1932,8 @@ export type Database = {
           openapi_raw?: string | null
           openapi_spec?: Json | null
           organization_id?: string
+          original_url?: string | null
+          product_type?: string
           published_at?: string | null
           settings?: Json | null
           slug?: string
@@ -1653,6 +1951,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "api_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apis_claimed_by_organization_id_fkey"
+            columns: ["claimed_by_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -1783,6 +2088,51 @@ export type Database = {
             foreignKeyName: "billing_accounts_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundle_subscriptions: {
+        Row: {
+          bundle_id: string
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          organization_id: string
+          status: string
+        }
+        Insert: {
+          bundle_id: string
+          created_at?: string
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          organization_id: string
+          status?: string
+        }
+        Update: {
+          bundle_id?: string
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          organization_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_subscriptions_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "api_bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundle_subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -2397,6 +2747,106 @@ export type Database = {
           },
         ]
       }
+      credit_balances: {
+        Row: {
+          balance: number
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          balance?: number
+          organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_balances_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_ledger: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string
+          id: string
+          organization_id: string
+          reference_id: string | null
+          type: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          description?: string
+          id?: string
+          organization_id: string
+          reference_id?: string | null
+          type: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          description?: string
+          id?: string
+          organization_id?: string
+          reference_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_ledger_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_packages: {
+        Row: {
+          bonus_credits: number
+          created_at: string
+          credits: number
+          id: string
+          is_active: boolean
+          name: string
+          price_usd: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          bonus_credits?: number
+          created_at?: string
+          credits: number
+          id?: string
+          is_active?: boolean
+          name: string
+          price_usd: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          bonus_credits?: number
+          created_at?: string
+          credits?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_usd?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: []
+      }
       cta_clicks: {
         Row: {
           created_at: string | null
@@ -2929,6 +3379,7 @@ export type Database = {
           phone_number: string | null
           primary_goal: string | null
           role: string | null
+          source: string | null
         }
         Insert: {
           company_size?: string | null
@@ -2939,6 +3390,7 @@ export type Database = {
           phone_number?: string | null
           primary_goal?: string | null
           role?: string | null
+          source?: string | null
         }
         Update: {
           company_size?: string | null
@@ -2949,6 +3401,7 @@ export type Database = {
           phone_number?: string | null
           primary_goal?: string | null
           role?: string | null
+          source?: string | null
         }
         Relationships: []
       }
@@ -3489,6 +3942,54 @@ export type Database = {
           },
         ]
       }
+      org_governance_policies: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          organization_id: string
+          policy_type: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          policy_type: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          policy_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_governance_policies_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "org_governance_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_invitations: {
         Row: {
           created_at: string | null
@@ -3593,14 +4094,20 @@ export type Database = {
         Row: {
           billing_email: string | null
           created_at: string | null
+          custom_domain: string | null
           description: string | null
           id: string
           logo_url: string | null
           metadata: Json | null
           name: string
           plan: string | null
+          portal_enabled: boolean
+          portal_settings: Json
           settings: Json | null
           slug: string
+          sso_domain: string | null
+          sso_enabled: boolean
+          sso_provider_id: string | null
           stripe_connect_account_id: string | null
           stripe_customer_id: string | null
           type: string
@@ -3610,14 +4117,20 @@ export type Database = {
         Insert: {
           billing_email?: string | null
           created_at?: string | null
+          custom_domain?: string | null
           description?: string | null
           id?: string
           logo_url?: string | null
           metadata?: Json | null
           name: string
           plan?: string | null
+          portal_enabled?: boolean
+          portal_settings?: Json
           settings?: Json | null
           slug: string
+          sso_domain?: string | null
+          sso_enabled?: boolean
+          sso_provider_id?: string | null
           stripe_connect_account_id?: string | null
           stripe_customer_id?: string | null
           type: string
@@ -3627,14 +4140,20 @@ export type Database = {
         Update: {
           billing_email?: string | null
           created_at?: string | null
+          custom_domain?: string | null
           description?: string | null
           id?: string
           logo_url?: string | null
           metadata?: Json | null
           name?: string
           plan?: string | null
+          portal_enabled?: boolean
+          portal_settings?: Json
           settings?: Json | null
           slug?: string
+          sso_domain?: string | null
+          sso_enabled?: boolean
+          sso_provider_id?: string | null
           stripe_connect_account_id?: string | null
           stripe_customer_id?: string | null
           type?: string
@@ -3685,6 +4204,7 @@ export type Database = {
       performance_metrics: {
         Row: {
           date: string
+          endpoint: string | null
           id: string
           metric_type: string
           p50_ms: number | null
@@ -3696,6 +4216,7 @@ export type Database = {
         }
         Insert: {
           date: string
+          endpoint?: string | null
           id?: string
           metric_type: string
           p50_ms?: number | null
@@ -3707,6 +4228,7 @@ export type Database = {
         }
         Update: {
           date?: string
+          endpoint?: string | null
           id?: string
           metric_type?: string
           p50_ms?: number | null
@@ -3747,6 +4269,81 @@ export type Database = {
           user_type?: string | null
         }
         Relationships: []
+      }
+      provider_affiliate_commissions: {
+        Row: {
+          affiliate_link_id: string
+          api_id: string | null
+          commission_amount: number
+          commission_percent: number
+          created_at: string
+          id: string
+          payout_at: string | null
+          status: string
+          subscriber_organization_id: string | null
+          subscription_id: string | null
+        }
+        Insert: {
+          affiliate_link_id: string
+          api_id?: string | null
+          commission_amount: number
+          commission_percent: number
+          created_at?: string
+          id?: string
+          payout_at?: string | null
+          status?: string
+          subscriber_organization_id?: string | null
+          subscription_id?: string | null
+        }
+        Update: {
+          affiliate_link_id?: string
+          api_id?: string | null
+          commission_amount?: number
+          commission_percent?: number
+          created_at?: string
+          id?: string
+          payout_at?: string | null
+          status?: string
+          subscriber_organization_id?: string | null
+          subscription_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_affiliate_commissions_affiliate_link_id_fkey"
+            columns: ["affiliate_link_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_affiliate_commissions_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_affiliate_commissions_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: false
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_affiliate_commissions_subscriber_organization_id_fkey"
+            columns: ["subscriber_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_affiliate_commissions_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "api_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       provider_profiles: {
         Row: {
@@ -5062,11 +5659,37 @@ export type Database = {
     }
     Functions: {
       aggregate_hourly_usage: { Args: never; Returns: undefined }
-      drop_old_api_requests_log_partitions: { Args: { retention_months: number }; Returns: number }
       generate_ticket_number: { Args: never; Returns: string }
       is_org_admin: { Args: { org_id: string }; Returns: boolean }
       refresh_api_rankings: { Args: never; Returns: undefined }
       refresh_platform_kpis: { Args: never; Returns: undefined }
+      search_marketplace_apis: {
+        Args: {
+          p_category_id?: string
+          p_free_only?: boolean
+          p_limit?: number
+          p_min_rating?: number
+          p_offset?: number
+          p_price_max?: number
+          p_price_min?: number
+          p_query?: string
+          p_sort?: string
+          p_tags?: string[]
+        }
+        Returns: {
+          data: Json
+          total: number
+        }[]
+      }
+      semantic_search_apis: {
+        Args: { match_count?: number; query_embedding: string }
+        Returns: {
+          api_id: string
+          similarity: number
+        }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never

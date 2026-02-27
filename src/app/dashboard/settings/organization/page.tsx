@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { OrgForm } from './OrgForm';
+import { PortalSettingsCard } from './PortalSettingsCard';
+import { SSOSettingsCard } from './SSOSettingsCard';
 
 export default async function OrganizationSettingsPage() {
   const supabase = await createClient();
@@ -117,6 +119,12 @@ export default async function OrganizationSettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Internal Portal */}
+      <PortalSettingsCard orgSlug={org?.slug ?? ''} />
+
+      {/* SSO / SAML */}
+      <SSOSettingsCard />
 
       {/* Danger Zone */}
       <Card className="border-destructive">

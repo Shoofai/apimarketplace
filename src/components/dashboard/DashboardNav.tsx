@@ -72,7 +72,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm pt-[env(safe-area-inset-top)]">
       <div className="flex h-16 items-center px-4 lg:px-8 gap-4">
         {/* Mobile menu */}
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>

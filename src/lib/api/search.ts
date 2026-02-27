@@ -17,6 +17,8 @@ export interface MarketplaceFilters {
   tags?: string[];
   priceMin?: number;
   priceMax?: number;
+  /** Filter by product type: 'api' | 'dataset' | 'all' (default 'all') */
+  productType?: 'api' | 'dataset' | 'all';
 }
 
 /** Escape % and _ for safe use in ilike patterns (literal match). */
@@ -153,6 +155,10 @@ export async function searchAPIs(
 
   if (filters.minRating != null) {
     queryBuilder = queryBuilder.gte('avg_rating', filters.minRating);
+  }
+
+  if (filters.productType && filters.productType !== 'all') {
+    queryBuilder = queryBuilder.eq('product_type', filters.productType);
   }
 
   switch (filters.sort) {

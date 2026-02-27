@@ -95,12 +95,12 @@ const nextConfig = {
     ];
   },
 
-  // Code splitting
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/dist/esm/icons/{{member}}',
-    },
-  },
+  // Code splitting (disabled to avoid Next 15.5 "Cannot find module for page" during Collecting page data)
+  // modularizeImports: {
+  //   'lucide-react': {
+  //     transform: 'lucide-react/dist/esm/icons/{{member}}',
+  //   },
+  // },
 };
 
 module.exports = nextConfig;

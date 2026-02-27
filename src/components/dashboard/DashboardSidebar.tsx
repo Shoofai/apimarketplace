@@ -33,6 +33,8 @@ import {
   PanelLeftClose,
   PanelLeft,
   Plug,
+  Package,
+  Coins,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -98,6 +100,11 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       icon: Globe,
     },
     {
+      title: 'Bundles',
+      href: '/marketplace/bundles',
+      icon: Package,
+    },
+    {
       title: 'Discover',
       href: '/dashboard/discover',
       icon: Layers,
@@ -125,6 +132,11 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       title: 'My Tickets',
       href: '/dashboard/tickets',
       icon: Ticket,
+    },
+    {
+      title: 'Credits',
+      href: '/dashboard/credits',
+      icon: Coins,
     },
     {
       title: 'Settings',
@@ -189,7 +201,7 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
   return (
     <aside
       className={cn(
-        'flex flex-col shrink-0 border-r bg-card/50 min-h-[calc(100vh-4rem)] backdrop-blur-sm transition-[width] duration-200 ease-in-out',
+        'flex flex-col shrink-0 border-r bg-card/50 min-h-[calc(100dvh-4rem)] backdrop-blur-sm transition-[width] duration-200 ease-in-out',
         forceExpanded ? 'w-64' : 'hidden lg:flex',
         forceExpanded ? 'w-64' : isCollapsed ? 'lg:w-16' : 'lg:w-64'
       )}

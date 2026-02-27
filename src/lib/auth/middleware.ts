@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createClientWithToken } from '@/lib/supabase/server';
+import { headers } from 'next/headers';
 import { AuthError, ForbiddenError } from '@/lib/utils/errors';
 import { hasPermission, type Permission } from './permissions';
 import type { UserRole } from '@/lib/utils/constants';
@@ -19,8 +20,15 @@ export interface AuthContext {
  * @returns Authenticated user context with organization and role
  */
 export async function requireAuth(): Promise<AuthContext> {
-  const supabase = await createClient();
-  
+  // Support Bearer JWT from CLI / VS Code extension as well as cookie-based sessions
+  const headersList = await headers();
+  const authHeader = headersList.get('authorization');
+
+  const supabase =
+    authHeader?.startsWith('Bearer ')
+      ? createClientWithToken(authHeader.slice(7))
+      : await createClient();
+
   const {
     data: { user },
     error: authError,

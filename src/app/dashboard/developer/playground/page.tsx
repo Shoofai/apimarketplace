@@ -61,7 +61,7 @@ export default async function PlaygroundPage({
 
 function PlaygroundSkeleton() {
   return (
-    <Card className="h-[calc(100vh-12rem)]">
+    <Card className="h-[calc(100dvh-12rem)]">
       <CardHeader>
         <Skeleton className="h-6 w-48" />
         <Skeleton className="h-4 w-64" />

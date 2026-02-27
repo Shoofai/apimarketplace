@@ -44,7 +44,7 @@ export function LegalPageLayout({
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[240px_1fr] lg:gap-12">
           {/* Sidebar TOC - Desktop: sticky left; Mobile: above content */}
           <aside className="lg:order-first">
-            <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
+            <div className="lg:sticky lg:top-24 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto">
               <div className="rounded-lg border border-border bg-card p-4 lg:p-4">
                 <LegalTOC items={tocItems} />
               </div>

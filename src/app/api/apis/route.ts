@@ -65,13 +65,15 @@ export async function POST(request: Request) {
       openapi_raw,
       openapi_format,
       pricing_plans = [],
+      product_type = 'api',
+      dataset_metadata,
     } = body;
 
     if (!name || typeof name !== 'string' || !name.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    if (!base_url || typeof base_url !== 'string' || !base_url.trim()) {
+    if (product_type !== 'dataset' && (!base_url || typeof base_url !== 'string' || !base_url.trim())) {
       return NextResponse.json({ error: 'Base URL is required' }, { status: 400 });
     }
 
@@ -106,9 +108,11 @@ export async function POST(request: Request) {
         category_id: category_id || null,
         description: description?.trim() || null,
         short_description: short_description?.trim() || description?.trim() || null,
-        base_url: base_url.trim(),
+        base_url: base_url?.trim() || null,
         status: 'draft',
-      })
+        product_type: product_type || 'api',
+        dataset_metadata: dataset_metadata ?? {},
+      } as any)
       .select()
       .single();
 

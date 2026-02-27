@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -14,13 +13,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Play, Save, Plus, Trash2, Settings, Workflow } from 'lucide-react';
-
-interface WorkflowNode {
-  id: string;
-  type: 'api_call' | 'transform' | 'condition' | 'delay';
-  name: string;
-  config: Record<string, unknown>;
-}
+import {
+  WorkflowCanvas,
+  type WorkflowCanvasNode,
+  type WorkflowCanvasEdge,
+} from '@/components/workflows/WorkflowCanvas';
 
 interface ApiOption {
   id: string;
@@ -29,11 +26,18 @@ interface ApiOption {
   base_url: string;
 }
 
+interface WorkflowListItem {
+  id: string;
+  name: string;
+}
+
 export default function WorkflowBuilderPage() {
-  const [workflow, setWorkflow] = useState<WorkflowNode[]>([]);
+  const [nodes, setNodes] = useState<WorkflowCanvasNode[]>([]);
+  const [edges, setEdges] = useState<WorkflowCanvasEdge[]>([]);
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [savedWorkflowId, setSavedWorkflowId] = useState<string | null>(null);
+  const [workflowList, setWorkflowList] = useState<WorkflowListItem[]>([]);
   const [apis, setApis] = useState<ApiOption[]>([]);
   const [saveLoading, setSaveLoading] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
@@ -45,18 +49,57 @@ export default function WorkflowBuilderPage() {
       .catch(() => setApis([]));
   }, []);
 
-  function addNode(type: WorkflowNode['type']) {
-    const newNode: WorkflowNode = {
+  useEffect(() => {
+    fetch('/api/workflows')
+      .then((res) => res.ok ? res.json() : { workflows: [] })
+      .then((data) => setWorkflowList((data.workflows ?? []).map((w: { id: string; name: string }) => ({ id: w.id, name: w.name }))))
+      .catch(() => setWorkflowList([]));
+  }, [savedWorkflowId]);
+
+  function addNode(type: WorkflowCanvasNode['type']) {
+    const newNode: WorkflowCanvasNode = {
       id: `node_${Date.now()}`,
       type,
-      name: `${type}_${workflow.length + 1}`,
+      name: `${type}_${nodes.length + 1}`,
       config: {},
+      position: { x: 180 * (nodes.length % 4), y: 120 * Math.floor(nodes.length / 4) },
     };
-    setWorkflow([...workflow, newNode]);
+    setNodes([...nodes, newNode]);
   }
 
   function removeNode(id: string) {
-    setWorkflow(workflow.filter((n) => n.id !== id));
+    setNodes(nodes.filter((n) => n.id !== id));
+    setEdges(edges.filter((e) => e.source !== id && e.target !== id));
+    if (selectedNode === id) setSelectedNode(null);
+  }
+
+  function loadWorkflow(id: string) {
+    fetch(`/api/workflows/${id}`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!data?.workflow) return;
+        const w = data.workflow;
+        setWorkflowName(w.name || 'Untitled Workflow');
+        setSavedWorkflowId(w.id);
+        const rawNodes = Array.isArray(w.nodes) ? w.nodes : [];
+        const rawEdges = Array.isArray(w.edges) ? w.edges : [];
+        setNodes(
+          rawNodes.map((n: WorkflowCanvasNode & { position?: { x: number; y: number } }, i: number) => ({
+            id: n.id,
+            type: n.type || 'api_call',
+            name: n.name || n.id,
+            config: n.config ?? {},
+            position: n.position ?? { x: 180 * (i % 4), y: 120 * Math.floor(i / 4) },
+          }))
+        );
+        setEdges(
+          rawEdges.map((e: WorkflowCanvasEdge) => ({
+            id: e.id,
+            source: e.source,
+            target: e.target,
+          }))
+        );
+      });
   }
 
   async function saveWorkflow() {
@@ -66,7 +109,7 @@ export default function WorkflowBuilderPage() {
         const response = await fetch(`/api/workflows/${savedWorkflowId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: workflowName, nodes: workflow, edges: [] }),
+          body: JSON.stringify({ name: workflowName, nodes, edges }),
         });
         if (response.ok) {
           alert('Workflow updated!');
@@ -80,8 +123,8 @@ export default function WorkflowBuilderPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: workflowName,
-            nodes: workflow,
-            edges: [],
+            nodes,
+            edges,
           }),
         });
         const data = await response.json();
@@ -132,7 +175,20 @@ export default function WorkflowBuilderPage() {
           </h1>
           <p className="text-muted-foreground">Build and automate multi-step API integrations</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <Select value={savedWorkflowId ?? '__new__'} onValueChange={(v) => v !== '__new__' && loadWorkflow(v)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Open workflow" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__new__">New workflow</SelectItem>
+              {workflowList.map((w) => (
+                <SelectItem key={w.id} value={w.id}>
+                  {w.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Button variant="outline" onClick={saveWorkflow} disabled={saveLoading}>
             <Save className="h-4 w-4 mr-2" />
             {saveLoading ? 'Saving…' : 'Save'}
@@ -206,70 +262,20 @@ export default function WorkflowBuilderPage() {
           <CardHeader>
             <CardTitle className="text-sm">Workflow Canvas</CardTitle>
             <CardDescription>
-              {workflow.length === 0
-                ? 'Add nodes from the palette to build your workflow'
-                : `${workflow.length} node${workflow.length !== 1 ? 's' : ''}`}
+              {nodes.length === 0
+                ? 'Add nodes from the palette and connect them'
+                : `${nodes.length} node${nodes.length !== 1 ? 's' : ''}, ${edges.length} edge${edges.length !== 1 ? 's' : ''}`}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {workflow.length === 0 ? (
-              <div className="flex items-center justify-center h-[400px] border-2 border-dashed rounded-lg">
-                <p className="text-muted-foreground">
-                  Start by adding nodes from the left panel
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {workflow.map((node, index) => (
-                  <div key={node.id}>
-                    <Card
-                      className={`cursor-pointer transition-colors ${
-                        selectedNode === node.id ? 'border-primary' : ''
-                      }`}
-                      onClick={() => setSelectedNode(node.id)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline">{node.type}</Badge>
-                              <span className="font-medium">{node.name}</span>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedNode(node.id);
-                              }}
-                            >
-                              <Settings className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeNode(node.id);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    {index < workflow.length - 1 && (
-                      <div className="flex justify-center py-2">
-                        <div className="w-px h-6 bg-border" />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            <WorkflowCanvas
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={setNodes}
+              onEdgesChange={setEdges}
+              onNodeSelect={setSelectedNode}
+              selectedNodeId={selectedNode}
+            />
           </CardContent>
         </Card>
 
@@ -282,7 +288,7 @@ export default function WorkflowBuilderPage() {
             {selectedNode ? (
               <div className="space-y-4">
                 {(() => {
-                  const node = workflow.find((n) => n.id === selectedNode);
+                  const node = nodes.find((n) => n.id === selectedNode);
                   if (!node) return null;
 
                   return (
@@ -292,8 +298,8 @@ export default function WorkflowBuilderPage() {
                         <Input
                           value={node.name}
                           onChange={(e) => {
-                            setWorkflow(
-                              workflow.map((n) =>
+                            setNodes(
+                              nodes.map((n) =>
                                 n.id === selectedNode ? { ...n, name: e.target.value } : n
                               )
                             );
@@ -308,8 +314,8 @@ export default function WorkflowBuilderPage() {
                             <Select
                               value={(node.config?.apiId as string) ?? ''}
                               onValueChange={(v) =>
-                                setWorkflow(
-                                  workflow.map((n) =>
+                                setNodes(
+                                  nodes.map((n) =>
                                     n.id === selectedNode
                                       ? { ...n, config: { ...n.config, apiId: v } }
                                       : n
@@ -335,8 +341,8 @@ export default function WorkflowBuilderPage() {
                               placeholder="/users"
                               value={(node.config?.endpoint as string) ?? ''}
                               onChange={(e) =>
-                                setWorkflow(
-                                  workflow.map((n) =>
+                                setNodes(
+                                  nodes.map((n) =>
                                     n.id === selectedNode
                                       ? { ...n, config: { ...n.config, endpoint: e.target.value } }
                                       : n
@@ -350,8 +356,8 @@ export default function WorkflowBuilderPage() {
                             <Select
                               value={(node.config?.method as string) ?? 'GET'}
                               onValueChange={(v) =>
-                                setWorkflow(
-                                  workflow.map((n) =>
+                                setNodes(
+                                  nodes.map((n) =>
                                     n.id === selectedNode
                                       ? { ...n, config: { ...n.config, method: v } }
                                       : n
@@ -381,8 +387,8 @@ export default function WorkflowBuilderPage() {
                             placeholder="1000"
                             value={((node.config?.delayMs as number) ?? 1000) || ''}
                             onChange={(e) =>
-                              setWorkflow(
-                                workflow.map((n) =>
+                              setNodes(
+                                nodes.map((n) =>
                                   n.id === selectedNode
                                     ? { ...n, config: { ...n.config, delayMs: Number(e.target.value) || 1000 } }
                                     : n
@@ -400,8 +406,8 @@ export default function WorkflowBuilderPage() {
                             placeholder="response.status === 200"
                             value={(node.config?.condition as string) ?? ''}
                             onChange={(e) =>
-                              setWorkflow(
-                                workflow.map((n) =>
+                              setNodes(
+                                nodes.map((n) =>
                                   n.id === selectedNode
                                     ? { ...n, config: { ...n.config, condition: e.target.value } }
                                     : n
@@ -411,6 +417,16 @@ export default function WorkflowBuilderPage() {
                           />
                         </div>
                       )}
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-destructive"
+                        onClick={() => removeNode(node.id)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove node
+                      </Button>
                     </>
                   );
                 })()}

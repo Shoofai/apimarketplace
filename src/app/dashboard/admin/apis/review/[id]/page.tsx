@@ -3,9 +3,39 @@ import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building2, Tag, Calendar, Box } from 'lucide-react';
+import { ArrowLeft, Building2, Tag, Calendar, Box, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { APIReviewActions } from './APIReviewActions';
+
+interface ReviewScore {
+  overall_score: number;
+  spec_completeness: number;
+  docs_coverage: number;
+  error_handling: number;
+  versioning: number;
+  summary: string;
+}
+
+function ScoreBar({ label, value }: { label: string; value: number }) {
+  const color =
+    value >= 75 ? 'bg-green-500'
+    : value >= 50 ? 'bg-yellow-500'
+    : 'bg-red-500';
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-medium">{value}/100</span>
+      </div>
+      <div className="h-2 w-full rounded-full bg-muted">
+        <div
+          className={`h-2 rounded-full ${color} transition-all`}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default async function APIReviewDetailPage({
   params,
@@ -39,7 +69,8 @@ export default async function APIReviewDetailPage({
       `
       *,
       organizations(id, name, type, plan, slug),
-      categories(id, name)
+      categories(id, name),
+      api_review_scores(overall_score, spec_completeness, docs_coverage, error_handling, versioning, summary)
     `
     )
     .eq('id', id)
@@ -52,6 +83,10 @@ export default async function APIReviewDetailPage({
   const canReview = api.status === 'draft' || api.status === 'in_review';
   const org = api.organizations as any;
   const category = api.categories as any;
+  const scoreRow = (api as any).api_review_scores;
+  const reviewScore: ReviewScore | null = Array.isArray(scoreRow)
+    ? (scoreRow[0] ?? null)
+    : (scoreRow ?? null);
 
   return (
     <div className="space-y-8">
@@ -132,6 +167,52 @@ export default async function APIReviewDetailPage({
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Version</h3>
               <p>{api.version}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* AI Quality Score */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-purple-500" />
+            AI Quality Score
+            {reviewScore && (
+              <Badge
+                variant="outline"
+                className={
+                  reviewScore.overall_score >= 75
+                    ? 'border-green-500/30 text-green-700 dark:text-green-400'
+                    : reviewScore.overall_score >= 50
+                    ? 'border-yellow-500/30 text-yellow-700 dark:text-yellow-400'
+                    : 'border-red-500/30 text-red-700 dark:text-red-400'
+                }
+              >
+                {reviewScore.overall_score}/100
+              </Badge>
+            )}
+          </CardTitle>
+          <CardDescription>
+            Automated assessment of spec completeness, documentation, error handling, and versioning.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {reviewScore ? (
+            <div className="space-y-4">
+              <ScoreBar label="Spec Completeness" value={reviewScore.spec_completeness} />
+              <ScoreBar label="Documentation Coverage" value={reviewScore.docs_coverage} />
+              <ScoreBar label="Error Handling" value={reviewScore.error_handling} />
+              <ScoreBar label="Versioning" value={reviewScore.versioning} />
+              {reviewScore.summary && (
+                <p className="mt-4 text-sm text-muted-foreground border-t pt-3">{reviewScore.summary}</p>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-6 text-muted-foreground">
+              <Sparkles className="h-8 w-8 mx-auto mb-2 opacity-30" />
+              <p className="text-sm">No AI score yet.</p>
+              <p className="text-xs mt-1">Score is generated when the provider submits for review.</p>
             </div>
           )}
         </CardContent>
