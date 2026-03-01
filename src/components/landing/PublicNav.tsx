@@ -44,8 +44,11 @@ export function PublicNav() {
           <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
             Login
           </Link>
-          <Button asChild>
+          <Button variant="outline" asChild>
             <Link href="/signup">Sign Up</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/start">Get Started</Link>
           </Button>
         </div>
 
@@ -87,9 +90,14 @@ export function PublicNav() {
                       Login
                     </Button>
                   </Link>
-                  <Button asChild>
+                  <Button variant="outline" asChild>
                     <Link href="/signup" onClick={() => setMobileOpen(false)} className="w-full text-center">
                       Sign Up
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="/start" onClick={() => setMobileOpen(false)} className="w-full text-center">
+                      Get Started
                     </Link>
                   </Button>
                 </div>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackCTAClick } from '@/lib/analytics';
+import { UniversalCaptureForm } from '@/components/growth/UniversalCaptureForm';
 
 export default function FinalCTA() {
   const ref = useRef(null);
@@ -60,7 +61,7 @@ export default function FinalCTA() {
               asChild
               className="group h-14 px-8 text-lg shadow-glow-cta transition-all hover:scale-105"
             >
-              <Link href="/signup" onClick={() => handleCTAClick('final_start_free_trial')}>
+              <Link href="/start" onClick={() => handleCTAClick('final_start_free_trial')}>
                 Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -76,6 +77,10 @@ export default function FinalCTA() {
                 Browse APIs
               </Link>
             </Button>
+          </div>
+
+          <div className="mx-auto mt-8 w-full max-w-md">
+            <UniversalCaptureForm source="landing_page" variant="inline" />
           </div>
 
           {/* Trust Signals */}
