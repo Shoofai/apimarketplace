@@ -1938,66 +1938,6 @@ export type Database = {
         }
         Relationships: []
       }
-      api_test_sessions: {
-        Row: {
-          id: string
-          developer_id: string | null
-          session_id: string | null
-          api_id: string | null
-          api_name: string
-          endpoint_path: string
-          http_method: string
-          request_headers: Json | null
-          request_body: Json | null
-          request_params: Json | null
-          response_status: number | null
-          response_time_ms: number | null
-          response_body: Json | null
-          response_headers: Json | null
-          test_passed: boolean | null
-          error_message: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
-          api_id?: string | null
-          api_name: string
-          endpoint_path: string
-          http_method: string
-          request_headers?: Json | null
-          request_body?: Json | null
-          request_params?: Json | null
-          response_status?: number | null
-          response_time_ms?: number | null
-          response_body?: Json | null
-          response_headers?: Json | null
-          test_passed?: boolean | null
-          error_message?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
-          api_id?: string | null
-          api_name?: string
-          endpoint_path?: string
-          http_method?: string
-          request_headers?: Json | null
-          request_body?: Json | null
-          request_params?: Json | null
-          response_status?: number | null
-          response_time_ms?: number | null
-          response_body?: Json | null
-          response_headers?: Json | null
-          test_passed?: boolean | null
-          error_message?: string | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
       api_versions: {
         Row: {
           api_id: string

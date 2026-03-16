@@ -369,10 +369,11 @@ export async function handlePaymentFailed(stripeInvoiceId: string) {
       const meta = (invoice.metadata ?? {}) as Record<string, any>;
       const subscriptionId: string | undefined = meta.subscription_id;
       if (subscriptionId) {
-        await supabase
+        (await supabase
           .from('api_subscriptions')
-          .update({ status: 'past_due' } as any)
-          .eq('id', subscriptionId);
+          .update({ status: 'past_due', past_due_since: new Date().toISOString() } as any)
+          .eq('id', subscriptionId)
+          .is('past_due_since' as any, null)); // Only set once (first failure)
         logger.warn('Subscription marked past_due after payment failure', { subscriptionId });
       }
     } catch (err) {

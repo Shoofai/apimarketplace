@@ -5,6 +5,7 @@ import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe/client';
 import { markInvoicePaid, handlePaymentFailed } from '@/lib/stripe/billing';
 import { handleConnectAccountUpdate } from '@/lib/stripe/connect';
+import { dispatchNotification } from '@/lib/notifications/dispatcher';
 import { logger } from '@/lib/utils/logger';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -41,6 +42,19 @@ export async function POST(request: Request) {
     type: event.type,
     id: event.id,
   });
+
+  // Idempotency: skip already-processed events (Stripe may retry)
+  const adminSbIdempotent = createAdminClient();
+  const { data: existing } = await adminSbIdempotent
+    .from('processed_stripe_events' as any)
+    .select('id')
+    .eq('id', event.id)
+    .maybeSingle();
+
+  if (existing) {
+    logger.info('Stripe webhook: duplicate event skipped', { id: event.id, type: event.type });
+    return NextResponse.json({ received: true, skipped: true });
+  }
 
   try {
     switch (event.type) {
@@ -149,11 +163,11 @@ export async function POST(request: Request) {
 
           if (subscription) {
             // Store the plaintext key temporarily (24h TTL) so the dashboard can reveal it once
-            await adminSb.from('api_key_reveals' as any).insert({
+            void adminSb.from('api_key_reveals' as any).insert({
               subscription_id: subscription.id,
               plaintext_key: key,
               expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-            }).then(() => {}).catch(() => {});
+            });
 
             logger.info('API subscription created from checkout', {
               subscriptionId: subscription.id,
@@ -190,6 +204,34 @@ export async function POST(request: Request) {
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
         await handlePaymentFailed(invoice.id);
+
+        // Fire initial dunning notification to subscription owner
+        try {
+          const adminSb = createAdminClient();
+          const invoiceMeta = (invoice.metadata ?? {}) as Record<string, string>;
+          const subId = invoiceMeta.subscription_id;
+          if (subId) {
+            const { data: sub } = await adminSb
+              .from('api_subscriptions')
+              .select('user_id, organization_id, api:apis(name)')
+              .eq('id', subId)
+              .maybeSingle();
+            if (sub?.user_id) {
+              const apiName = (sub.api as { name?: string } | null)?.name ?? 'your API';
+              await dispatchNotification({
+                type: 'billing.payment_failed',
+                userId: sub.user_id,
+                organizationId: sub.organization_id,
+                title: 'Payment Failed – Action Required',
+                body: `We were unable to charge your payment method for your ${apiName} subscription. Please update your billing details to avoid service interruption.`,
+                link: '/dashboard/settings/billing',
+                metadata: { subscription_id: subId, stripe_invoice_id: invoice.id },
+              });
+            }
+          }
+        } catch (notifyErr) {
+          logger.error('Failed to send payment-failed notification', { error: notifyErr });
+        }
         break;
       }
 
@@ -248,14 +290,14 @@ export async function POST(request: Request) {
             .maybeSingle();
           if (billingAccount?.organization_id) {
             // Record payout in provider earnings ledger if table exists
-            await adminSb.from('provider_payouts' as any).insert({
+            void adminSb.from('provider_payouts' as any).insert({
               organization_id: billingAccount.organization_id,
               stripe_payout_id: payout.id,
               amount: payout.amount / 100,
               currency: payout.currency,
               arrival_date: new Date((payout.arrival_date ?? Date.now() / 1000) * 1000).toISOString(),
               status: 'paid',
-            }).then(() => {}).catch(() => {}); // Gracefully skip if table doesn't exist
+            }); // Gracefully skip if table doesn't exist
           }
         }
         logger.info('Payout completed', {
@@ -336,10 +378,10 @@ export async function POST(request: Request) {
           .from('platform_subscriptions' as any)
           .select('organization_id, plan')
           .eq('stripe_subscription_id', subscription.id)
-          .maybeSingle();
+          .maybeSingle() as unknown as { data: { organization_id: string; plan: string } | null; error: unknown };
 
         if (platformSub) {
-          const orgPlan = (newStatus === 'active') ? platformSub.plan : 'free';
+          const orgPlan = (newStatus === 'active') ? (platformSub as { organization_id: string; plan: string }).plan : 'free';
           await adminSb
             .from('platform_subscriptions' as any)
             .update({
@@ -388,7 +430,7 @@ export async function POST(request: Request) {
           .from('platform_subscriptions' as any)
           .select('organization_id')
           .eq('stripe_subscription_id', subscription.id)
-          .maybeSingle();
+          .maybeSingle() as unknown as { data: { organization_id: string } | null; error: unknown };
 
         if (platformSub) {
           await adminSb
@@ -422,6 +464,11 @@ export async function POST(request: Request) {
       default:
         logger.info('Unhandled webhook event type', { type: event.type });
     }
+
+    // Mark event as processed for idempotency
+    void adminSbIdempotent
+      .from('processed_stripe_events' as any)
+      .insert({ id: event.id, event_type: event.type });
 
     return NextResponse.json({ received: true });
   } catch (error) {

@@ -54,7 +54,7 @@ export async function consumeAIGeneration(
     .select('id, used, tier_limit')
     .eq('organization_id', organizationId)
     .eq('period_start', today)
-    .single();
+    .single() as unknown as { data: { id: string; used: number; tier_limit: number } | null; error: unknown };
 
   const used = currentAllotment?.used ?? 0;
   const limit = currentAllotment?.tier_limit ?? tierLimit;
@@ -75,7 +75,7 @@ export async function consumeAIGeneration(
     .from('credit_balances')
     .select('id, balance')
     .eq('organization_id', organizationId)
-    .maybeSingle();
+    .maybeSingle() as unknown as { data: { id: string; balance: number } | null; error: unknown };
 
   const balance = creditBalance?.balance ?? 0;
 
@@ -119,12 +119,12 @@ export async function getAIAllotmentStatus(
       .select('used, tier_limit')
       .eq('organization_id', organizationId)
       .eq('period_start', today)
-      .maybeSingle(),
+      .maybeSingle() as unknown as Promise<{ data: { used: number; tier_limit: number } | null; error: unknown }>,
     adminSb
       .from('credit_balances')
       .select('balance')
       .eq('organization_id', organizationId)
-      .maybeSingle(),
+      .maybeSingle() as unknown as Promise<{ data: { balance: number } | null; error: unknown }>,
   ]);
 
   const used = allotmentResult.data?.used ?? 0;

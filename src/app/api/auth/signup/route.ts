@@ -5,10 +5,20 @@ import { generateSlug } from '@/lib/utils/slug';
 import { logger } from '@/lib/utils/logger';
 import { ValidationError } from '@/lib/utils/errors';
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limit';
+import { getFeatureFlag } from '@/lib/utils/feature-flags';
 
 export async function POST(request: Request) {
   const rateLimited = rateLimit(request, RATE_LIMITS.auth);
   if (rateLimited) return rateLimited;
+
+  // Check if new signups are enabled
+  const signupsEnabled = await getFeatureFlag('new_signups');
+  if (!signupsEnabled) {
+    return NextResponse.json(
+      { error: 'New signups are temporarily disabled. Please try again later.' },
+      { status: 503 }
+    );
+  }
 
   try {
     const body = await request.json();
@@ -115,7 +125,7 @@ export async function POST(request: Request) {
           .select('id, referrer_user_id, referrer_organization_id')
           .eq('code', ref_code)
           .eq('status', 'pending')
-          .maybeSingle();
+          .maybeSingle() as unknown as { data: { id: string; referrer_user_id: string; referrer_organization_id: string } | null; error: unknown };
 
         if (referral) {
           // Mark referral as completed

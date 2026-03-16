@@ -56,7 +56,7 @@ export default async function CollectionDetailPage({ params }: { params: Promise
 
   if (!collection) notFound();
 
-  const items = (collection.collection_items ?? []) as Array<{
+  const items = (collection.collection_items ?? []) as unknown as Array<{
     api: {
       id: string;
       name: string;
@@ -69,7 +69,7 @@ export default async function CollectionDetailPage({ params }: { params: Promise
   }>;
 
   const apis = items.map((item) => item.api).filter(Boolean) as NonNullable<typeof items[0]['api']>[];
-  const owner = (collection.owner as { full_name: string } | null);
+  const owner = (collection.owner as unknown as { full_name: string } | null);
 
   return (
     <div className="min-h-screen bg-background">

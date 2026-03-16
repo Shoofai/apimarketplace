@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { rateLimit } from '@/lib/rate-limit';
 
 /**
  * Resolve a custom domain to an org slug via Supabase REST (no server-side cookies needed).
@@ -28,10 +29,30 @@ async function resolveCustomDomain(host: string): Promise<string | null> {
  * - Handles custom domain → internal portal rewrites.
  * - Tracks ?aff= affiliate cookie.
  * - Enforces authentication on /dashboard/* at the edge level.
+ * - Enforces rate limiting on /api/* routes.
  */
 export async function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development';
   const pathname = request.nextUrl.pathname;
+
+  // Rate limiting: enforce on all /api/* routes (skip cron, webhooks, health)
+  if (
+    pathname.startsWith('/api/') &&
+    !pathname.startsWith('/api/cron/') &&
+    !pathname.startsWith('/api/webhooks/')
+  ) {
+    const isAuthenticated = /sb-[a-z0-9]+-auth-token/.test(request.headers.get('cookie') ?? '');
+    const hasApiKey = request.headers.get('x-api-key') !== null;
+    const limit = isAuthenticated || hasApiKey ? 120 : 20;
+
+    const rateLimited = rateLimit(request, { limit, windowMs: 60 * 1000 });
+    if (rateLimited) {
+      return new NextResponse(rateLimited.body, {
+        status: 429,
+        headers: Object.fromEntries(rateLimited.headers),
+      });
+    }
+  }
 
   // Custom domain rewrite: if the host doesn't match the platform domain,
   // look up the org and rewrite to /portal/[org_slug]
@@ -113,9 +134,8 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  // Rate limiting headers (informational)
-  response.headers.set('X-RateLimit-Limit', '100');
-  response.headers.set('X-RateLimit-Remaining', '100');
+  // Rate-limit headers (informational for authenticated API requests)
+  response.headers.set('X-RateLimit-Limit', '120');
 
   return response;
 }

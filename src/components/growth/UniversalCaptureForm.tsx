@@ -97,7 +97,7 @@ export function UniversalCaptureForm({
           utm_campaign: utm.utm_campaign,
           utm_content: utm.utm_content,
           utm_term: utm.utm_term,
-          referrer_url: u?.document?.referrer || undefined,
+          referrer_url: document?.referrer || undefined,
           landing_page_url: u?.href || undefined,
           i_am: iAm || undefined,
           marketing_consent: marketingConsent,

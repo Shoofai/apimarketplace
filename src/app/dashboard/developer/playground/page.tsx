@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { Zap } from 'lucide-react';
 import { AIPlayground } from '@/components/features/playground/AIPlayground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getFeatureFlag } from '@/lib/utils/feature-flags';
 
 export default async function PlaygroundPage({
   searchParams,
@@ -20,6 +21,11 @@ export default async function PlaygroundPage({
 
   if (!user) {
     redirect('/login');
+  }
+
+  const playgroundEnabled = await getFeatureFlag('ai_playground');
+  if (!playgroundEnabled) {
+    notFound();
   }
 
   // Optionally load API details if api param is provided (openapi_spec from api_specs)

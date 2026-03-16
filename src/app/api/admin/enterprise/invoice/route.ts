@@ -82,7 +82,7 @@ export const POST = withPlatformAdmin(async (req: Request) => {
   const sentInvoice = await stripe.invoices.sendInvoice(invoice.id);
 
   // Record in local invoices table
-  await adminSb.from('invoices').insert({
+  void adminSb.from('invoices').insert({
     organization_id,
     stripe_invoice_id: sentInvoice.id,
     total: amount_usd,
@@ -91,7 +91,7 @@ export const POST = withPlatformAdmin(async (req: Request) => {
       ? new Date(Date.now() + due_days * 24 * 60 * 60 * 1000).toISOString()
       : null,
     metadata: { type: 'enterprise_custom', description },
-  } as any).then(() => {}).catch(() => {});
+  } as any);
 
   logger.info('Enterprise invoice sent', {
     orgId: organization_id,

@@ -194,7 +194,8 @@ export async function transferToProvider(
     throw error;
   }
 }
- * 
+
+/**
  * @param accountId - Stripe Account ID
  */
 export async function handleConnectAccountUpdate(accountId: string) {
