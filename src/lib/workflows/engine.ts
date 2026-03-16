@@ -272,30 +272,90 @@ export class WorkflowEngine {
   }
 
   /**
-   * Execute transform node (JavaScript expression)
+   * Execute transform node — applies a simple mapping/expression to inputs.
+   * Supported expressions:
+   *   - JSONPath-like dot notation: "nodeId.data.field"
+   *   - Literal string/number values
+   *   - Object mapping: { outputKey: "nodeId.field" }
    */
   private async executeTransform(node: WorkflowNode, context: ExecutionContext): Promise<any> {
-    const { expression } = node.config;
-
-    // Simple evaluation (in production, use sandboxed JS execution)
+    const { expression, mapping, outputKey } = node.config;
     const input = this.resolveInputs(node, context);
-    
-    // For now, just return the input data
-    // In production, execute the JavaScript expression safely
+
+    // If a mapping object is provided, resolve each value from previous node outputs
+    if (mapping && typeof mapping === 'object') {
+      const result: Record<string, any> = {};
+      for (const [key, path] of Object.entries(mapping)) {
+        if (typeof path === 'string') {
+          const parts = path.split('.');
+          let val: any = input;
+          for (const part of parts) val = val?.[part];
+          result[key] = val;
+        } else {
+          result[key] = path;
+        }
+      }
+      return outputKey ? { [outputKey]: result } : result;
+    }
+
+    // If a simple expression (dot-path) is provided, resolve it
+    if (expression && typeof expression === 'string') {
+      const parts = expression.split('.');
+      let val: any = input;
+      for (const part of parts) val = val?.[part];
+      return outputKey ? { [outputKey]: val } : val;
+    }
+
+    // Default: pass through all inputs
     return input;
   }
 
   /**
-   * Execute condition node
+   * Execute condition node — evaluates a comparison expression and routes execution.
+   * Config supports:
+   *   - left: dot-path string to resolve from inputs
+   *   - operator: '==' | '!=' | '>' | '>=' | '<' | '<=' | 'contains' | 'exists'
+   *   - right: literal value or dot-path string
    */
   private async executeCondition(node: WorkflowNode, context: ExecutionContext): Promise<any> {
-    const { condition } = node.config;
+    const { left, operator, right } = node.config;
     const input = this.resolveInputs(node, context);
 
-    // Simple evaluation (in production, use safe expression evaluator)
-    const result = true; // Placeholder
+    const resolvePath = (val: any): any => {
+      if (typeof val !== 'string') return val;
+      const parts = val.split('.');
+      let resolved: any = input;
+      for (const part of parts) resolved = resolved?.[part];
+      return resolved !== undefined ? resolved : val;
+    };
 
-    return { conditionMet: result, input };
+    const leftVal = resolvePath(left);
+    const rightVal = resolvePath(right);
+
+    let conditionMet: boolean;
+    switch (operator) {
+      case '==':  conditionMet = leftVal == rightVal; break;
+      case '!=':  conditionMet = leftVal != rightVal; break;
+      case '>':   conditionMet = Number(leftVal) > Number(rightVal); break;
+      case '>=':  conditionMet = Number(leftVal) >= Number(rightVal); break;
+      case '<':   conditionMet = Number(leftVal) < Number(rightVal); break;
+      case '<=':  conditionMet = Number(leftVal) <= Number(rightVal); break;
+      case 'contains':
+        conditionMet = typeof leftVal === 'string'
+          ? leftVal.includes(String(rightVal))
+          : Array.isArray(leftVal)
+            ? leftVal.includes(rightVal)
+            : false;
+        break;
+      case 'exists':
+        conditionMet = leftVal !== undefined && leftVal !== null;
+        break;
+      default:
+        // Default to truthy check of left value
+        conditionMet = !!leftVal;
+    }
+
+    return { conditionMet, leftVal, rightVal, operator };
   }
 
   /**

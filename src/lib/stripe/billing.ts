@@ -1,6 +1,7 @@
 import { stripe } from './client';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
+import { transferToProvider } from './connect';
 
 interface UsageData {
   total_calls: number;
@@ -302,15 +303,45 @@ export async function createStripeInvoice(invoiceId: string) {
 export async function markInvoicePaid(stripeInvoiceId: string) {
   const supabase = createAdminClient();
 
-  await supabase
+  const { data: invoice } = await supabase
     .from('invoices')
     .update({
       status: 'paid',
       paid_at: new Date().toISOString(),
     })
-    .eq('stripe_invoice_id', stripeInvoiceId);
+    .eq('stripe_invoice_id', stripeInvoiceId)
+    .select('id, total, organization_id, metadata')
+    .single();
 
   logger.info('Invoice marked as paid', { stripeInvoiceId });
+
+  // Transfer provider's share if the invoice belongs to an API subscription
+  if (invoice) {
+    try {
+      const meta = (invoice.metadata ?? {}) as Record<string, any>;
+      const apiId: string | undefined = meta.api_id;
+      if (apiId) {
+        // Look up the API's owning organization
+        const { data: api } = await supabase
+          .from('apis')
+          .select('organization_id')
+          .eq('id', apiId)
+          .maybeSingle();
+        if (api?.organization_id) {
+          const grossCents = Math.round((invoice.total ?? 0) * 100);
+          await transferToProvider(
+            api.organization_id,
+            grossCents,
+            0.03,
+            `Invoice ${invoice.id} revenue share`
+          );
+        }
+      }
+    } catch (transferErr) {
+      // Non-fatal: log and continue so invoice is still marked paid
+      logger.error('Provider transfer failed after invoice paid', { error: transferErr, stripeInvoiceId });
+    }
+  }
 }
 
 /**
@@ -321,15 +352,31 @@ export async function markInvoicePaid(stripeInvoiceId: string) {
 export async function handlePaymentFailed(stripeInvoiceId: string) {
   const supabase = createAdminClient();
 
-  await supabase
+  const { data: invoice } = await supabase
     .from('invoices')
     .update({
       status: 'uncollectible',
     })
-    .eq('stripe_invoice_id', stripeInvoiceId);
+    .eq('stripe_invoice_id', stripeInvoiceId)
+    .select('id, organization_id, metadata')
+    .single();
 
   logger.warn('Invoice payment failed', { stripeInvoiceId });
 
-  // TODO: Send notification to customer
-  // TODO: Consider suspending subscription after multiple failures
+  // Suspend the associated subscription after payment failure
+  if (invoice) {
+    try {
+      const meta = (invoice.metadata ?? {}) as Record<string, any>;
+      const subscriptionId: string | undefined = meta.subscription_id;
+      if (subscriptionId) {
+        await supabase
+          .from('api_subscriptions')
+          .update({ status: 'past_due' } as any)
+          .eq('id', subscriptionId);
+        logger.warn('Subscription marked past_due after payment failure', { subscriptionId });
+      }
+    } catch (err) {
+      logger.error('Failed to suspend subscription after payment failure', { error: err, stripeInvoiceId });
+    }
+  }
 }

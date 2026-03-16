@@ -20,6 +20,12 @@ export function PublicNav() {
       <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground">
         Pricing
       </Link>
+      <Link href="/enterprise" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+        Enterprise
+      </Link>
+      <Link href="/audit" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+        API Audit
+      </Link>
       <Link href="/docs" className="text-sm font-medium text-muted-foreground hover:text-foreground">
         Docs
       </Link>
@@ -76,6 +82,20 @@ export function PublicNav() {
                   onClick={() => setMobileOpen(false)}
                 >
                   Pricing
+                </Link>
+                <Link
+                  href="/enterprise"
+                  className="text-base font-medium text-foreground"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Enterprise
+                </Link>
+                <Link
+                  href="/audit"
+                  className="text-base font-medium text-foreground"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  API Audit
                 </Link>
                 <Link
                   href="/docs"

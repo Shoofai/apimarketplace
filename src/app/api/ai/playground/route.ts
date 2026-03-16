@@ -4,41 +4,8 @@ import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
 import { generateCode } from '@/lib/ai/playground';
 import { parseOpenApiSpec } from '@/lib/utils/openapi-parser';
+import { consumeAIGeneration } from '@/lib/ai/allotment';
 import { logger } from '@/lib/utils/logger';
-
-// Rate limits per tier (generations per day)
-const RATE_LIMITS = {
-  free: 50,
-  pro: 200,
-  enterprise: Infinity,
-};
-
-async function checkRateLimit(userId: string, organizationId: string): Promise<boolean> {
-  const supabase = await createClient();
-
-  // Get organization tier (assuming you have a plan field)
-  const { data: org } = await supabase
-    .from('organizations')
-    .select('settings')
-    .eq('id', organizationId)
-    .single();
-
-  const tier = (org?.settings as any)?.tier || 'free';
-  const limit = RATE_LIMITS[tier as keyof typeof RATE_LIMITS] || RATE_LIMITS.free;
-
-  if (limit === Infinity) return true;
-
-  // Count usage in last 24 hours
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const { count } = await supabase
-    .from('ai_usage_tracking')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', userId)
-    .eq('feature', 'playground')
-    .gte('created_at', yesterday.toISOString());
-
-  return (count || 0) < limit;
-}
 
 /**
  * AI Playground code generation endpoint
@@ -49,16 +16,28 @@ export async function POST(request: Request) {
     const context = await requireAuth();
     const { apiId, userPrompt, language, sessionId } = await request.json();
 
-    // Check rate limit
-    const withinLimit = await checkRateLimit(context.user.id, context.organization_id);
-    if (!withinLimit) {
+    const supabase = await createClient();
+
+    // Get organization plan for allotment check
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('plan')
+      .eq('id', context.organization_id)
+      .single();
+
+    const plan = org?.plan ?? 'free';
+
+    // Check allotment / credit balance
+    const { allowed, source } = await consumeAIGeneration(context.organization_id, plan);
+    if (!allowed) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded. Upgrade your plan for more AI generations.' },
-        { status: 429 }
+        {
+          error: 'Daily AI limit reached. Purchase credits to continue.',
+          buyCreditsUrl: '/dashboard/credits',
+        },
+        { status: 403 }
       );
     }
-
-    const supabase = await createClient();
 
     // Fetch API details (openapi_spec from api_specs)
     const { data: api } = await supabase
@@ -130,6 +109,7 @@ export async function POST(request: Request) {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
+        'X-AI-Source': source ?? 'allotment',
       },
     });
   } catch (error) {

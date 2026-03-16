@@ -35,6 +35,7 @@ import {
   Plug,
   Package,
   Coins,
+  UserPlus,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -165,6 +166,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       adminOnly: true,
     },
     {
+      title: 'Stakeholders',
+      href: '/dashboard/admin/stakeholders',
+      icon: UserPlus,
+      adminOnly: true,
+    },
+    {
       title: 'Support',
       href: '/dashboard/admin/support',
       icon: Ticket,
@@ -186,6 +193,30 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       title: 'Dev & data',
       href: '/dashboard/admin/dev',
       icon: Database,
+      adminOnly: true,
+    },
+    {
+      title: 'AI Monitor',
+      href: '/dashboard/admin/ai',
+      icon: Sparkles,
+      adminOnly: true,
+    },
+    {
+      title: 'Churn Risk',
+      href: '/dashboard/admin/churn',
+      icon: TrendingDown,
+      adminOnly: true,
+    },
+    {
+      title: 'Growth',
+      href: '/dashboard/growth',
+      icon: BarChart3,
+      adminOnly: true,
+    },
+    {
+      title: 'Enterprise',
+      href: '/dashboard/admin/enterprise',
+      icon: Crown,
       adminOnly: true,
     },
   ];

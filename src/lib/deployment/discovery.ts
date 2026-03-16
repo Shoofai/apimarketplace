@@ -167,6 +167,7 @@ export class CodebaseDiscovery {
         tables: await this.detectSupabaseTables(),
         hasRLS: await this.detectRLSUsage(),
         hasGeneratedTypes: await this.detectSupabaseGeneratedTypes(),
+        projectId: this.getSupabaseProjectId(),
       };
     } else if (deps['@prisma/client']) {
       services.database = {
@@ -482,6 +483,22 @@ export class CodebaseDiscovery {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  /** Read Supabase project ref from env for fix prompts (e.g. gen types). */
+  private getSupabaseProjectId(): string | undefined {
+    const explicit = process.env.SUPABASE_PROJECT_ID ?? process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
+    if (explicit) return explicit;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+    if (!url) return undefined;
+    try {
+      const u = new URL(url);
+      const host = u.hostname;
+      const match = host.match(/^([a-zA-Z0-9-]+)\.supabase\.co$/);
+      return match?.[1];
+    } catch {
+      return undefined;
     }
   }
 

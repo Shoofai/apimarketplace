@@ -213,6 +213,9 @@ export function DeploymentAuditor() {
                         </Badge>
                         <Badge variant="outline">{r.category}</Badge>
                       </div>
+                      {r.reason && (
+                        <p className="text-xs text-muted-foreground mt-0.5">Included: {r.reason}</p>
+                      )}
                       <p className="text-muted-foreground mt-1">{r.message ?? (r.passed ? 'Passed' : 'Failed')}</p>
                       {r.detail && <p className="mt-1 text-xs text-muted-foreground font-mono truncate">{r.detail}</p>}
                       {!r.passed && r.fixPromptTemplate && (

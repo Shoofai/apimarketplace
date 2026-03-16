@@ -127,7 +127,73 @@ export async function createDashboardLink(accountId: string) {
 }
 
 /**
- * Handles incoming Connect account updates from webhooks.
+ * Transfers revenue to a provider's Stripe Connect account after deducting platform fee.
+ * Called after an invoice is marked as paid.
+ *
+ * @param organizationId - Provider organization UUID
+ * @param grossAmountCents - Gross amount in cents to split
+ * @param platformFeePct - Platform fee percentage (default 0.03 = 3%)
+ * @param description - Transfer description
+ */
+export async function transferToProvider(
+  organizationId: string,
+  grossAmountCents: number,
+  platformFeePct: number = 0.03,
+  description?: string
+) {
+  const supabase = createAdminClient();
+
+  const { data: billingAccount } = await supabase
+    .from('billing_accounts')
+    .select('stripe_connect_account_id, connect_status')
+    .eq('organization_id', organizationId)
+    .maybeSingle();
+
+  if (!billingAccount?.stripe_connect_account_id) {
+    logger.warn('No Connect account for provider — skipping transfer', { organizationId });
+    return null;
+  }
+
+  if (billingAccount.connect_status !== 'active') {
+    logger.warn('Connect account not active — skipping transfer', {
+      organizationId,
+      connectStatus: billingAccount.connect_status,
+    });
+    return null;
+  }
+
+  const providerAmountCents = Math.floor(grossAmountCents * (1 - platformFeePct));
+
+  if (providerAmountCents <= 0) {
+    logger.warn('Transfer amount is zero — skipping', { grossAmountCents, platformFeePct });
+    return null;
+  }
+
+  try {
+    const transfer = await stripe.transfers.create({
+      amount: providerAmountCents,
+      currency: 'usd',
+      destination: billingAccount.stripe_connect_account_id,
+      description: description ?? `Provider revenue share — ${organizationId}`,
+      metadata: {
+        organization_id: organizationId,
+        gross_amount_cents: grossAmountCents,
+        platform_fee_pct: String(platformFeePct),
+      },
+    });
+
+    logger.info('Provider transfer completed', {
+      organizationId,
+      transferId: transfer.id,
+      providerAmountCents,
+    });
+
+    return transfer;
+  } catch (error) {
+    logger.error('Failed to transfer to provider', { error, organizationId, grossAmountCents });
+    throw error;
+  }
+}
  * 
  * @param accountId - Stripe Account ID
  */

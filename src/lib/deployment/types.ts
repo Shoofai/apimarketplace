@@ -126,6 +126,7 @@ export interface CheckResultWithMeta extends CheckResult {
   name: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
   fixPromptTemplate?: string;
+  reason?: string;
 }
 
 export interface DiagnosticReport {

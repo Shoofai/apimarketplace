@@ -30,7 +30,7 @@ export default async function AcceptableUsePolicyPage() {
     <LegalPageLayout
       title="Acceptable Use Policy"
       version="Version 1.0"
-      lastUpdated="February 14, 2026"
+      lastUpdated="February 22, 2026"
       tocItems={TOC_ITEMS}
     >
       <p>
@@ -77,6 +77,12 @@ export default async function AcceptableUsePolicyPage() {
             <li>
               <strong>Intellectual property infringement:</strong> Infringe copyrights, trademarks, patents, or other
               intellectual property rights. Do not publish APIs or content you do not have rights to use.
+            </li>
+            <li>
+              <strong>AI and playground abuse:</strong> Do not use AI-powered features (e.g., code generation, playground) to generate malicious code, bypass security, or violate these policies. Do not attempt to extract training data or abuse rate limits for AI endpoints.
+            </li>
+            <li>
+              <strong>Referral and affiliate fraud:</strong> Do not self-refer, use fake traffic, bot signups, or misleading links to obtain referral or affiliate rewards. Do not circumvent attribution (e.g., stripping or spoofing referral parameters).
             </li>
           </ul>
 
@@ -221,9 +227,13 @@ export default async function AcceptableUsePolicyPage() {
                   <td className="p-3">Testing API integration in a development environment</td>
                   <td className="p-3">Sending massive traffic to overwhelm an API or the platform</td>
                 </tr>
-                <tr>
+                <tr className="border-b border-border">
                   <td className="p-3">Reporting a vulnerability via our contact form</td>
                   <td className="p-3">Publicly disclosing a vulnerability before a fix is deployed</td>
+                </tr>
+                <tr>
+                  <td className="p-3">Using the playground to test an API integration</td>
+                  <td className="p-3">Using AI code generation to produce malware or abuse referral programs</td>
                 </tr>
               </tbody>
             </table>

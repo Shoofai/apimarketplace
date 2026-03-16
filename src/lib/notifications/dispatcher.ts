@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
+import { Resend } from 'resend';
 
 export interface NotificationEvent {
   type: string;
@@ -88,10 +89,9 @@ export async function dispatchNotification(event: NotificationEvent): Promise<vo
       });
     }
 
-    // Email notification (queue for Edge Function)
+    // Email notification via Resend
     if (emailEnabled) {
-      // TODO: Queue email via Edge Function
-      logger.info('Email notification queued', { type: event.type, userId: event.userId });
+      await sendEmailNotification(event, supabase);
     }
 
     // Webhook notifications
@@ -107,6 +107,62 @@ export async function dispatchNotification(event: NotificationEvent): Promise<vo
   } catch (error) {
     logger.error('Failed to dispatch notification', { error, event });
     throw error;
+  }
+}
+
+/**
+ * Sends an email notification via Resend.
+ * Falls back gracefully if RESEND_API_KEY is not configured.
+ */
+async function sendEmailNotification(
+  event: NotificationEvent,
+  supabase: ReturnType<typeof createAdminClient>
+): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    logger.warn('RESEND_API_KEY not set — skipping email', { type: event.type });
+    return;
+  }
+
+  try {
+    // Fetch the user's email address
+    const { data: userData } = await supabase
+      .from('users')
+      .select('email, full_name')
+      .eq('id', event.userId)
+      .maybeSingle();
+
+    if (!userData?.email) {
+      logger.warn('No email found for user — skipping email', { userId: event.userId });
+      return;
+    }
+
+    const resend = new Resend(apiKey);
+    const fromName = process.env.NEXT_PUBLIC_PLATFORM_NAME ?? 'APIMarketplace';
+    const fromEmail = process.env.EMAIL_FROM ?? `notifications@${process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') ?? 'apimarketplace.pro'}`;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://apimarketplace.pro';
+
+    const bodyHtml = `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
+        <h2 style="margin-top:0;">${event.title}</h2>
+        <p style="color:#555;">${event.body}</p>
+        ${event.link ? `<p><a href="${siteUrl}${event.link}" style="background:#6366f1;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:8px;">View Details</a></p>` : ''}
+        <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+        <p style="font-size:12px;color:#999;">You received this email because you have notifications enabled in your ${fromName} account. <a href="${siteUrl}/dashboard/settings/notifications">Manage preferences</a></p>
+      </div>
+    `;
+
+    await resend.emails.send({
+      from: `${fromName} <${fromEmail}>`,
+      to: userData.email,
+      subject: event.title,
+      html: bodyHtml,
+    });
+
+    logger.info('Email notification sent', { type: event.type, userId: event.userId, email: userData.email });
+  } catch (error) {
+    logger.error('Failed to send email notification', { error, type: event.type, userId: event.userId });
+    // Non-fatal: don't re-throw so other channels still dispatch
   }
 }
 

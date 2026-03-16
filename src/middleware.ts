@@ -3,7 +3,6 @@ import { createClient } from '@supabase/supabase-js';
 
 /**
  * Resolve a custom domain to an org slug via Supabase REST (no server-side cookies needed).
- * Returns the org slug or null if not found.
  */
 async function resolveCustomDomain(host: string): Promise<string | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -25,12 +24,14 @@ async function resolveCustomDomain(host: string): Promise<string | null> {
 
 /**
  * Security headers middleware.
- * Strict headers (CSP, HSTS, etc.) are only applied in production to avoid
- * Safari ChunkLoadError and other dev-only issues with chunk loading.
- * Also handles custom domain → internal portal rewrites.
+ * - Applies strict security headers in production.
+ * - Handles custom domain → internal portal rewrites.
+ * - Tracks ?aff= affiliate cookie.
+ * - Enforces authentication on /dashboard/* at the edge level.
  */
 export async function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development';
+  const pathname = request.nextUrl.pathname;
 
   // Custom domain rewrite: if the host doesn't match the platform domain,
   // look up the org and rewrite to /portal/[org_slug]
@@ -46,7 +47,7 @@ export async function middleware(request: NextRequest) {
     host !== platformHost &&
     !host.startsWith('localhost') &&
     !host.includes('127.0.0.1') &&
-    !request.nextUrl.pathname.startsWith('/portal/')
+    !pathname.startsWith('/portal/')
   ) {
     const orgSlug = await resolveCustomDomain(host);
     if (orgSlug) {
@@ -56,7 +57,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // ?aff=<code> tracking: write a 30-day affiliate cookie
+  // Dashboard auth guard — redirect unauthenticated users to /login
+  // We check for the presence of a Supabase session cookie as a fast heuristic.
+  // Individual pages still do server-side auth checks, but this prevents
+  // unauthenticated users from receiving dashboard HTML at the edge.
+  if (pathname.startsWith('/dashboard')) {
+    const cookieHeader = request.headers.get('cookie') ?? '';
+    // Supabase cookies are named sb-<project-ref>-auth-token
+    const hasAuthCookie = /sb-[a-z0-9]+-auth-token/.test(cookieHeader);
+    if (!hasAuthCookie) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = '/login';
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // ?aff=<code> tracking: write a 30-day affiliate cookie + increment click count
   const affCode = request.nextUrl.searchParams.get('aff');
   const response = NextResponse.next();
 
@@ -67,6 +84,14 @@ export async function middleware(request: NextRequest) {
       httpOnly: true,
       sameSite: 'lax',
     });
+
+    // Increment click count asynchronously via internal API route
+    const origin = siteUrl || `http://${host}`;
+    fetch(`${origin}/api/affiliate/track-click`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: affCode }),
+    }).catch(() => {}); // Fire-and-forget, non-blocking
   }
 
   if (!isDev) {

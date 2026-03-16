@@ -11,27 +11,49 @@ export class AdaptiveCheckGenerator {
   generateChecks(snapshot: CodeSnapshot): CheckDefinition[] {
     const checks: CheckDefinition[] = [];
 
-    checks.push(...this.getUniversalChecks(snapshot));
+    const universalChecks = this.getUniversalChecks(snapshot);
+    console.log(`  ✓ Adding universal checks (${universalChecks.length})`);
+    checks.push(...universalChecks);
 
     if (snapshot.services.database) {
-      checks.push(...this.getDatabaseChecks(snapshot));
+      const dbChecks = this.getDatabaseChecks(snapshot);
+      if (dbChecks.length > 0) {
+        console.log(`  ✓ Adding ${snapshot.services.database.type} checks (${dbChecks.length})`);
+        checks.push(...dbChecks);
+      }
     }
     if (snapshot.services.auth) {
-      checks.push(...this.getAuthChecks(snapshot));
+      const authChecks = this.getAuthChecks(snapshot);
+      console.log(`  ✓ Adding ${snapshot.services.auth.type} checks (${authChecks.length})`);
+      checks.push(...authChecks);
     }
     if (snapshot.services.payments) {
-      checks.push(...this.getPaymentChecks(snapshot));
+      const paymentChecks = this.getPaymentChecks(snapshot);
+      console.log(`  ✓ Adding payment checks (${paymentChecks.length})`);
+      checks.push(...paymentChecks);
+    }
+    if (snapshot.customLogic.businessRules.length > 0) {
+      const bizChecks = this.getBusinessLogicChecks(snapshot);
+      console.log(`  ✓ Adding business logic checks (${bizChecks.length})`);
+      checks.push(...bizChecks);
     }
     if (snapshot.changes) {
-      checks.push(...this.getChangeImpactChecks(snapshot));
+      const changeChecks = this.getChangeImpactChecks(snapshot);
+      if (changeChecks.length > 0) {
+        console.log(`  ✓ Adding change impact checks (${changeChecks.length}) — ${snapshot.changes.filesChanged} files changed`);
+        checks.push(...changeChecks);
+      }
     }
     if (
       snapshot.risks.level === 'critical' ||
       snapshot.risks.level === 'high'
     ) {
-      checks.push(...this.getHighRiskChecks(snapshot));
+      const riskChecks = this.getHighRiskChecks(snapshot);
+      console.log(`  ✓ Adding high-risk checks (${riskChecks.length})`);
+      checks.push(...riskChecks);
     }
 
+    console.log(`📊 Generated ${checks.length} checks\n`);
     return checks;
   }
 
@@ -135,6 +157,7 @@ export class AdaptiveCheckGenerator {
       });
 
       if (!db.hasGeneratedTypes) {
+        const projectId = db.projectId ?? '<project-id>';
         checks.push({
           id: 'supabase-types-generated',
           category: 'type-safety',
@@ -145,8 +168,7 @@ export class AdaptiveCheckGenerator {
             passed: false,
             message: 'types/supabase.ts (or similar) not found',
           }),
-          fixPromptTemplate:
-            'Run: npx supabase gen types typescript --project-id <id> > types/supabase.ts',
+          fixPromptTemplate: `Run: npx supabase gen types typescript --project-id ${projectId} > types/supabase.ts (or src/types/supabase.ts)`,
           enabled: true,
           reason: 'Supabase detected without generated types',
         });
@@ -270,6 +292,26 @@ export class AdaptiveCheckGenerator {
         fixPromptTemplate: 'Review RLS, auth guards, and env secrets before deploy',
         enabled: true,
         reason: 'High/critical risk level',
+      },
+    ];
+  }
+
+  private getBusinessLogicChecks(snapshot: CodeSnapshot): CheckDefinition[] {
+    const count = snapshot.customLogic.businessRules.length;
+    return [
+      {
+        id: 'business-logic-review',
+        category: 'quality',
+        name: 'Business Logic Review',
+        description: `Review or test business logic in ${count} file(s) (verification, trust, moderation, etc.)`,
+        severity: 'medium',
+        validator: async (): Promise<CheckResult> => ({
+          passed: true,
+          message: `${count} file(s) with business-rule keywords; ensure critical paths are tested`,
+        }),
+        fixPromptTemplate: 'Add tests or manual review for business logic in the listed files',
+        enabled: true,
+        reason: `${count} business-rule file(s) detected`,
       },
     ];
   }

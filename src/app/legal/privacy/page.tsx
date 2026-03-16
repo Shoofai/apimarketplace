@@ -41,7 +41,7 @@ export default async function PrivacyPolicyPage() {
     <LegalPageLayout
       title="Privacy Policy"
       version="Version 1.1"
-      lastUpdated="February 14, 2026"
+      lastUpdated="February 22, 2026"
       tocItems={TOC_ITEMS}
     >
       <p>
@@ -75,12 +75,24 @@ export default async function PrivacyPolicyPage() {
       </ul>
       <p><strong>Profile and API Information:</strong></p>
       <ul>
-        <li>Listed APIs, documentation, pricing, and metadata (for Providers)</li>
-        <li>Subscriptions, API keys (hashed), and usage quotas (for Developers)</li>
+        <li>Listed APIs, documentation, pricing, versions, and metadata (for Providers)</li>
+        <li>Subscriptions, API keys (hashed), usage quotas, favorites, and collections (for Developers)</li>
       </ul>
-      <p><strong>Support Communications:</strong></p>
+      <p><strong>Referral and affiliate data:</strong></p>
       <ul>
-        <li>Messages, attachments, and contact history when you reach out to support</li>
+        <li>Affiliate or referral codes you use or generate; referral links and attribution (e.g., cookie-based attribution for commission eligibility)</li>
+      </ul>
+      <p><strong>Webhooks and notifications:</strong></p>
+      <ul>
+        <li>Webhook endpoint URLs and configuration; notification preferences (email, in-app, webhook events)</li>
+      </ul>
+      <p><strong>AI and playground usage:</strong></p>
+      <ul>
+        <li>Inputs you provide to AI-powered features (e.g., code generation, playground requests) and generated outputs; session data for improving and securing these features</li>
+      </ul>
+      <p><strong>Community and support:</strong></p>
+      <ul>
+        <li>Forum posts, challenge submissions, and support ticket messages, attachments, and contact history</li>
       </ul>
       <p><strong>Usage Data (automatically collected):</strong></p>
       <ul>
@@ -106,11 +118,13 @@ export default async function PrivacyPolicyPage() {
 
       <h2 id="how-we-use">4. How We Use Your Information</h2>
       <ul>
-        <li>Provide and operate the Service (marketplace, API gateway, billing, analytics)</li>
-        <li>Authenticate users and manage accounts</li>
-        <li>Process transactions and subscriptions</li>
+        <li>Provide and operate the Service (marketplace, discovery, API gateway, billing, analytics, playground, forum, challenges)</li>
+        <li>Authenticate users and manage accounts and organizations</li>
+        <li>Process transactions, subscriptions, and referral/affiliate attribution</li>
+        <li>Deliver webhooks and notifications (email, in-app, webhook endpoints) per your preferences</li>
+        <li>Power AI features (code generation, playground); we may use inputs and outputs to operate, secure, and improve these features</li>
         <li>Monitor usage, enforce limits, and prevent abuse</li>
-        <li>Send transactional communications (confirmations, receipts, security alerts)</li>
+        <li>Send transactional communications (confirmations, receipts, security alerts, ticket updates)</li>
         <li>Improve the product (analytics, debugging, feature development)</li>
         <li>Comply with legal, security, and regulatory obligations</li>
         <li>Respond to support requests and legal process</li>
@@ -119,10 +133,11 @@ export default async function PrivacyPolicyPage() {
       <h2 id="sharing">5. How We Share Your Information</h2>
       <p><strong>Service Providers (Sub-Processors):</strong> We share data with trusted providers under contractual protections:</p>
       <ul>
-        <li>Stripe—payment processing (when billing is used)</li>
+        <li>Stripe—payment processing and Connect payouts (when billing is used)</li>
         <li>Supabase—database, authentication, realtime</li>
         <li>Vercel—hosting, CDN, edge functions</li>
         <li>Anthropic—AI features (e.g., code generation)</li>
+        <li>Resend—transactional and notification email delivery</li>
       </ul>
       <p><strong>API Providers:</strong> When you subscribe to an API, we share your organization name, tier, and usage data with that API provider so they can provide the service.</p>
       <p><strong>Legal and Safety:</strong> We may disclose data when required by law, court order, or legal process, or to protect rights, safety, or property.</p>

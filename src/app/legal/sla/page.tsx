@@ -30,7 +30,7 @@ export default async function ServiceLevelAgreementPage() {
     <LegalPageLayout
       title="Service Level Agreement"
       version="Version 1.0"
-      lastUpdated="February 14, 2026"
+      lastUpdated="February 22, 2026"
       tocItems={TOC_ITEMS}
     >
       <p>
@@ -45,11 +45,14 @@ export default async function ServiceLevelAgreementPage() {
             This SLA applies to the {platformName} platform services we operate directly, including:
           </p>
           <ul>
-            <li>Website and marketplace (discovery, browsing, search)</li>
+            <li>Website and marketplace (discovery, browsing, search, compare, bundles, collections)</li>
             <li>Authentication and account management</li>
             <li>API gateway and routing (for APIs proxied through our platform)</li>
-            <li>Billing and subscription management</li>
-            <li>Developer dashboard and documentation</li>
+            <li>Billing and subscription management; Stripe Connect integration</li>
+            <li>Developer and provider dashboards, documentation, and API keys</li>
+            <li>Playground and AI-powered code generation (availability of underlying AI services is subject to third-party provider SLAs)</li>
+            <li>Webhook delivery and notification services (email, in-app)</li>
+            <li>Support ticket system and status page</li>
           </ul>
       <LegalCallout variant="muted" title="Scope">
         <p>

@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,11 +25,13 @@ const pricingTiers = [
       { name: 'White-label option', included: false },
     ],
     cta: 'Start Free',
+    plan: null as string | null,
+    href: '/signup',
     popular: false,
   },
   {
     name: 'Pro',
-    price: 49,
+    price: 99,
     description: 'For growing teams and production workloads',
     features: [
       { name: 'Up to 1M API calls/month', included: true },
@@ -41,12 +44,14 @@ const pricingTiers = [
       { name: 'Workflows & Collaborative Testing', included: true },
       { name: 'White-label option', included: false },
     ],
-    cta: 'Start Pro Trial',
+    cta: 'Upgrade to Pro',
+    plan: 'pro' as string | null,
+    href: null as string | null,
     popular: true,
   },
   {
     name: 'Enterprise',
-    price: null,
+    price: null as number | null,
     description: 'For organizations requiring custom solutions',
     features: [
       { name: 'Unlimited API calls', included: true },
@@ -59,6 +64,8 @@ const pricingTiers = [
       { name: 'Security & compliance review', included: true },
     ],
     cta: 'Contact Sales',
+    plan: null as string | null,
+    href: '/enterprise',
     popular: false,
   },
 ];
@@ -67,6 +74,8 @@ export default function Pricing() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [annual, setAnnual] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handlePricingCTA = async (tier: string) => {
     await trackCTAClick({
@@ -74,6 +83,32 @@ export default function Pricing() {
       cta_location: 'pricing_section',
       metadata: { billing_period: annual ? 'annual' : 'monthly' },
     });
+  };
+
+  const handleProCheckout = async () => {
+    setLoading(true);
+    await handlePricingCTA('pro');
+    try {
+      const res = await fetch('/api/platform/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: 'pro' }),
+      });
+      if (res.status === 401) {
+        router.push('/signup?plan=pro');
+        return;
+      }
+      const data = await res.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        router.push('/dashboard/settings/billing');
+      }
+    } catch {
+      router.push('/signup?plan=pro');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -183,19 +218,31 @@ export default function Pricing() {
                 </ul>
 
                 {/* CTA */}
-                <Button
-                  variant={tier.popular ? 'gradient' : 'outline'}
-                  size="lg"
-                  className="w-full"
-                  asChild
-                >
-                  <Link
-                    href={tier.name === 'Enterprise' ? '/signup?plan=enterprise' : '/signup'}
-                    onClick={() => handlePricingCTA(tier.name)}
+                {tier.plan === 'pro' ? (
+                  <Button
+                    variant="gradient"
+                    size="lg"
+                    className="w-full"
+                    onClick={handleProCheckout}
+                    disabled={loading}
                   >
-                    {tier.cta}
-                  </Link>
-                </Button>
+                    {loading ? 'Loading…' : tier.cta}
+                  </Button>
+                ) : (
+                  <Button
+                    variant={tier.popular ? 'gradient' : 'outline'}
+                    size="lg"
+                    className="w-full"
+                    asChild
+                  >
+                    <Link
+                      href={tier.href ?? '/signup'}
+                      onClick={() => handlePricingCTA(tier.name)}
+                    >
+                      {tier.cta}
+                    </Link>
+                  </Button>
+                )}
               </Card>
             </motion.div>
           ))}

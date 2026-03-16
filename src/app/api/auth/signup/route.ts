@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { user_id, email, full_name, organization_name, organization_slug } = body;
+    const { user_id, email, full_name, organization_name, organization_slug, organization_type } = body;
 
     if (!user_id || !email || !full_name || !organization_name) {
       throw new ValidationError('Missing required fields');
@@ -35,14 +35,17 @@ export async function POST(request: Request) {
 
     const admin = createAdminClient();
 
-    // Start a transaction-like operation
+    // Validate org type — default to 'both' if not provided or invalid
+    const validOrgTypes = ['consumer', 'provider', 'both'] as const;
+    const orgType = validOrgTypes.includes(organization_type) ? organization_type : 'both';
+
     // 1. Create organization
     const { data: org, error: orgError } = await admin
       .from('organizations')
       .insert({
         name: organization_name,
         slug: organization_slug || generateSlug(organization_name),
-        type: 'both', // Default to both provider and consumer
+        type: orgType,
       })
       .select()
       .single();
@@ -99,6 +102,67 @@ export async function POST(request: Request) {
     });
 
     logger.info('User signup completed', { user_id, org_id: org.id });
+
+    // Referral reward: if the body includes a ref code, grant credits to both parties
+    const { ref_code } = body;
+    if (ref_code && typeof ref_code === 'string') {
+      try {
+        const REFERRAL_CREDITS = 100; // Credits granted to both referrer and new user
+
+        // Find the referral record
+        const { data: referral } = await admin
+          .from('referrals')
+          .select('id, referrer_user_id, referrer_organization_id')
+          .eq('code', ref_code)
+          .eq('status', 'pending')
+          .maybeSingle();
+
+        if (referral) {
+          // Mark referral as completed
+          await admin
+            .from('referrals')
+            .update({ status: 'completed', referred_user_id: user_id, converted_at: new Date().toISOString() } as any)
+            .eq('id', referral.id);
+
+          // Grant credits to referrer
+          const { data: referrerBalance } = await admin
+            .from('credit_balances')
+            .select('balance')
+            .eq('organization_id', referral.referrer_organization_id)
+            .maybeSingle();
+          const referrerNew = ((referrerBalance?.balance as number) ?? 0) + REFERRAL_CREDITS;
+          await admin.from('credit_balances').upsert(
+            { organization_id: referral.referrer_organization_id, balance: referrerNew, updated_at: new Date().toISOString() },
+            { onConflict: 'organization_id' }
+          );
+          await admin.from('credit_ledger').insert({
+            organization_id: referral.referrer_organization_id,
+            amount: REFERRAL_CREDITS,
+            type: 'referral',
+            description: `Referral reward — ${email} signed up`,
+            balance_after: referrerNew,
+          } as any);
+
+          // Grant credits to the new user
+          await admin.from('credit_balances').upsert(
+            { organization_id: org.id, balance: REFERRAL_CREDITS, updated_at: new Date().toISOString() },
+            { onConflict: 'organization_id' }
+          );
+          await admin.from('credit_ledger').insert({
+            organization_id: org.id,
+            amount: REFERRAL_CREDITS,
+            type: 'referral',
+            description: 'Welcome bonus — referred signup',
+            balance_after: REFERRAL_CREDITS,
+          } as any);
+
+          logger.info('Referral rewards granted', { ref_code, referrer_org: referral.referrer_organization_id, new_org: org.id });
+        }
+      } catch (refErr) {
+        // Non-fatal — don't block signup if referral reward fails
+        logger.warn('Referral reward failed', { error: refErr, ref_code });
+      }
+    }
 
     return NextResponse.json({
       success: true,

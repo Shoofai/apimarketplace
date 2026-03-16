@@ -68,7 +68,7 @@ export function PublishWizard({ categories }: PublishWizardProps) {
   const [dataSchemaPreview, setDataSchemaPreview] = useState('');
 
   const [plans, setPlans] = useState<PricingPlan[]>([
-    { name: 'Free', price_monthly: 0, description: '', included_calls: 1000, rate_limit_per_day: 1000, features: [] },
+    { name: 'Free', price_monthly: 0, description: '', included_calls: 10000, rate_limit_per_day: 1000, features: [] },
   ]);
 
   const handleNameChange = (value: string) => {
@@ -186,11 +186,13 @@ export function PublishWizard({ categories }: PublishWizardProps) {
       }
       const apiId = data.api?.id;
       if (apiId) {
-        const pubRes = await fetch(`/api/apis/${apiId}/publish`, { method: 'POST' });
-        if (pubRes.ok) {
-          router.push('/dashboard/provider/apis');
+        // Submit for admin review instead of self-publishing
+        const reviewRes = await fetch(`/api/apis/${apiId}/submit-review`, { method: 'PATCH' });
+        if (reviewRes.ok) {
+          router.push('/dashboard/provider/apis?submitted=1');
           return;
         }
+        // If submit-for-review fails, go to the API detail so the provider can submit manually
         router.push(`/dashboard/provider/apis/${apiId}`);
       }
       router.push('/dashboard/provider/apis');
@@ -521,12 +523,12 @@ export function PublishWizard({ categories }: PublishWizardProps) {
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Publishing...
+                  Submitting...
                 </>
               ) : (
                 <>
                   <Check className="h-4 w-4 mr-2" />
-                  Publish API
+                  Submit for Review
                 </>
               )}
             </Button>

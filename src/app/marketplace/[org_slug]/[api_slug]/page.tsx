@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { InstantCodeGenerator } from '@/components/growth/InstantCodeGenerator';
+import { APITestSandbox } from '@/components/growth/APITestSandbox';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, Users, ExternalLink, Globe, Database, FileDown, RefreshCw, FileText, ShieldCheck } from 'lucide-react';
@@ -361,6 +363,32 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
 
           {/* Endpoints Tab */}
           <TabsContent value="endpoints">
+            {/* AI Code Generator — works pre-login */}
+            {api.endpoints && api.endpoints.length > 0 && (
+              <div className="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <InstantCodeGenerator
+                  apiName={api.name}
+                  apiBaseUrl={(api as any).base_url ?? ''}
+                  apiId={api.id}
+                  endpoints={api.endpoints.slice(0, 30).map((ep: any) => ({
+                    method: ep.method ?? 'GET',
+                    path: ep.path ?? '/',
+                    summary: ep.description ?? '',
+                  }))}
+                />
+                <APITestSandbox
+                  apiName={api.name}
+                  apiBaseUrl={(api as any).base_url ?? undefined}
+                  apiId={api.id}
+                  endpoints={api.endpoints.slice(0, 30).map((ep: any) => ({
+                    method: ep.method ?? 'GET',
+                    path: ep.path ?? '/',
+                    summary: ep.description ?? '',
+                  }))}
+                />
+              </div>
+            )}
+
             <div className="bg-white rounded-lg shadow-sm divide-y">
               {api.endpoints && api.endpoints.length > 0 ? (
                 api.endpoints.map((endpoint: any) => (

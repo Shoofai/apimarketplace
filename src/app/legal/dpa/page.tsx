@@ -32,7 +32,7 @@ export default async function DataProcessingAgreementPage() {
     <LegalPageLayout
       title="Data Processing Agreement"
       version="Version 1.0"
-      lastUpdated="February 14, 2026"
+      lastUpdated="February 22, 2026"
       tocItems={TOC_ITEMS}
     >
       <p>
@@ -89,18 +89,20 @@ export default async function DataProcessingAgreementPage() {
           <h2 id="scope">3. Processing Instructions and Scope</h2>
           <p>The Processor processes Personal Data for the following purposes:</p>
           <ul>
-            <li>Providing and operating the {platformName} platform (marketplace, API gateway, billing, analytics)</li>
-            <li>Authenticating users and managing accounts</li>
-            <li>Processing subscriptions and payments (via Stripe)</li>
-            <li>Storing and serving API documentation and metadata</li>
+            <li>Providing and operating the {platformName} platform (marketplace, API gateway, billing, analytics, playground, forum, challenges)</li>
+            <li>Authenticating users and managing accounts and organizations</li>
+            <li>Processing subscriptions, payments (via Stripe), and referral/affiliate attribution</li>
+            <li>Storing and serving API documentation, metadata, and webhook configuration</li>
+            <li>Delivering AI-powered features (e.g., code generation); processing inputs and outputs as necessary to provide and improve these features</li>
             <li>Monitoring usage, performance, and security</li>
-            <li>Communicating with users (support, notifications, transactional email)</li>
+            <li>Communicating with users (support tickets, notifications, transactional email via Resend)</li>
             <li>Complying with legal obligations</li>
           </ul>
           <p>
             <strong>Categories of Personal Data:</strong> Account identifiers (name, email, organization), payment
-            information (processed by Stripe), usage data (API calls, subscriptions, analytics), device and log
-            data (IP address, user agent, timestamps).
+            information (processed by Stripe), usage data (API calls, subscriptions, analytics), referral/affiliate
+            data, webhook and notification preferences, AI/playground inputs and outputs where applicable, forum and
+            support content, device and log data (IP address, user agent, timestamps).
           </p>
           <p>
             <strong>Categories of Data Subjects:</strong> Developers, API providers, organization administrators,
@@ -145,6 +147,11 @@ export default async function DataProcessingAgreementPage() {
                 <tr className="border-b border-border">
                   <td className="p-3">Anthropic</td>
                   <td className="p-3">AI features (e.g., code generation)</td>
+                  <td className="p-3">US</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3">Resend</td>
+                  <td className="p-3">Transactional and notification email delivery</td>
                   <td className="p-3">US</td>
                 </tr>
               </tbody>

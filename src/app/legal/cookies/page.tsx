@@ -6,14 +6,14 @@ import { LegalCallout } from '@/components/legal/LegalCallout';
 import { ContactButton } from '@/components/contact/ContactButton';
 
 const TOC_ITEMS = [
-  { id: 'introduction', label: 'Introduction' },
-  { id: 'what-are-cookies', label: 'What Are Cookies?' },
-  { id: 'types-of-cookies', label: 'Types of Cookies We Use' },
-  { id: 'specific-cookies', label: 'Specific Cookies We Use' },
-  { id: 'how-to-control', label: 'How to Control Cookies' },
-  { id: 'your-rights', label: 'Your Rights' },
-  { id: 'changes', label: 'Changes to This Policy' },
-  { id: 'contact', label: 'Contact Us' },
+  { id: 'introduction', label: '1. Introduction' },
+  { id: 'what-are-cookies', label: '2. What Are Cookies?' },
+  { id: 'types-of-cookies', label: '3. Types of Cookies We Use' },
+  { id: 'specific-cookies', label: '4. Specific Cookies We Use' },
+  { id: 'how-to-control', label: '5. How to Control Cookies' },
+  { id: 'your-rights', label: '6. Your Rights' },
+  { id: 'changes', label: '7. Changes to This Policy' },
+  { id: 'contact', label: '8. Contact Us' },
 ];
 
 export async function generateMetadata() {
@@ -30,7 +30,7 @@ export default async function CookiePolicyPage() {
     <LegalPageLayout
       title="Cookie Policy"
       version="Current"
-      lastUpdated="February 12, 2026"
+      lastUpdated="February 22, 2026"
       tocItems={TOC_ITEMS}
       headerAction={
         <Link href="/legal/cookie-settings">
@@ -40,17 +40,17 @@ export default async function CookiePolicyPage() {
         </Link>
       }
     >
-      <h2 id="introduction">Introduction</h2>
+      <h2 id="introduction">1. Introduction</h2>
       <p>
         This Cookie Policy explains how {platformName} (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) uses cookies and similar technologies when you visit our website and use our services. This policy should be read together with our <Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
       </p>
 
-      <h2 id="what-are-cookies">What Are Cookies?</h2>
+      <h2 id="what-are-cookies">2. What Are Cookies?</h2>
       <p>
         Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently, provide a better user experience, and provide information to website owners.
       </p>
 
-      <h3 id="types-of-cookies">Types of Cookies We Use</h3>
+      <h2 id="types-of-cookies">3. Types of Cookies We Use</h2>
 
       <div className="space-y-6 my-6 not-prose">
         <div className="border border-border rounded-lg p-6 bg-card">
@@ -138,7 +138,7 @@ export default async function CookiePolicyPage() {
         </div>
       </div>
 
-      <h2 id="specific-cookies">Specific Cookies We Use</h2>
+      <h2 id="specific-cookies">4. Specific Cookies We Use</h2>
 
       <h3>Essential Cookies</h3>
       <div className="overflow-x-auto not-prose my-4">
@@ -165,6 +165,11 @@ export default async function CookiePolicyPage() {
               <td className="p-3"><code>csrf-token</code></td>
               <td className="p-3">CSRF protection</td>
               <td className="p-3">Session</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3"><code>aff</code></td>
+              <td className="p-3">Referral/affiliate attribution (when you arrive via a referral link)</td>
+              <td className="p-3">30 days</td>
             </tr>
           </tbody>
         </table>
@@ -203,7 +208,7 @@ export default async function CookiePolicyPage() {
         Note: Cookie consent choices are stored in your browser&apos;s local storage, not as a cookie, and are used to control whether we store analytics data.
       </p>
 
-      <h2 id="how-to-control">How to Control Cookies</h2>
+      <h2 id="how-to-control">5. How to Control Cookies</h2>
 
       <h3>Cookie Settings Page</h3>
       <p>
@@ -226,7 +231,7 @@ export default async function CookiePolicyPage() {
         <li><strong>Edge:</strong> Settings &gt; Cookies and site permissions</li>
       </ul>
 
-      <h2 id="your-rights">Your Rights</h2>
+      <h2 id="your-rights">6. Your Rights</h2>
       <p>Under GDPR and other privacy laws, you have the right to:</p>
       <ol>
         <li>Know what cookies we use</li>
@@ -240,12 +245,12 @@ export default async function CookiePolicyPage() {
         To exercise these rights, visit <Link href="/dashboard/settings/privacy" className="text-primary hover:underline">Privacy Settings</Link> or <ContactButton source="legal-cookies" category="legal" variant="link" size="default" className="h-auto p-0 inline">contact us</ContactButton>.
       </p>
 
-      <h2 id="changes">Changes to This Policy</h2>
+      <h2 id="changes">7. Changes to This Policy</h2>
       <p>
         We may update this Cookie Policy from time to time. Changes will be posted on this page with an updated &quot;Last Updated&quot; date.
       </p>
 
-      <h2 id="contact">Contact Us</h2>
+      <h2 id="contact">8. Contact Us</h2>
       <LegalCallout variant="info" title="Contact">
         <p>If you have questions about our use of cookies:</p>
         <ul>

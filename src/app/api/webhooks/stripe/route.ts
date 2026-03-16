@@ -82,6 +82,86 @@ export async function POST(request: Request) {
 
           logger.info('Credit purchase completed', { orgId, totalCredits, newBalance });
         }
+
+        // Platform subscription checkout (Pro upgrade)
+        if (meta.type === 'platform_subscription' && meta.organization_id && meta.plan) {
+          const adminSb = createAdminClient();
+          const stripeSubscriptionId = (session as any).subscription as string | undefined;
+
+          if (stripeSubscriptionId) {
+            await adminSb.from('platform_subscriptions' as any).upsert(
+              {
+                organization_id: meta.organization_id,
+                stripe_subscription_id: stripeSubscriptionId,
+                stripe_customer_id: session.customer as string,
+                plan: meta.plan,
+                status: 'active',
+              },
+              { onConflict: 'organization_id' }
+            );
+          }
+
+          await adminSb
+            .from('organizations')
+            .update({ plan: meta.plan, updated_at: new Date().toISOString() })
+            .eq('id', meta.organization_id);
+
+          logger.info('Platform subscription activated', {
+            orgId: meta.organization_id,
+            plan: meta.plan,
+            stripeSubscriptionId,
+          });
+        }
+
+        // API subscription checkout completed
+        if (
+          meta.type === 'api_subscription' &&
+          meta.api_id &&
+          meta.pricing_plan_id &&
+          meta.organization_id &&
+          meta.user_id
+        ) {
+          const adminSb = createAdminClient();
+          const { generateApiKey, hashApiKey } = await import('@/lib/utils/api-key');
+          const { key, prefix, hash } = generateApiKey();
+
+          const periodStart = new Date();
+          const periodEnd = new Date(periodStart);
+          periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+          const { data: subscription } = await adminSb
+            .from('api_subscriptions')
+            .insert({
+              api_id: meta.api_id,
+              pricing_plan_id: meta.pricing_plan_id,
+              organization_id: meta.organization_id,
+              user_id: meta.user_id,
+              api_key: hash,
+              api_key_prefix: prefix,
+              status: 'active',
+              current_period_start: periodStart.toISOString(),
+              current_period_end: periodEnd.toISOString(),
+              current_period_usage: 0,
+              stripe_subscription_id: (session as any).subscription ?? null,
+            })
+            .select()
+            .single();
+
+          if (subscription) {
+            // Store the plaintext key temporarily (24h TTL) so the dashboard can reveal it once
+            await adminSb.from('api_key_reveals' as any).insert({
+              subscription_id: subscription.id,
+              plaintext_key: key,
+              expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            }).then(() => {}).catch(() => {});
+
+            logger.info('API subscription created from checkout', {
+              subscriptionId: subscription.id,
+              apiId: meta.api_id,
+              orgId: meta.organization_id,
+            });
+          }
+        }
         break;
       }
 
@@ -89,6 +169,20 @@ export async function POST(request: Request) {
       case 'invoice.paid': {
         const invoice = event.data.object as Stripe.Invoice;
         await markInvoicePaid(invoice.id);
+
+        // If this is an enterprise custom invoice, upgrade org plan
+        const invoiceMeta = (invoice.metadata ?? {}) as Record<string, string>;
+        if (invoiceMeta.type === 'enterprise_custom' && invoiceMeta.organization_id) {
+          const adminSb = createAdminClient();
+          await adminSb
+            .from('organizations')
+            .update({ plan: 'enterprise', updated_at: new Date().toISOString() })
+            .eq('id', invoiceMeta.organization_id);
+          logger.info('Enterprise invoice paid — org upgraded to enterprise', {
+            orgId: invoiceMeta.organization_id,
+            invoiceId: invoice.id,
+          });
+        }
         break;
       }
 
@@ -143,6 +237,27 @@ export async function POST(request: Request) {
       // Payout paid (Connect account)
       case 'payout.paid': {
         const payout = event.data.object as Stripe.Payout;
+        const adminSb = createAdminClient();
+        // Look up the billing account by connect account (passed in account header for Connect events)
+        const connectAccountId = (event as any).account as string | undefined;
+        if (connectAccountId) {
+          const { data: billingAccount } = await adminSb
+            .from('billing_accounts')
+            .select('organization_id')
+            .eq('stripe_connect_account_id', connectAccountId)
+            .maybeSingle();
+          if (billingAccount?.organization_id) {
+            // Record payout in provider earnings ledger if table exists
+            await adminSb.from('provider_payouts' as any).insert({
+              organization_id: billingAccount.organization_id,
+              stripe_payout_id: payout.id,
+              amount: payout.amount / 100,
+              currency: payout.currency,
+              arrival_date: new Date((payout.arrival_date ?? Date.now() / 1000) * 1000).toISOString(),
+              status: 'paid',
+            }).then(() => {}).catch(() => {}); // Gracefully skip if table doesn't exist
+          }
+        }
         logger.info('Payout completed', {
           payoutId: payout.id,
           amount: payout.amount,
@@ -181,32 +296,126 @@ export async function POST(request: Request) {
         break;
       }
 
-      // Subscription created (if using Stripe subscriptions)
+      // Subscription created
       case 'customer.subscription.created': {
         const subscription = event.data.object as Stripe.Subscription;
-        logger.info('Stripe subscription created', {
-          subscriptionId: subscription.id,
-          customerId: subscription.customer,
-        });
+        const adminSb = createAdminClient();
+        // Find the internal subscription by stripe_subscription_id metadata
+        const subId = subscription.metadata?.internal_subscription_id;
+        if (subId) {
+          await adminSb
+            .from('api_subscriptions')
+            .update({
+              status: subscription.status === 'active' ? 'active' : 'inactive',
+              stripe_subscription_id: subscription.id,
+            } as any)
+            .eq('id', subId);
+        } else {
+          // Fall back to looking up by stripe customer
+          await adminSb
+            .from('api_subscriptions')
+            .update({ stripe_subscription_id: subscription.id } as any)
+            .eq('stripe_subscription_id', subscription.id);
+        }
+        logger.info('Stripe subscription created — synced', { subscriptionId: subscription.id });
         break;
       }
 
-      // Subscription updated
+      // Subscription updated (plan change, status change, renewal)
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        logger.info('Stripe subscription updated', {
-          subscriptionId: subscription.id,
-          status: subscription.status,
-        });
+        const adminSb = createAdminClient();
+        const newStatus =
+          subscription.status === 'active' ? 'active'
+          : subscription.status === 'past_due' ? 'past_due'
+          : subscription.status === 'canceled' ? 'cancelled'
+          : 'inactive';
+
+        // Check if this is a platform subscription
+        const { data: platformSub } = await adminSb
+          .from('platform_subscriptions' as any)
+          .select('organization_id, plan')
+          .eq('stripe_subscription_id', subscription.id)
+          .maybeSingle();
+
+        if (platformSub) {
+          const orgPlan = (newStatus === 'active') ? platformSub.plan : 'free';
+          await adminSb
+            .from('platform_subscriptions' as any)
+            .update({
+              status: newStatus,
+              cancel_at_period_end: subscription.cancel_at_period_end,
+              current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
+              current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('stripe_subscription_id', subscription.id);
+          await adminSb
+            .from('organizations')
+            .update({ plan: orgPlan, updated_at: new Date().toISOString() })
+            .eq('id', platformSub.organization_id);
+          logger.info('Platform subscription updated', { subscriptionId: subscription.id, newStatus, orgPlan });
+          break;
+        }
+
+        // Update by stripe_subscription_id
+        const { data: updated } = await adminSb
+          .from('api_subscriptions')
+          .update({ status: newStatus } as any)
+          .eq('stripe_subscription_id', subscription.id)
+          .select('id');
+        if (!updated?.length) {
+          // Try metadata fallback
+          const subId = subscription.metadata?.internal_subscription_id;
+          if (subId) {
+            await adminSb
+              .from('api_subscriptions')
+              .update({ status: newStatus, stripe_subscription_id: subscription.id } as any)
+              .eq('id', subId);
+          }
+        }
+        logger.info('Stripe subscription updated — synced', { subscriptionId: subscription.id, newStatus });
         break;
       }
 
       // Subscription deleted/cancelled
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
-        logger.info('Stripe subscription deleted', {
-          subscriptionId: subscription.id,
-        });
+        const adminSb = createAdminClient();
+
+        // Check if this is a platform subscription
+        const { data: platformSub } = await adminSb
+          .from('platform_subscriptions' as any)
+          .select('organization_id')
+          .eq('stripe_subscription_id', subscription.id)
+          .maybeSingle();
+
+        if (platformSub) {
+          await adminSb
+            .from('platform_subscriptions' as any)
+            .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+            .eq('stripe_subscription_id', subscription.id);
+          await adminSb
+            .from('organizations')
+            .update({ plan: 'free', updated_at: new Date().toISOString() })
+            .eq('id', platformSub.organization_id);
+          logger.info('Platform subscription cancelled — org downgraded to free', { subscriptionId: subscription.id });
+          break;
+        }
+
+        await adminSb
+          .from('api_subscriptions')
+          .update({ status: 'cancelled' } as any)
+          .eq('stripe_subscription_id', subscription.id);
+        // Also try metadata-based lookup
+        const subId = subscription.metadata?.internal_subscription_id;
+        if (subId) {
+          await adminSb
+            .from('api_subscriptions')
+            .update({ status: 'cancelled' } as any)
+            .eq('id', subId);
+        }
+        logger.info('Stripe subscription deleted — subscription cancelled', { subscriptionId: subscription.id });
         break;
       }
 

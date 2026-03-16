@@ -1803,6 +1803,201 @@ export type Database = {
           },
         ]
       }
+      api_test_sessions: {
+        Row: {
+          id: string
+          developer_id: string | null
+          session_id: string | null
+          api_id: string | null
+          api_name: string
+          endpoint_path: string
+          http_method: string
+          request_headers: Json | null
+          request_body: Json | null
+          request_params: Json | null
+          response_status: number | null
+          response_time_ms: number | null
+          response_body: Json | null
+          response_headers: Json | null
+          test_passed: boolean | null
+          error_message: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name: string
+          endpoint_path: string
+          http_method: string
+          request_headers?: Json | null
+          request_body?: Json | null
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          test_passed?: boolean | null
+          error_message?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name?: string
+          endpoint_path?: string
+          http_method?: string
+          request_headers?: Json | null
+          request_body?: Json | null
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          test_passed?: boolean | null
+          error_message?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      data_room_access_log: {
+        Row: {
+          id: string
+          stakeholder_id: string
+          document_id: string | null
+          action: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id: string
+          document_id?: string | null
+          action: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string
+          document_id?: string | null
+          action?: string
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      code_generations: {
+        Row: {
+          id: string
+          developer_id: string | null
+          session_id: string | null
+          api_id: string | null
+          api_name: string
+          language: string
+          framework: string | null
+          generated_code: string
+          code_quality_score: number | null
+          was_copied: boolean | null
+          was_tested: boolean | null
+          test_result: string | null
+          led_to_signup: boolean | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name: string
+          language: string
+          framework?: string | null
+          generated_code: string
+          code_quality_score?: number | null
+          was_copied?: boolean | null
+          was_tested?: boolean | null
+          test_result?: string | null
+          led_to_signup?: boolean | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name?: string
+          language?: string
+          framework?: string | null
+          generated_code?: string
+          code_quality_score?: number | null
+          was_copied?: boolean | null
+          was_tested?: boolean | null
+          test_result?: string | null
+          led_to_signup?: boolean | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      api_test_sessions: {
+        Row: {
+          id: string
+          developer_id: string | null
+          session_id: string | null
+          api_id: string | null
+          api_name: string
+          endpoint_path: string
+          http_method: string
+          request_headers: Json | null
+          request_body: Json | null
+          request_params: Json | null
+          response_status: number | null
+          response_time_ms: number | null
+          response_body: Json | null
+          response_headers: Json | null
+          test_passed: boolean | null
+          error_message: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name: string
+          endpoint_path: string
+          http_method: string
+          request_headers?: Json | null
+          request_body?: Json | null
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          test_passed?: boolean | null
+          error_message?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          developer_id?: string | null
+          session_id?: string | null
+          api_id?: string | null
+          api_name?: string
+          endpoint_path?: string
+          http_method?: string
+          request_headers?: Json | null
+          request_body?: Json | null
+          request_params?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          test_passed?: boolean | null
+          error_message?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
       api_versions: {
         Row: {
           api_id: string
@@ -4363,12 +4558,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          display_name: string
+          display_name?: string
           documentation_url?: string | null
           id?: string
           is_verified?: boolean | null
           long_description?: string | null
-          organization_id: string
+          organization_id?: string
+          stakeholder_id?: string
           social_links?: Json | null
           support_email?: string | null
           support_url?: string | null
@@ -5618,6 +5814,575 @@ export type Database = {
           },
         ]
       }
+      developer_profiles: {
+        Row: {
+          id: string
+          stakeholder_id: string
+          developer_stage: string
+          preferred_language: string | null
+          preferred_framework: string | null
+          experience_level: string | null
+          use_case: string | null
+          github_username: string | null
+          referral_code: string | null
+          code_generations: number | null
+          total_api_calls: number | null
+          unique_apis_used: number | null
+          first_code_gen_at: string | null
+          first_api_call_at: string | null
+          referrals_made: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id: string
+          developer_stage?: string
+          preferred_language?: string | null
+          preferred_framework?: string | null
+          experience_level?: string | null
+          use_case?: string | null
+          github_username?: string | null
+          referral_code?: string | null
+          code_generations?: number | null
+          total_api_calls?: number | null
+          unique_apis_used?: number | null
+          first_code_gen_at?: string | null
+          first_api_call_at?: string | null
+          referrals_made?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string
+          developer_stage?: string
+          preferred_language?: string | null
+          preferred_framework?: string | null
+          experience_level?: string | null
+          use_case?: string | null
+          github_username?: string | null
+          referral_code?: string | null
+          code_generations?: number | null
+          total_api_calls?: number | null
+          unique_apis_used?: number | null
+          first_code_gen_at?: string | null
+          first_api_call_at?: string | null
+          referrals_made?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      enterprise_profiles: {
+        Row: {
+          id: string
+          stakeholder_id: string | null
+          enterprise_stage: string | null
+          company_name: string | null
+          company_size: string | null
+          industry: string | null
+          deal_probability: number | null
+          estimated_deal_value: number | null
+          expected_close_date: string | null
+          demo_scheduled_at: string | null
+          roi_calculation: Json | null
+          apis_managed: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id?: string | null
+          enterprise_stage?: string | null
+          company_name?: string | null
+          company_size?: string | null
+          industry?: string | null
+          deal_probability?: number | null
+          estimated_deal_value?: number | null
+          expected_close_date?: string | null
+          demo_scheduled_at?: string | null
+          roi_calculation?: Json | null
+          apis_managed?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string | null
+          enterprise_stage?: string | null
+          company_name?: string | null
+          company_size?: string | null
+          industry?: string | null
+          deal_probability?: number | null
+          estimated_deal_value?: number | null
+          expected_close_date?: string | null
+          demo_scheduled_at?: string | null
+          roi_calculation?: Json | null
+          apis_managed?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      investor_profiles: {
+        Row: {
+          id: string
+          stakeholder_id: string
+          last_traction_view: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id: string
+          last_traction_view?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string
+          last_traction_view?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      stakeholder_interactions: {
+        Row: {
+          id: string
+          stakeholder_id: string
+          interaction_type: string
+          interaction_data: Json | null
+          page_url: string | null
+          score_delta: number | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id: string
+          interaction_type: string
+          interaction_data?: Json | null
+          page_url?: string | null
+          score_delta?: number | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string
+          interaction_type?: string
+          interaction_data?: Json | null
+          page_url?: string | null
+          score_delta?: number | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      stakeholders: {
+        Row: {
+          id: string
+          user_id: string | null
+          email: string
+          full_name: string | null
+          company_name: string | null
+          stakeholder_type: string
+          funnel_stage: string | null
+          engagement_score: number | null
+          capture_source: string | null
+          utm_source: string | null
+          utm_medium: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          landing_page_url: string | null
+          referrer_url: string | null
+          last_activity_at: string | null
+          last_stage_change_at: string | null
+          nurture_opt_out: boolean | null
+          nurture_paused: boolean | null
+          segmentation_confidence: number | null
+          segmentation_signals: string[] | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          email: string
+          full_name?: string | null
+          company_name?: string | null
+          stakeholder_type?: string
+          funnel_stage?: string | null
+          engagement_score?: number | null
+          capture_source?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          landing_page_url?: string | null
+          referrer_url?: string | null
+          last_activity_at?: string | null
+          last_stage_change_at?: string | null
+          nurture_opt_out?: boolean | null
+          nurture_paused?: boolean | null
+          segmentation_confidence?: number | null
+          segmentation_signals?: string[] | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          email?: string
+          full_name?: string | null
+          company_name?: string | null
+          stakeholder_type?: string
+          funnel_stage?: string | null
+          engagement_score?: number | null
+          capture_source?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          landing_page_url?: string | null
+          referrer_url?: string | null
+          last_activity_at?: string | null
+          last_stage_change_at?: string | null
+          nurture_opt_out?: boolean | null
+          nurture_paused?: boolean | null
+          segmentation_confidence?: number | null
+          segmentation_signals?: string[] | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      email_send_log: {
+        Row: {
+          id: string
+          queue_id: string | null
+          resend_id: string | null
+          status: string | null
+          opened: boolean | null
+          opened_at: string | null
+          clicked: boolean | null
+          clicked_at: string | null
+          click_url: string | null
+          bounce_type: string | null
+          error_message: string | null
+          to_email: string | null
+          subject: string | null
+          stakeholder_id: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          queue_id?: string | null
+          resend_id?: string | null
+          status?: string | null
+          opened?: boolean | null
+          opened_at?: string | null
+          clicked?: boolean | null
+          clicked_at?: string | null
+          click_url?: string | null
+          bounce_type?: string | null
+          error_message?: string | null
+          to_email?: string | null
+          subject?: string | null
+          stakeholder_id?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          queue_id?: string | null
+          resend_id?: string | null
+          status?: string | null
+          opened?: boolean | null
+          opened_at?: string | null
+          clicked?: boolean | null
+          clicked_at?: string | null
+          click_url?: string | null
+          bounce_type?: string | null
+          error_message?: string | null
+          to_email?: string | null
+          subject?: string | null
+          stakeholder_id?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      nurture_queue: {
+        Row: {
+          id: string
+          status: string | null
+          delivered_at: string | null
+          opened_at: string | null
+          clicked_at: string | null
+          last_error: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          status?: string | null
+          delivered_at?: string | null
+          opened_at?: string | null
+          clicked_at?: string | null
+          last_error?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          status?: string | null
+          delivered_at?: string | null
+          opened_at?: string | null
+          clicked_at?: string | null
+          last_error?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      nurture_sequences: {
+        Row: {
+          id: string
+          sequence_name: string | null
+          stakeholder_type: string | null
+          trigger_stage: string | null
+          total_enrolled: number | null
+          total_completed: number | null
+          avg_conversion_rate: number | null
+          is_active: boolean | null
+        }
+        Insert: {
+          id?: string
+          sequence_name?: string | null
+          stakeholder_type?: string | null
+          trigger_stage?: string | null
+          total_enrolled?: number | null
+          total_completed?: number | null
+          avg_conversion_rate?: number | null
+          is_active?: boolean | null
+        }
+        Update: {
+          id?: string
+          sequence_name?: string | null
+          stakeholder_type?: string | null
+          trigger_stage?: string | null
+          total_enrolled?: number | null
+          total_completed?: number | null
+          avg_conversion_rate?: number | null
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      nurture_frequency_caps: {
+        Row: {
+          id: string
+          stakeholder_type: string | null
+          channel: string | null
+          max_per_day: number | null
+          max_per_week: number | null
+          max_per_month: number | null
+          is_active: boolean | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_type?: string | null
+          channel?: string | null
+          max_per_day?: number | null
+          max_per_week?: number | null
+          max_per_month?: number | null
+          is_active?: boolean | null
+        }
+        Update: {
+          id?: string
+          stakeholder_type?: string | null
+          channel?: string | null
+          max_per_day?: number | null
+          max_per_week?: number | null
+          max_per_month?: number | null
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      ai_request_log: {
+        Row: {
+          id: string
+          request_type: string | null
+          model_used: string | null
+          input_tokens: number | null
+          output_tokens: number | null
+          latency_ms: number | null
+          estimated_cost_usd: number | null
+          created_at: string | null
+          stakeholder_id: string | null
+        }
+        Insert: {
+          id?: string
+          request_type?: string | null
+          model_used?: string | null
+          input_tokens?: number | null
+          output_tokens?: number | null
+          latency_ms?: number | null
+          estimated_cost_usd?: number | null
+          created_at?: string | null
+          stakeholder_id?: string | null
+        }
+        Update: {
+          id?: string
+          request_type?: string | null
+          model_used?: string | null
+          input_tokens?: number | null
+          output_tokens?: number | null
+          latency_ms?: number | null
+          estimated_cost_usd?: number | null
+          created_at?: string | null
+          stakeholder_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_content_cache: {
+        Row: {
+          id: string
+          cache_key: string | null
+          content_type: string | null
+          hit_count: number | null
+          expires_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          cache_key?: string | null
+          content_type?: string | null
+          hit_count?: number | null
+          expires_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          cache_key?: string | null
+          content_type?: string | null
+          hit_count?: number | null
+          expires_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      stakeholder_ai_context: {
+        Row: {
+          id: string
+          stakeholder_id: string | null
+          interest_summary: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id?: string | null
+          interest_summary?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string | null
+          interest_summary?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      daily_funnel_metrics: {
+        Row: {
+          id: string
+          metric_date: string | null
+          stakeholder_type: string | null
+          captured_count: number | null
+          segmented_count: number | null
+          activated_count: number | null
+          engaged_count: number | null
+          qualified_count: number | null
+          converting_count: number | null
+          converted_count: number | null
+          churned_count: number | null
+          overall_conversion_pct: number | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          metric_date?: string | null
+          stakeholder_type?: string | null
+          captured_count?: number | null
+          segmented_count?: number | null
+          activated_count?: number | null
+          engaged_count?: number | null
+          qualified_count?: number | null
+          converting_count?: number | null
+          converted_count?: number | null
+          churned_count?: number | null
+          overall_conversion_pct?: number | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          metric_date?: string | null
+          stakeholder_type?: string | null
+          captured_count?: number | null
+          segmented_count?: number | null
+          activated_count?: number | null
+          engaged_count?: number | null
+          qualified_count?: number | null
+          converting_count?: number | null
+          converted_count?: number | null
+          churned_count?: number | null
+          overall_conversion_pct?: number | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      churn_risk_assessments: {
+        Row: {
+          id: string
+          stakeholder_id: string | null
+          risk_score: number | null
+          risk_level: string | null
+          risk_signals: Json | null
+          intervention_type: string | null
+          intervention_sent: boolean | null
+          intervention_result: string | null
+          assessed_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          stakeholder_id?: string | null
+          risk_score?: number | null
+          risk_level?: string | null
+          risk_signals?: Json | null
+          intervention_type?: string | null
+          intervention_sent?: boolean | null
+          intervention_result?: string | null
+          assessed_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          stakeholder_id?: string | null
+          risk_score?: number | null
+          risk_level?: string | null
+          risk_signals?: Json | null
+          intervention_type?: string | null
+          intervention_sent?: boolean | null
+          intervention_result?: string | null
+          assessed_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "churn_risk_assessments_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       api_rankings_mv: {
@@ -5690,6 +6455,9 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      get_funnel_snapshot: { Args: Record<string, never>; Returns: Json[] }
+      get_conversion_velocity: { Args: { p_stakeholder_type?: string | null; p_days?: number }; Returns: Json[] }
+      get_top_sources: { Args: { p_days?: number; p_limit?: number }; Returns: Json[] }
     }
     Enums: {
       [_ in never]: never

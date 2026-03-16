@@ -30,7 +30,7 @@ export default async function AuthLayout({
   }
   const platformName = await getPlatformName();
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex" suppressHydrationWarning>
       {/* Left Side - Branding & Features */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/95 to-accent dark:from-gray-900 dark:via-primary-900/30 dark:to-accent-900/30 p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Pattern */}

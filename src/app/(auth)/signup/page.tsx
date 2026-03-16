@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,10 +26,20 @@ import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const audience = searchParams.get('audience'); // 'developer' | 'provider' | null
+  const redirectTo = searchParams.get('redirect');
+  const refCode = searchParams.get('ref'); // referral code
   const supabase = useSupabase();
   const platformName = usePlatformName();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Derive org type from audience param
+  const orgType =
+    audience === 'provider' ? 'provider'
+    : audience === 'developer' ? 'consumer'
+    : 'both';
 
   const form = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
@@ -46,7 +56,6 @@ export default function SignupPage() {
     setError(null);
 
     try {
-      // Sign up the user
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -64,7 +73,6 @@ export default function SignupPage() {
         throw new Error('User creation failed');
       }
 
-      // Create organization and user record via API
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,6 +82,8 @@ export default function SignupPage() {
           full_name: data.full_name,
           organization_name: data.organization_name,
           organization_slug: generateSlug(data.organization_name),
+          organization_type: orgType,
+          ref_code: refCode ?? undefined,
         }),
       });
 
@@ -82,8 +92,7 @@ export default function SignupPage() {
         throw new Error(error.message || 'Failed to complete signup');
       }
 
-      // Redirect to onboarding or verify email page
-      router.push('/verify-email');
+      router.push(redirectTo ?? '/verify-email');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign up');
     } finally {
@@ -96,10 +105,11 @@ export default function SignupPage() {
     setError(null);
 
     try {
+      const callbackRedirect = redirectTo ?? '/onboarding';
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?redirect=/onboarding`,
+          redirectTo: `${window.location.origin}/auth/callback?redirect=${callbackRedirect}`,
         },
       });
 

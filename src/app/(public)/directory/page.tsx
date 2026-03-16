@@ -56,7 +56,7 @@ export default async function DirectoryPage() {
         '@type': 'SoftwareApplication',
         name: api.name,
         description: api.short_description,
-        url: `https://app.example.com/marketplace/${api.organization?.slug ?? 'org'}/${api.slug}`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://apimarketplace.pro'}/marketplace/${api.organization?.slug ?? 'org'}/${api.slug}`,
       },
     })),
   };

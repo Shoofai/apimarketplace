@@ -38,6 +38,7 @@ export class CheckRunner {
         name: check.name,
         severity: check.severity,
         fixPromptTemplate: check.fixPromptTemplate,
+        reason: check.reason,
       });
     }
 

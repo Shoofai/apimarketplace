@@ -81,6 +81,39 @@ async function exportUserData(userId: string, organizationId?: string): Promise<
     .eq('user_id', userId);
   exportData.consents = consents;
 
+  // Referrals sent by this user
+  const { data: referrals } = await supabase
+    .from('referrals')
+    .select('id, code, status, created_at, converted_at')
+    .eq('referrer_user_id', userId);
+  exportData.referrals = referrals;
+
+  // Forum topics and posts
+  const { data: forumTopics } = await supabase
+    .from('forum_topics')
+    .select('id, title, slug, created_at')
+    .eq('author_id', userId)
+    .limit(50);
+  exportData.forum_topics = forumTopics;
+
+  // Audit logs for this user (summary only)
+  const { data: auditLogs } = await supabase
+    .from('audit_logs')
+    .select('action, resource_type, status, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(100);
+  exportData.audit_logs = auditLogs;
+
+  // Credit ledger
+  const { data: creditLedger } = await supabase
+    .from('credit_ledger')
+    .select('amount, type, description, created_at')
+    .eq('organization_id', organizationId || user?.current_organization_id)
+    .order('created_at', { ascending: false })
+    .limit(100);
+  exportData.credit_ledger = creditLedger;
+
   return exportData;
 }
 
@@ -142,8 +175,26 @@ serve(async (req) => {
       })
       .eq('id', request_id);
 
-    // Send notification
-    // TODO: Send email notification
+    // Send email notification via Resend
+    const resendKey = Deno.env.get('RESEND_API_KEY');
+    if (resendKey) {
+      const platformName = Deno.env.get('NEXT_PUBLIC_PLATFORM_NAME') ?? 'APIMarketplace';
+      const siteUrl = Deno.env.get('NEXT_PUBLIC_SITE_URL') ?? 'https://apimarketplace.pro';
+      // Fetch user email
+      const { data: userData } = await supabase.from('users').select('email, full_name').eq('id', user_id).maybeSingle();
+      if (userData?.email) {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${resendKey}` },
+          body: JSON.stringify({
+            from: `${platformName} <notifications@${new URL(siteUrl).hostname}>`,
+            to: userData.email,
+            subject: 'Your data export is ready',
+            html: `<p>Hi ${userData.full_name ?? 'there'},</p><p>Your data export is ready. <a href="${signedUrlData?.signedUrl}">Download your data</a> (link expires in 7 days).</p>`,
+          }),
+        }).catch(() => {});
+      }
+    }
 
     console.log('Data export completed:', request_id);
 

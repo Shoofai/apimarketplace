@@ -11,6 +11,7 @@ import { DemoModal } from '../DemoModal';
 import { HeroQuiz } from '../HeroQuiz';
 import LiveActivityTicker from '../LiveActivityTicker';
 import { MagneticButton } from '../MagneticButton';
+import { UniversalCaptureForm } from '@/components/growth/UniversalCaptureForm';
 
 const USED_BY = ['Stripe', 'Supabase', 'Vercel', 'Twilio', 'Notion', 'Linear', 'Figma', 'Resend'];
 
@@ -171,6 +172,10 @@ export default function HeroDeveloper() {
           </motion.div>
           <HeroQuiz open={quizOpen} onOpenChange={setQuizOpen} />
           <DemoModal open={demoOpen} onOpenChange={setDemoOpen} />
+
+          <motion.div variants={slideUp} className="mb-4 w-full max-w-md sm:mb-6">
+            <UniversalCaptureForm source="landing_page" variant="hero" />
+          </motion.div>
 
           <motion.p variants={slideUp} className="mb-4 text-sm text-gray-600 sm:mb-6 dark:text-primary-200/90">
             No credit card required · Free tier included · Start building in minutes

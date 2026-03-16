@@ -66,19 +66,14 @@ export type InvitationStatus = (typeof INVITATION_STATUSES)[keyof typeof INVITAT
 export const PLAN_LIMITS = {
   free: {
     apis: 1,
-    calls_per_month: 1000,
+    calls_per_month: 10000,
     team_members: 3,
     rate_limit_per_second: 1,
   },
-  starter: {
-    apis: 5,
-    calls_per_month: 50000,
-    team_members: 10,
-    rate_limit_per_second: 10,
-  },
+  // starter: reserved for future use
   pro: {
     apis: 25,
-    calls_per_month: 500000,
+    calls_per_month: 1000000,
     team_members: 50,
     rate_limit_per_second: 100,
   },
