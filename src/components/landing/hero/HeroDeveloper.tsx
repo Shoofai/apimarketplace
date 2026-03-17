@@ -95,10 +95,9 @@ export default function HeroDeveloper() {
             className="mb-3 max-w-5xl font-heading text-hero font-extrabold tracking-tight text-gray-900 sm:mb-5 dark:text-white"
           >
             <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 bg-clip-text text-transparent dark:from-primary-300 dark:via-primary-400 dark:to-primary-500">
-              The Only API Platform
+              Find, test, and ship APIs
             </span>
-            <br />
-            Where Providers & Developers Both Win
+            {' '}in 2 minutes
           </motion.h1>
 
           {/* Subheadline — clamp() */}
@@ -130,7 +129,7 @@ export default function HeroDeveloper() {
           >
             <pre className="overflow-x-auto text-left text-sm leading-relaxed text-gray-800 dark:text-gray-300">
               <code>
-                <span className="text-primary-600 dark:text-primary-300">$</span> curl -X POST https://api.example.com/v1/call
+                <span className="text-primary-600 dark:text-primary-300">$</span> curl -X POST https://gateway.kineticapi.com/weather/v1/forecast
                 {'\n  '}-H <span className="text-green-700 dark:text-green-400">&quot;Authorization: Bearer $API_KEY&quot;</span>
                 {'\n  '}-d <span className="text-green-700 dark:text-green-400">&apos;{'{ "method": "charges.create" }'}&apos;</span>
                 {'\n'}

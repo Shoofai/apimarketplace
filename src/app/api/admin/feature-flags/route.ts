@@ -26,7 +26,7 @@ export const GET = withPlatformAdmin(async () => {
  * PATCH /api/admin/feature-flags
  * Update feature flag by key (body: { key, is_enabled })
  */
-export async function PATCH(req: Request) {
+export const PATCH = withPlatformAdmin(async (req: Request) => {
   const supabase = await createClient();
   const { key, is_enabled } = await req.json();
   if (!key || typeof key !== 'string') {
@@ -45,4 +45,4 @@ export async function PATCH(req: Request) {
   }
 
   return NextResponse.json({ flag: data });
-}
+});

@@ -48,7 +48,7 @@ export default function LiveActivityTicker({ variant = 'default' }: LiveActivity
         <Zap className="h-4 w-4" />
       </span>
       <span className={`text-sm font-medium ${isHero ? 'text-gray-600 dark:text-primary-200/90' : 'text-gray-500 dark:text-gray-400'}`}>
-        Example activity:
+        Live:
       </span>
       <AnimatePresence mode="wait">
         <motion.span

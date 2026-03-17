@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { createClient, getUserSafe } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import DashboardNav from '@/components/dashboard/DashboardNav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
@@ -27,7 +28,9 @@ export default async function DashboardLayout({
   } = await getUserSafe();
 
   if (!user) {
-    redirect('/login');
+    const headersList = await headers();
+    const pathname = headersList.get('x-pathname') ?? '/dashboard';
+    redirect(`/login?redirect=${encodeURIComponent(pathname)}`);
   }
 
   // Get user data
@@ -51,7 +54,7 @@ export default async function DashboardLayout({
     .single();
 
   if (!userData) {
-    redirect('/login');
+    redirect('/login?redirect=/dashboard');
   }
 
   const org = Array.isArray(userData.organizations) ? userData.organizations[0] : userData.organizations;

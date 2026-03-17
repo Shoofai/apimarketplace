@@ -96,7 +96,14 @@ export async function middleware(request: NextRequest) {
 
   // ?aff=<code> tracking: write a 30-day affiliate cookie + increment click count
   const affCode = request.nextUrl.searchParams.get('aff');
-  const response = NextResponse.next();
+  const response = NextResponse.next({
+    request: {
+      headers: new Headers({
+        ...Object.fromEntries(request.headers),
+        'x-pathname': pathname,
+      }),
+    },
+  });
 
   if (affCode && /^[a-zA-Z0-9_-]{3,64}$/.test(affCode)) {
     response.cookies.set('aff', affCode, {

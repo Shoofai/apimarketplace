@@ -14,11 +14,11 @@ export default async function AdminBundlesPage() {
 
   const { data: userData } = await supabase
     .from('users')
-    .select('role')
+    .select('is_platform_admin')
     .eq('id', user.id)
     .single();
 
-  if (userData?.role !== 'admin') redirect('/dashboard');
+  if (!userData?.is_platform_admin) redirect('/dashboard');
 
   const { data: bundles } = await supabase
     .from('api_bundles')

@@ -121,92 +121,20 @@ export default async function ContactPage() {
 
           <h2>Frequently Asked Questions</h2>
 
-          <h3>Getting Started</h3>
-          <dl className="space-y-4">
-            <div>
-              <dt className="font-medium text-foreground">How do I get started as a developer?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Sign up at <Link href="/signup">/signup</Link>, browse the marketplace, and subscribe to any API.
-                Use the AI Playground after signing in to generate integration code.
-              </dd>
+          <div className="not-prose my-6 rounded-xl border border-border bg-card p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex-1">
+              <h3 className="font-semibold text-foreground">Looking for answers?</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Our Help Center has categorized guides for getting started, billing, API integration, security, and troubleshooting.
+              </p>
             </div>
-            <div>
-              <dt className="font-medium text-foreground">How do I list my API?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Create an account, add your organization, and publish your API from the dashboard.
-                See our <Link href="/docs">documentation</Link> for the full guide. You can connect
-                Stripe for payouts.
-              </dd>
-            </div>
-          </dl>
-
-          <h3>Billing & Account</h3>
-          <dl className="space-y-4">
-            <div>
-              <dt className="font-medium text-foreground">How does billing work?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Subscriptions are billed monthly. Usage-based charges may apply beyond plan limits.
-                Payments are processed via Stripe. See our <Link href="/pricing">Pricing</Link> page
-                and <Link href="/legal/terms">Terms of Service</Link> for details.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">How do I cancel or change my plan?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Manage your subscription from the dashboard under Settings. Cancellation takes effect
-                at the end of the billing period. No refunds for partial periods.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Can I get a refund?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Refunds are not provided for partial periods or unused quota unless otherwise agreed
-                or required by law. <ContactButton source="contact-page" category="support" variant="link" size="default" className="h-auto p-0 inline">Contact support</ContactButton> for billing disputes.
-              </dd>
-            </div>
-          </dl>
-
-          <h3>Technical</h3>
-          <dl className="space-y-4">
-            <div>
-              <dt className="font-medium text-foreground">Do you have webhooks or Zapier integration?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Webhook support is on our roadmap. Individual APIs may offer their own webhooks.
-                <ContactButton source="contact-page" category="sales" variant="link" size="default" className="h-auto p-0 inline">Contact sales</ContactButton> for Enterprise integration requirements.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">My API key was compromised. What should I do?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Rotate your API key immediately from the dashboard. If you need assistance,{' '}
-                <ContactButton source="contact-page" category="security" variant="link" size="default" className="h-auto p-0 inline">contact security</ContactButton>.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Where can I check platform status?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Our <Link href="/status">Status Page</Link> shows real-time health of platform services.
-              </dd>
-            </div>
-          </dl>
-
-          <h3>Support</h3>
-          <dl className="space-y-4">
-            <div>
-              <dt className="font-medium text-foreground">What are your response times?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Free tier: within 48 hours. Pro: within 24 hours. Enterprise: within 4 hours. All
-                times are business days (Mon–Fri, excluding holidays).
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Do you offer dedicated support?</dt>
-              <dd className="mt-1 text-muted-foreground">
-                Enterprise plans include priority support and optional dedicated support.{' '}
-                <ContactButton source="contact-page" category="sales" variant="link" size="default" className="h-auto p-0 inline">Contact sales</ContactButton> for details.
-              </dd>
-            </div>
-          </dl>
+            <Link
+              href="/help"
+              className="shrink-0 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Browse Help Center
+            </Link>
+          </div>
 
           <p className="mt-8 text-sm text-muted-foreground">
             © {new Date().getFullYear()} {platformName}. All rights reserved.

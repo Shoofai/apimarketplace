@@ -260,7 +260,7 @@ export function CommandPalette({ user }: CommandPaletteProps) {
     {
       label: 'Publish New API',
       icon: Plus,
-      href: '/dashboard/admin/apis/review',
+      href: '/dashboard/provider/apis/new',
       providerOnly: true,
     },
     {

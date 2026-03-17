@@ -8,7 +8,7 @@ export async function GET() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('forum_topics')
-    .select('id, title, slug, category, user_id, created_at')
+    .select('id, title, slug, category, user_id, created_at, upvote_count, post_count')
     .order('updated_at', { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ topics: data ?? [] });
@@ -25,10 +25,11 @@ export async function POST(request: Request) {
     if (!title) return NextResponse.json({ error: 'Title required' }, { status: 400 });
     const slug = (title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'topic').slice(0, 80) + '-' + Date.now().toString(36);
     const category = typeof body.category === 'string' ? body.category.slice(0, 50) : null;
+    const postBody = typeof body.body === 'string' ? body.body.trim() : null;
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('forum_topics')
-      .insert({ title, slug, category, user_id: context.user.id })
+      .insert({ title, slug, category, user_id: context.user.id, body: postBody })
       .select('id, title, slug, category, created_at')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });

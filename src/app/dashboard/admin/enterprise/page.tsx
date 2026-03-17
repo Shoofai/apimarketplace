@@ -72,6 +72,9 @@ export default async function AdminEnterprisePipelinePage() {
 
   if (!user) redirect('/login');
 
+  const { data: userData } = await supabase.from('users').select('is_platform_admin').eq('id', user.id).single();
+  if (!userData?.is_platform_admin) redirect('/dashboard');
+
   const admin = createAdminClient();
 
   const [profilesResult, orgsResult] = await Promise.all([

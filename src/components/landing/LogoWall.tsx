@@ -5,23 +5,17 @@ import { useRef } from 'react';
 
 const COMPANIES = [
   'Stripe',
-  'Shopify',
-  'Uber',
-  'Airbnb',
-  'Notion',
-  'Vercel',
-  'Linear',
-  'Figma',
-  'Slack',
-  'Discord',
-  'Twilio',
   'Supabase',
+  'Vercel',
+  'OpenAI',
   'Resend',
-  'Algolia',
-  'Segment',
-  'Amplitude',
-  'Mixpanel',
-  'Intercom',
+  'GitHub',
+  'Stripe',
+  'Supabase',
+  'Vercel',
+  'OpenAI',
+  'Resend',
+  'GitHub',
 ];
 
 function LogoItem({ name }: { name: string }) {
@@ -46,7 +40,7 @@ export default function LogoWall() {
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
         className="mb-8 text-center text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
       >
-        Integrate with thousands of apps, including:
+        Trusted technology stack:
       </motion.p>
 
       <div className="relative overflow-hidden">

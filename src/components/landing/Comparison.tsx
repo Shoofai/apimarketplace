@@ -250,3 +250,83 @@ export default function Comparison() {
     </section>
   );
 }
+
+/** Condensed 3-row comparison strip — used above the fold */
+export function ComparisonMini() {
+  const platformName = usePlatformName();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+
+  const rows = [
+    { feature: 'AI Code Generation', us: true, rapidapi: false, stripe: false, postman: false },
+    { feature: 'One-Click Monetization', us: true, rapidapi: true, stripe: true, postman: false },
+    { feature: 'Developer Playground', us: true, rapidapi: false, stripe: false, postman: true },
+  ];
+  const cols = [platformName, 'RapidAPI', 'Stripe Connect', 'Postman'];
+
+  return (
+    <section ref={ref} className="bg-white py-14 dark:bg-gray-950">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          className="mb-6 text-center"
+        >
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">
+            Why teams choose {platformName}
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ delay: 0.1 }}
+          className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800"
+        >
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+                <th className="py-3 pl-4 pr-2 text-left font-semibold text-gray-700 dark:text-gray-300 w-1/2">Feature</th>
+                {cols.map((col, i) => (
+                  <th
+                    key={col}
+                    className={`py-3 px-3 text-center font-semibold ${i === 0 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'}`}
+                  >
+                    {i === 0 ? `🚀 ${col}` : col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ feature, us, rapidapi, stripe, postman }, ri) => {
+                const vals = [us, rapidapi, stripe, postman];
+                return (
+                  <tr
+                    key={feature}
+                    className={`border-b border-gray-100 dark:border-gray-800 ${ri % 2 === 0 ? 'bg-white dark:bg-gray-950' : 'bg-gray-50/50 dark:bg-gray-900/50'}`}
+                  >
+                    <td className="py-3 pl-4 pr-2 font-medium text-gray-800 dark:text-gray-200">{feature}</td>
+                    {vals.map((v, ci) => (
+                      <td key={ci} className="py-3 px-3 text-center">
+                        {v
+                          ? <Check className={`mx-auto h-4 w-4 ${ci === 0 ? 'text-primary-600 dark:text-primary-400' : 'text-green-500'}`} />
+                          : <X className="mx-auto h-4 w-4 text-gray-300 dark:text-gray-600" />}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-4 text-center text-xs text-gray-400 dark:text-gray-600"
+        >
+          Full comparison below ↓
+        </motion.p>
+      </div>
+    </section>
+  );
+}

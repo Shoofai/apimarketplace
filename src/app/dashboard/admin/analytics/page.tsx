@@ -79,6 +79,9 @@ export default async function AdminAnalyticsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
+  const { data: userData } = await supabase.from('users').select('is_platform_admin').eq('id', user.id).single();
+  if (!userData?.is_platform_admin) redirect('/dashboard');
+
   const admin = createAdminClient();
 
   // Run all queries in parallel

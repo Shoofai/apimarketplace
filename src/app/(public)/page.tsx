@@ -8,10 +8,10 @@ import ProblemStatement from '@/components/landing/ProblemStatement';
 import KillerFeatures from '@/components/landing/KillerFeatures';
 import APIFlowDiagram from '@/components/landing/APIFlowDiagram';
 import TechShowcase from '@/components/landing/TechShowcase';
-import SocialProof from '@/components/landing/SocialProof';
+import PlatformStats from '@/components/landing/PlatformStats';
 import Pricing from '@/components/landing/Pricing';
 import NetworkEffects from '@/components/landing/NetworkEffects';
-import Comparison from '@/components/landing/Comparison';
+import Comparison, { ComparisonMini } from '@/components/landing/Comparison';
 import FinalCTA from '@/components/landing/FinalCTA';
 
 /** Set to 'true' to use gradient bands for section continuity. Set to 'false' or leave unset to use original block layout. */
@@ -33,10 +33,11 @@ export default async function Home() {
         <LogoWall />
         <ProblemStatement />
         <ValueProposition />
+        <ComparisonMini />
         <KillerFeatures />
         <APIFlowDiagram />
         <TechShowcase />
-        <SocialProof />
+        <PlatformStats />
         <Comparison />
         <NetworkEffects />
         <Pricing />
@@ -62,10 +63,11 @@ export default async function Home() {
         aria-hidden
       >
         <ValueProposition />
+        <ComparisonMini />
         <KillerFeatures />
         <APIFlowDiagram />
         <TechShowcase />
-        <SocialProof />
+        <PlatformStats />
         <Comparison />
       </div>
       {/* Band 3: Pricing + NetworkEffects + FinalCTA keep their own gradients */}

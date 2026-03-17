@@ -9,8 +9,8 @@ export default async function AdminCreditsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: userData } = await supabase.from('users').select('role').eq('id', user.id).single();
-  if (userData?.role !== 'admin') redirect('/dashboard');
+  const { data: userData } = await supabase.from('users').select('is_platform_admin').eq('id', user.id).single();
+  if (!userData?.is_platform_admin) redirect('/dashboard');
 
   const { data: packages } = await supabase
     .from('credit_packages')

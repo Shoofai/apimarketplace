@@ -288,11 +288,37 @@ export default function KillerFeatures() {
                 {modalFeature.longDescription}
               </ModalDescription>
             </ModalHeader>
-            <div className="mt-6 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 dark:border-gray-700 dark:bg-gray-800">
-              <div className="text-center">
-                <div className="mb-2 text-5xl">🎥</div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Demo video or interactive preview</p>
-              </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              {(() => {
+                const ctaMap: Record<number, { label: string; href: string }[]> = {
+                  1: [{ label: 'Try AI Code Generator', href: '/dashboard/playground' }, { label: 'Browse APIs', href: '/marketplace' }],
+                  2: [{ label: 'Publish an API', href: '/dashboard/apis/publish' }, { label: 'View Billing', href: '/dashboard/settings/billing' }],
+                  3: [{ label: 'Browse Marketplace', href: '/marketplace' }, { label: 'Get Started', href: '/start' }],
+                  4: [{ label: 'Browse Marketplace', href: '/marketplace' }, { label: 'Get Started', href: '/start' }],
+                  5: [{ label: 'Publish an API', href: '/dashboard/apis/publish' }, { label: 'View Docs', href: '/help' }],
+                  6: [{ label: 'Manage Subscriptions', href: '/dashboard/subscriptions' }, { label: 'View Pricing', href: '/pricing' }],
+                  7: [{ label: 'Open Playground', href: '/dashboard/playground' }, { label: 'Browse APIs', href: '/marketplace' }],
+                  8: [{ label: 'Run an Audit', href: '/audit' }, { label: 'Security Docs', href: '/security' }],
+                  9: [{ label: 'View Cost Intelligence', href: '/dashboard/cost-intelligence' }, { label: 'Browse APIs', href: '/marketplace' }],
+                  10: [{ label: 'Invite & Earn', href: '/dashboard/referrals' }, { label: 'Get Started', href: '/start' }],
+                  11: [{ label: 'Enterprise Plans', href: '/enterprise' }, { label: 'Contact Sales', href: '/contact' }],
+                  12: [{ label: 'Run Free Audit', href: '/audit' }, { label: 'View Readiness Dashboard', href: '/dashboard/admin/readiness' }],
+                };
+                const ctas = ctaMap[modalFeature.id] ?? [{ label: 'Get Started', href: '/start' }];
+                return ctas.map(({ label, href }, i) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className={
+                      i === 0
+                        ? 'inline-flex items-center justify-center rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-700 transition-colors'
+                        : 'inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800'
+                    }
+                  >
+                    {label}
+                  </a>
+                ));
+              })()}
             </div>
           </ModalContent>
         )}

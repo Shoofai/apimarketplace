@@ -36,11 +36,12 @@ const footerLinks = {
     { name: 'Contact & Support', href: '/contact' },
   ],
   resources: [
-    { name: 'Help Center', href: '/docs' },
+    { name: 'Help Center', href: '/help' },
+    { name: 'Changelog', href: '/changelog' },
     { name: 'Security & Compliance', href: '/security' },
     { name: 'API Directory', href: '/directory' },
     { name: 'Challenges', href: '/login', locked: true },
-    { name: 'Forum', href: '/login', locked: true },
+    { name: 'Forum', href: '/dashboard/forum' },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/legal/privacy' },

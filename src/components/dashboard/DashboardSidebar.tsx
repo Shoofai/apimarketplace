@@ -135,6 +135,11 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       icon: Ticket,
     },
     {
+      title: 'Forum',
+      href: '/dashboard/forum',
+      icon: MessageSquare,
+    },
+    {
       title: 'Credits',
       href: '/dashboard/credits',
       icon: Coins,
@@ -217,6 +222,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       title: 'Enterprise',
       href: '/dashboard/admin/enterprise',
       icon: Crown,
+      adminOnly: true,
+    },
+    {
+      title: 'Challenges',
+      href: '/dashboard/admin/challenges',
+      icon: Trophy,
       adminOnly: true,
     },
   ];

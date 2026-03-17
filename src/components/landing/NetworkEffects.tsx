@@ -4,7 +4,6 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Building2, Code2, TrendingUp, DollarSign } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Counter } from '@/components/ui/counter';
 import { usePlatformName } from '@/contexts/PlatformNameContext';
 import { cn } from '@/lib/utils';
 
@@ -131,7 +130,7 @@ export default function NetworkEffects() {
                 <span>High customer acquisition cost</span>
               </div>
             </div>
-            <div className="mt-4 text-2xl font-black text-red-400 sm:text-3xl">+10% monthly growth</div>
+            <div className="mt-4 text-2xl font-black text-red-400 sm:text-3xl">Linear growth ceiling</div>
           </div>
 
           <div className="relative overflow-hidden rounded-2xl border border-green-500/30 bg-green-500/10 p-5 backdrop-blur-sm ring-1 ring-green-500/50 transition-colors hover:bg-green-500/15 sm:p-6">
@@ -153,8 +152,9 @@ export default function NetworkEffects() {
               </div>
             </div>
             <div className="relative mt-4 text-2xl font-black text-green-400 sm:text-3xl">
-              <Counter end={50} suffix="% monthly growth" />
+              Exponential growth by design
             </div>
+            <p className="relative mt-1 text-xs text-green-300/70">Each new provider attracts developers; each developer attracts providers.</p>
           </div>
         </motion.div>
       </div>

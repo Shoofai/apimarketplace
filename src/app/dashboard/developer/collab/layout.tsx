@@ -1,14 +1,8 @@
-import { notFound } from 'next/navigation';
-import { getFeatureFlag } from '@/lib/utils/feature-flags';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
 import { FeatureGate } from '@/components/dashboard/FeatureGate';
 
-export default async function WorkflowsLayout({ children }: { children: React.ReactNode }) {
-  const workflowsEnabled = await getFeatureFlag('workflows');
-  if (!workflowsEnabled) {
-    notFound();
-  }
-
+export default async function CollabLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) notFound();
@@ -28,8 +22,8 @@ export default async function WorkflowsLayout({ children }: { children: React.Re
     <FeatureGate
       requiredPlan="pro"
       currentPlan={currentPlan}
-      featureName="API Workflows"
-      description="Automate multi-step API orchestration with visual workflows. Available on the Pro plan."
+      featureName="Collaborative Testing"
+      description="Test APIs together with your team in real-time. Available on the Pro plan."
     >
       {children}
     </FeatureGate>
