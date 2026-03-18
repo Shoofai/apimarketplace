@@ -61,9 +61,7 @@ export default function () {
   sleep(2);
 }
 
-export function handleSummary(data) {
-  return {
-    'tests/load/summary.html': htmlReport(data),
-    stdout: textSummary(data, { indent: ' ', enableColors: true }),
-  };
-}
+// Custom handleSummary removed: htmlReport/textSummary require e.g. k6-summary.
+// k6 default summary is printed to stdout. For HTML report, add:
+// import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+// and return { 'tests/load/summary.html': htmlReport(data) };

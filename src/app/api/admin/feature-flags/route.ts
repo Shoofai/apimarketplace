@@ -13,7 +13,7 @@ export const GET = withPlatformAdmin(async () => {
   const { data: flags, error } = await supabase
     .from('feature_flags')
     .select('*')
-    .order('flag_name');
+    .order('name');
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -25,6 +25,7 @@ export const GET = withPlatformAdmin(async () => {
 /**
  * PATCH /api/admin/feature-flags
  * Update feature flag by key (body: { key, is_enabled })
+ * Sets enabled_globally for the flag identified by name === key.
  */
 export const PATCH = withPlatformAdmin(async (req: Request) => {
   const supabase = await createClient();
@@ -35,8 +36,8 @@ export const PATCH = withPlatformAdmin(async (req: Request) => {
 
   const { data, error } = await supabase
     .from('feature_flags')
-    .update({ is_enabled })
-    .eq('flag_key', key)
+    .update({ enabled_globally: is_enabled })
+    .eq('name', key)
     .select()
     .single();
 

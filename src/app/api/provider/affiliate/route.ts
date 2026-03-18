@@ -20,7 +20,7 @@ export async function GET() {
         .eq('organization_id', context.organization_id)
         .order('created_at', { ascending: false }),
       supabase
-        .from('provider_affiliate_commissions' as any)
+        .from('provider_affiliate_commissions')
         .select(`
           *,
           affiliate_link:affiliate_links!provider_affiliate_commissions_affiliate_link_id_fkey(
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         is_active: true,
         click_count: 0,
         conversion_count: 0,
-      } as any)
+      })
       .select()
       .single();
 

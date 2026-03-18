@@ -27,7 +27,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await supabase
       .from('api_subscriptions')
-      .update({ status: 'cancelled' } as any)
+      .update({ status: 'cancelled' })
       .eq('id', id);
 
     await supabase.from('audit_logs').insert({
@@ -83,7 +83,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
     await supabase
       .from('api_subscriptions')
-      .update({ pricing_plan_id } as any)
+      .update({ pricing_plan_id })
       .eq('id', id);
 
     await supabase.from('audit_logs').insert({

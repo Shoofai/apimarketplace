@@ -14,6 +14,7 @@ import {
   Heart,
   Shield,
   Gauge,
+  FlaskConical,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -69,6 +70,12 @@ export default async function AdminDashboardPage() {
             <Button variant="outline" className="gap-2">
               <Gauge className="h-4 w-4" />
               Performance
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/regression">
+            <Button variant="outline" className="gap-2">
+              <FlaskConical className="h-4 w-4" />
+              Regression
             </Button>
           </Link>
         </div>

@@ -43,7 +43,7 @@ async function runProcess() {
   const now = new Date();
 
   const { data: deliveries, error } = await admin
-    .from('webhook_deliveries' as any)
+    .from('webhook_deliveries')
     .select(`
       id,
       webhook_endpoint_id,
@@ -85,7 +85,7 @@ async function runProcess() {
 
     if (!endpoint?.url || endpoint.is_active === false) {
       await admin
-        .from('webhook_deliveries' as any)
+        .from('webhook_deliveries')
         .update({ status: 'permanently_failed' })
         .eq('id', delivery.id);
       permanentlyFailed++;
@@ -108,7 +108,7 @@ async function runProcess() {
 
       if (response.ok) {
         await admin
-          .from('webhook_deliveries' as any)
+          .from('webhook_deliveries')
           .update({
             status: 'delivered',
             attempts: attemptNum,
@@ -136,7 +136,7 @@ async function scheduleRetry(
 ) {
   if (attemptNum >= MAX_ATTEMPTS) {
     await admin
-      .from('webhook_deliveries' as any)
+      .from('webhook_deliveries')
       .update({ status: 'permanently_failed', attempts: attemptNum })
       .eq('id', deliveryId);
     return;
@@ -147,7 +147,7 @@ async function scheduleRetry(
   const nextRetry = new Date(Date.now() + backoffMinutes * 60 * 1000);
 
   await admin
-    .from('webhook_deliveries' as any)
+    .from('webhook_deliveries')
     .update({
       status: 'failed',
       attempts: attemptNum,

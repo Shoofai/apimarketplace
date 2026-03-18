@@ -82,16 +82,23 @@ export const POST = withPlatformAdmin(async (req: Request) => {
   const sentInvoice = await stripe.invoices.sendInvoice(invoice.id);
 
   // Record in local invoices table
+  const now = new Date();
   void adminSb.from('invoices').insert({
     organization_id,
     stripe_invoice_id: sentInvoice.id,
     total: amount_usd,
+    subtotal: amount_usd,
+    platform_fee: 0,
+    billing_period_start: now.toISOString(),
+    billing_period_end: due_days
+      ? new Date(Date.now() + due_days * 24 * 60 * 60 * 1000).toISOString()
+      : now.toISOString(),
     status: 'open',
     due_date: due_days
       ? new Date(Date.now() + due_days * 24 * 60 * 60 * 1000).toISOString()
-      : null,
+      : now.toISOString(),
     metadata: { type: 'enterprise_custom', description },
-  } as any);
+  });
 
   logger.info('Enterprise invoice sent', {
     orgId: organization_id,

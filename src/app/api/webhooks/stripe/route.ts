@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   // Idempotency: skip already-processed events (Stripe may retry)
   const adminSbIdempotent = createAdminClient();
   const { data: existing } = await adminSbIdempotent
-    .from('processed_stripe_events' as any)
+    .from('processed_stripe_events')
     .select('id')
     .eq('id', event.id)
     .maybeSingle();
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
             type: 'purchase',
             description: `Credit package purchase (${totalCredits} credits) — Checkout ${session.id}`,
             balance_after: newBalance,
-          } as any);
+          });
 
           logger.info('Credit purchase completed', { orgId, totalCredits, newBalance });
         }
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
           const stripeSubscriptionId = (session as any).subscription as string | undefined;
 
           if (stripeSubscriptionId) {
-            await adminSb.from('platform_subscriptions' as any).upsert(
+            await adminSb.from('platform_subscriptions').upsert(
               {
                 organization_id: meta.organization_id,
                 stripe_subscription_id: stripeSubscriptionId,
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
               status: 'active',
               current_period_start: periodStart.toISOString(),
               current_period_end: periodEnd.toISOString(),
-              current_period_usage: 0,
+              calls_this_month: 0,
               stripe_subscription_id: (session as any).subscription ?? null,
             })
             .select()
@@ -163,7 +163,7 @@ export async function POST(request: Request) {
 
           if (subscription) {
             // Store the plaintext key temporarily (24h TTL) so the dashboard can reveal it once
-            void adminSb.from('api_key_reveals' as any).insert({
+            void adminSb.from('api_key_reveals').insert({
               subscription_id: subscription.id,
               plaintext_key: key,
               expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
@@ -290,14 +290,14 @@ export async function POST(request: Request) {
             .maybeSingle();
           if (billingAccount?.organization_id) {
             // Record payout in provider earnings ledger if table exists
-            void adminSb.from('provider_payouts' as any).insert({
+            void adminSb.from('provider_payouts').insert({
               organization_id: billingAccount.organization_id,
               stripe_payout_id: payout.id,
               amount: payout.amount / 100,
               currency: payout.currency,
               arrival_date: new Date((payout.arrival_date ?? Date.now() / 1000) * 1000).toISOString(),
               status: 'paid',
-            }); // Gracefully skip if table doesn't exist
+            });
           }
         }
         logger.info('Payout completed', {
@@ -350,13 +350,13 @@ export async function POST(request: Request) {
             .update({
               status: subscription.status === 'active' ? 'active' : 'inactive',
               stripe_subscription_id: subscription.id,
-            } as any)
+            })
             .eq('id', subId);
         } else {
           // Fall back to looking up by stripe customer
           await adminSb
             .from('api_subscriptions')
-            .update({ stripe_subscription_id: subscription.id } as any)
+            .update({ stripe_subscription_id: subscription.id })
             .eq('stripe_subscription_id', subscription.id);
         }
         logger.info('Stripe subscription created — synced', { subscriptionId: subscription.id });
@@ -375,15 +375,15 @@ export async function POST(request: Request) {
 
         // Check if this is a platform subscription
         const { data: platformSub } = await adminSb
-          .from('platform_subscriptions' as any)
+          .from('platform_subscriptions')
           .select('organization_id, plan')
           .eq('stripe_subscription_id', subscription.id)
-          .maybeSingle() as unknown as { data: { organization_id: string; plan: string } | null; error: unknown };
+          .maybeSingle();
 
         if (platformSub) {
-          const orgPlan = (newStatus === 'active') ? (platformSub as { organization_id: string; plan: string }).plan : 'free';
+          const orgPlan = (newStatus === 'active') ? platformSub.plan : 'free';
           await adminSb
-            .from('platform_subscriptions' as any)
+            .from('platform_subscriptions')
             .update({
               status: newStatus,
               cancel_at_period_end: subscription.cancel_at_period_end,
@@ -403,7 +403,7 @@ export async function POST(request: Request) {
         // Update by stripe_subscription_id
         const { data: updated } = await adminSb
           .from('api_subscriptions')
-          .update({ status: newStatus } as any)
+          .update({ status: newStatus })
           .eq('stripe_subscription_id', subscription.id)
           .select('id');
         if (!updated?.length) {
@@ -412,7 +412,7 @@ export async function POST(request: Request) {
           if (subId) {
             await adminSb
               .from('api_subscriptions')
-              .update({ status: newStatus, stripe_subscription_id: subscription.id } as any)
+              .update({ status: newStatus, stripe_subscription_id: subscription.id })
               .eq('id', subId);
           }
         }
@@ -427,14 +427,14 @@ export async function POST(request: Request) {
 
         // Check if this is a platform subscription
         const { data: platformSub } = await adminSb
-          .from('platform_subscriptions' as any)
+          .from('platform_subscriptions')
           .select('organization_id')
           .eq('stripe_subscription_id', subscription.id)
-          .maybeSingle() as unknown as { data: { organization_id: string } | null; error: unknown };
+          .maybeSingle();
 
         if (platformSub) {
           await adminSb
-            .from('platform_subscriptions' as any)
+            .from('platform_subscriptions')
             .update({ status: 'cancelled', updated_at: new Date().toISOString() })
             .eq('stripe_subscription_id', subscription.id);
           await adminSb
@@ -447,14 +447,14 @@ export async function POST(request: Request) {
 
         await adminSb
           .from('api_subscriptions')
-          .update({ status: 'cancelled' } as any)
+          .update({ status: 'cancelled' })
           .eq('stripe_subscription_id', subscription.id);
         // Also try metadata-based lookup
         const subId = subscription.metadata?.internal_subscription_id;
         if (subId) {
           await adminSb
             .from('api_subscriptions')
-            .update({ status: 'cancelled' } as any)
+            .update({ status: 'cancelled' })
             .eq('id', subId);
         }
         logger.info('Stripe subscription deleted — subscription cancelled', { subscriptionId: subscription.id });
@@ -467,7 +467,7 @@ export async function POST(request: Request) {
 
     // Mark event as processed for idempotency
     void adminSbIdempotent
-      .from('processed_stripe_events' as any)
+      .from('processed_stripe_events')
       .insert({ id: event.id, event_type: event.type });
 
     return NextResponse.json({ received: true });

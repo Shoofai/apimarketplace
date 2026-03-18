@@ -125,13 +125,13 @@ export async function POST(request: Request) {
           .select('id, referrer_user_id, referrer_organization_id')
           .eq('code', ref_code)
           .eq('status', 'pending')
-          .maybeSingle() as unknown as { data: { id: string; referrer_user_id: string; referrer_organization_id: string } | null; error: unknown };
+          .maybeSingle();
 
         if (referral) {
           // Mark referral as completed
           await admin
             .from('referrals')
-            .update({ status: 'completed', referred_user_id: user_id, converted_at: new Date().toISOString() } as any)
+            .update({ status: 'completed', referred_user_id: user_id, converted_at: new Date().toISOString() })
             .eq('id', referral.id);
 
           // Grant credits to referrer
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
             type: 'referral',
             description: `Referral reward — ${email} signed up`,
             balance_after: referrerNew,
-          } as any);
+          });
 
           // Grant credits to the new user
           await admin.from('credit_balances').upsert(
@@ -164,7 +164,7 @@ export async function POST(request: Request) {
             type: 'referral',
             description: 'Welcome bonus — referred signup',
             balance_after: REFERRAL_CREDITS,
-          } as any);
+          });
 
           logger.info('Referral rewards granted', { ref_code, referrer_org: referral.referrer_organization_id, new_org: org.id });
         }

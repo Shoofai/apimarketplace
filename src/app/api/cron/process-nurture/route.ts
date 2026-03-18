@@ -34,24 +34,12 @@ async function runProcess() {
   const now = new Date().toISOString();
 
   const { data: dueItems, error } = await admin
-    .from('nurture_queue' as any)
+    .from('nurture_queue')
     .select('id, user_id, organization_id, sequence, step, template, send_at, metadata')
     .eq('status', 'pending')
     .lte('send_at', now)
     .order('send_at', { ascending: true })
-    .limit(50) as unknown as {
-      data: Array<{
-        id: string;
-        user_id: string;
-        organization_id: string | null;
-        sequence: string;
-        step: number;
-        template: string;
-        send_at: string;
-        metadata: Record<string, unknown> | null;
-      }> | null;
-      error: unknown;
-    };
+    .limit(50);
 
   if (error) {
     logger.error('process-nurture: failed to fetch queue', { error });
@@ -72,7 +60,7 @@ async function runProcess() {
     try {
       // Mark as processing to prevent duplicate sends
       await admin
-        .from('nurture_queue' as any)
+        .from('nurture_queue')
         .update({ status: 'processing' })
         .eq('id', item.id);
 
@@ -101,7 +89,7 @@ async function runProcess() {
       }
 
       await admin
-        .from('nurture_queue' as any)
+        .from('nurture_queue')
         .update({ status: 'sent', sent_at: now })
         .eq('id', item.id);
 
@@ -109,7 +97,7 @@ async function runProcess() {
     } catch (err) {
       logger.error('process-nurture: item failed', { itemId: item.id, error: err });
       await admin
-        .from('nurture_queue' as any)
+        .from('nurture_queue')
         .update({ status: 'failed', error: String(err) })
         .eq('id', item.id);
       failed++;

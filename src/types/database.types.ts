@@ -75,6 +75,74 @@ export type Database = {
           },
         ]
       }
+      ai_allotments: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization_id: string
+          period_start: string
+          tier_limit: number
+          used: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization_id: string
+          period_start?: string
+          tier_limit?: number
+          used?: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string
+          period_start?: string
+          tier_limit?: number
+          used?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_allotments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_content_cache: {
+        Row: {
+          cache_key: string
+          content: string
+          content_type: string
+          created_at: string | null
+          expires_at: string | null
+          hit_count: number | null
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          cache_key: string
+          content: string
+          content_type: string
+          created_at?: string | null
+          expires_at?: string | null
+          hit_count?: number | null
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          cache_key?: string
+          content?: string
+          content_type?: string
+          created_at?: string | null
+          expires_at?: string | null
+          hit_count?: number | null
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
       ai_generated_snippets: {
         Row: {
           api_id: string | null
@@ -226,6 +294,62 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_request_log: {
+        Row: {
+          created_at: string | null
+          estimated_cost_usd: number | null
+          feedback_score: number | null
+          id: string
+          input_tokens: number | null
+          latency_ms: number | null
+          model_used: string
+          output_tokens: number | null
+          prompt_preview: string | null
+          request_type: string
+          response_preview: string | null
+          stakeholder_id: string | null
+          was_used: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_cost_usd?: number | null
+          feedback_score?: number | null
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model_used: string
+          output_tokens?: number | null
+          prompt_preview?: string | null
+          request_type: string
+          response_preview?: string | null
+          stakeholder_id?: string | null
+          was_used?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          estimated_cost_usd?: number | null
+          feedback_score?: number | null
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model_used?: string
+          output_tokens?: number | null
+          prompt_preview?: string | null
+          request_type?: string
+          response_preview?: string | null
+          stakeholder_id?: string | null
+          was_used?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_request_log_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
             referencedColumns: ["id"]
           },
         ]
@@ -1010,6 +1134,38 @@ export type Database = {
           },
         ]
       }
+      api_key_reveals: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          plaintext_key: string
+          subscription_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          plaintext_key: string
+          subscription_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          plaintext_key?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_key_reveals_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "api_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_keys: {
         Row: {
           created_at: string | null
@@ -1716,6 +1872,45 @@ export type Database = {
           },
         ]
       }
+      api_specs: {
+        Row: {
+          api_id: string
+          openapi_raw: string | null
+          openapi_spec: Json | null
+          openapi_spec_format: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          api_id: string
+          openapi_raw?: string | null
+          openapi_spec?: Json | null
+          openapi_spec_format?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          api_id?: string
+          openapi_raw?: string | null
+          openapi_spec?: Json | null
+          openapi_spec_format?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_specs_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "api_rankings_mv"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_specs_api_id_fkey"
+            columns: ["api_id"]
+            isOneToOne: true
+            referencedRelation: "apis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_subscriptions: {
         Row: {
           api_id: string
@@ -1728,8 +1923,10 @@ export type Database = {
           current_period_start: string
           id: string
           organization_id: string
+          past_due_since: string | null
           pricing_plan_id: string
           status: string | null
+          stripe_subscription_id: string | null
           updated_at: string | null
           user_id: string
         }
@@ -1744,8 +1941,10 @@ export type Database = {
           current_period_start: string
           id?: string
           organization_id: string
+          past_due_since?: string | null
           pricing_plan_id: string
           status?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -1760,8 +1959,10 @@ export type Database = {
           current_period_start?: string
           id?: string
           organization_id?: string
+          past_due_since?: string | null
           pricing_plan_id?: string
           status?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -1805,138 +2006,71 @@ export type Database = {
       }
       api_test_sessions: {
         Row: {
-          id: string
-          developer_id: string | null
-          session_id: string | null
           api_id: string | null
           api_name: string
+          created_at: string | null
+          developer_id: string | null
           endpoint_path: string
+          error_message: string | null
           http_method: string
-          request_headers: Json | null
+          id: string
           request_body: Json | null
+          request_headers: Json | null
           request_params: Json | null
-          response_status: number | null
-          response_time_ms: number | null
           response_body: Json | null
           response_headers: Json | null
-          test_passed: boolean | null
-          error_message: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
-          api_id?: string | null
-          api_name: string
-          endpoint_path: string
-          http_method: string
-          request_headers?: Json | null
-          request_body?: Json | null
-          request_params?: Json | null
-          response_status?: number | null
-          response_time_ms?: number | null
-          response_body?: Json | null
-          response_headers?: Json | null
-          test_passed?: boolean | null
-          error_message?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
-          api_id?: string | null
-          api_name?: string
-          endpoint_path?: string
-          http_method?: string
-          request_headers?: Json | null
-          request_body?: Json | null
-          request_params?: Json | null
-          response_status?: number | null
-          response_time_ms?: number | null
-          response_body?: Json | null
-          response_headers?: Json | null
-          test_passed?: boolean | null
-          error_message?: string | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      data_room_access_log: {
-        Row: {
-          id: string
-          stakeholder_id: string
-          document_id: string | null
-          action: string
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id: string
-          document_id?: string | null
-          action: string
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string
-          document_id?: string | null
-          action?: string
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      code_generations: {
-        Row: {
-          id: string
-          developer_id: string | null
+          response_status: number | null
+          response_time_ms: number | null
           session_id: string | null
-          api_id: string | null
-          api_name: string
-          language: string
-          framework: string | null
-          generated_code: string
-          code_quality_score: number | null
-          was_copied: boolean | null
-          was_tested: boolean | null
-          test_result: string | null
-          led_to_signup: boolean | null
-          created_at: string | null
+          test_passed: boolean | null
         }
         Insert: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
           api_id?: string | null
           api_name: string
-          language: string
-          framework?: string | null
-          generated_code: string
-          code_quality_score?: number | null
-          was_copied?: boolean | null
-          was_tested?: boolean | null
-          test_result?: string | null
-          led_to_signup?: boolean | null
           created_at?: string | null
+          developer_id?: string | null
+          endpoint_path: string
+          error_message?: string | null
+          http_method: string
+          id?: string
+          request_body?: Json | null
+          request_headers?: Json | null
+          request_params?: Json | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          session_id?: string | null
+          test_passed?: boolean | null
         }
         Update: {
-          id?: string
-          developer_id?: string | null
-          session_id?: string | null
           api_id?: string | null
           api_name?: string
-          language?: string
-          framework?: string | null
-          generated_code?: string
-          code_quality_score?: number | null
-          was_copied?: boolean | null
-          was_tested?: boolean | null
-          test_result?: string | null
-          led_to_signup?: boolean | null
           created_at?: string | null
+          developer_id?: string | null
+          endpoint_path?: string
+          error_message?: string | null
+          http_method?: string
+          id?: string
+          request_body?: Json | null
+          request_headers?: Json | null
+          request_params?: Json | null
+          response_body?: Json | null
+          response_headers?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          session_id?: string | null
+          test_passed?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "api_test_sessions_developer_id_fkey"
+            columns: ["developer_id"]
+            isOneToOne: false
+            referencedRelation: "developer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       api_versions: {
         Row: {
@@ -2001,6 +2135,8 @@ export type Database = {
           id: string
           logo_url: string | null
           long_description: string | null
+          max_price_cached: number | null
+          min_price_cached: number | null
           name: string
           openapi_raw: string | null
           openapi_spec: Json | null
@@ -2032,6 +2168,8 @@ export type Database = {
           id?: string
           logo_url?: string | null
           long_description?: string | null
+          max_price_cached?: number | null
+          min_price_cached?: number | null
           name: string
           openapi_raw?: string | null
           openapi_spec?: Json | null
@@ -2063,6 +2201,8 @@ export type Database = {
           id?: string
           logo_url?: string | null
           long_description?: string | null
+          max_price_cached?: number | null
+          min_price_cached?: number | null
           name?: string
           openapi_raw?: string | null
           openapi_spec?: Json | null
@@ -2124,6 +2264,59 @@ export type Database = {
           value?: Json
         }
         Relationships: []
+      }
+      attribution_touchpoints: {
+        Row: {
+          attribution_weight: number | null
+          campaign: string | null
+          channel: string
+          content: string | null
+          created_at: string | null
+          id: string
+          landing_page: string | null
+          medium: string | null
+          referrer: string | null
+          source: string | null
+          stakeholder_id: string
+          touchpoint_type: string
+        }
+        Insert: {
+          attribution_weight?: number | null
+          campaign?: string | null
+          channel: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          landing_page?: string | null
+          medium?: string | null
+          referrer?: string | null
+          source?: string | null
+          stakeholder_id: string
+          touchpoint_type: string
+        }
+        Update: {
+          attribution_weight?: number | null
+          campaign?: string | null
+          channel?: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          landing_page?: string | null
+          medium?: string | null
+          referrer?: string | null
+          source?: string | null
+          stakeholder_id?: string
+          touchpoint_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attribution_touchpoints_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs: {
         Row: {
@@ -2513,6 +2706,157 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      churn_risk_assessments: {
+        Row: {
+          assessed_at: string | null
+          churn_date: string | null
+          created_at: string | null
+          did_churn: boolean | null
+          id: string
+          intervention_result: string | null
+          intervention_sent: boolean | null
+          intervention_sent_at: string | null
+          intervention_type: string | null
+          recovery_date: string | null
+          risk_level: string
+          risk_score: number
+          risk_signals: Json
+          stakeholder_id: string
+        }
+        Insert: {
+          assessed_at?: string | null
+          churn_date?: string | null
+          created_at?: string | null
+          did_churn?: boolean | null
+          id?: string
+          intervention_result?: string | null
+          intervention_sent?: boolean | null
+          intervention_sent_at?: string | null
+          intervention_type?: string | null
+          recovery_date?: string | null
+          risk_level: string
+          risk_score: number
+          risk_signals?: Json
+          stakeholder_id: string
+        }
+        Update: {
+          assessed_at?: string | null
+          churn_date?: string | null
+          created_at?: string | null
+          did_churn?: boolean | null
+          id?: string
+          intervention_result?: string | null
+          intervention_sent?: boolean | null
+          intervention_sent_at?: string | null
+          intervention_type?: string | null
+          recovery_date?: string | null
+          risk_level?: string
+          risk_score?: number
+          risk_signals?: Json
+          stakeholder_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "churn_risk_assessments_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      churn_signals: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          detection_query: string
+          id: string
+          is_active: boolean | null
+          signal_name: string
+          stakeholder_types: string[]
+          weight: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          detection_query: string
+          id?: string
+          is_active?: boolean | null
+          signal_name: string
+          stakeholder_types: string[]
+          weight?: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          detection_query?: string
+          id?: string
+          is_active?: boolean | null
+          signal_name?: string
+          stakeholder_types?: string[]
+          weight?: number
+        }
+        Relationships: []
+      }
+      code_generations: {
+        Row: {
+          api_id: string | null
+          api_name: string
+          code_quality_score: number | null
+          created_at: string | null
+          developer_id: string | null
+          framework: string | null
+          generated_code: string
+          id: string
+          language: string
+          led_to_signup: boolean | null
+          session_id: string | null
+          test_result: string | null
+          was_copied: boolean | null
+          was_tested: boolean | null
+        }
+        Insert: {
+          api_id?: string | null
+          api_name: string
+          code_quality_score?: number | null
+          created_at?: string | null
+          developer_id?: string | null
+          framework?: string | null
+          generated_code: string
+          id?: string
+          language: string
+          led_to_signup?: boolean | null
+          session_id?: string | null
+          test_result?: string | null
+          was_copied?: boolean | null
+          was_tested?: boolean | null
+        }
+        Update: {
+          api_id?: string | null
+          api_name?: string
+          code_quality_score?: number | null
+          created_at?: string | null
+          developer_id?: string | null
+          framework?: string | null
+          generated_code?: string
+          id?: string
+          language?: string
+          led_to_signup?: boolean | null
+          session_id?: string | null
+          test_result?: string | null
+          was_copied?: boolean | null
+          was_tested?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "code_generations_developer_id_fkey"
+            columns: ["developer_id"]
+            isOneToOne: false
+            referencedRelation: "developer_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3009,6 +3353,75 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_funnel_metrics: {
+        Row: {
+          activated_count: number | null
+          activated_to_engaged_pct: number | null
+          avg_time_to_activation_hours: number | null
+          avg_time_to_conversion_hours: number | null
+          capture_to_activated_pct: number | null
+          captured_count: number | null
+          churned_count: number | null
+          converted_count: number | null
+          converting_count: number | null
+          created_at: string | null
+          engaged_count: number | null
+          engaged_to_qualified_pct: number | null
+          id: string
+          metric_date: string
+          overall_conversion_pct: number | null
+          qualified_count: number | null
+          qualified_to_converted_pct: number | null
+          segmented_count: number | null
+          stakeholder_type: string
+          top_sources: Json | null
+        }
+        Insert: {
+          activated_count?: number | null
+          activated_to_engaged_pct?: number | null
+          avg_time_to_activation_hours?: number | null
+          avg_time_to_conversion_hours?: number | null
+          capture_to_activated_pct?: number | null
+          captured_count?: number | null
+          churned_count?: number | null
+          converted_count?: number | null
+          converting_count?: number | null
+          created_at?: string | null
+          engaged_count?: number | null
+          engaged_to_qualified_pct?: number | null
+          id?: string
+          metric_date: string
+          overall_conversion_pct?: number | null
+          qualified_count?: number | null
+          qualified_to_converted_pct?: number | null
+          segmented_count?: number | null
+          stakeholder_type: string
+          top_sources?: Json | null
+        }
+        Update: {
+          activated_count?: number | null
+          activated_to_engaged_pct?: number | null
+          avg_time_to_activation_hours?: number | null
+          avg_time_to_conversion_hours?: number | null
+          capture_to_activated_pct?: number | null
+          captured_count?: number | null
+          churned_count?: number | null
+          converted_count?: number | null
+          converting_count?: number | null
+          created_at?: string | null
+          engaged_count?: number | null
+          engaged_to_qualified_pct?: number | null
+          id?: string
+          metric_date?: string
+          overall_conversion_pct?: number | null
+          qualified_count?: number | null
+          qualified_to_converted_pct?: number | null
+          segmented_count?: number | null
+          stakeholder_type?: string
+          top_sources?: Json | null
+        }
+        Relationships: []
+      }
       data_deletion_requests: {
         Row: {
           completed_at: string | null
@@ -3114,6 +3527,99 @@ export type Database = {
           },
         ]
       }
+      data_room_access_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          document_id: string
+          id: string
+          page_views: Json | null
+          stakeholder_id: string
+          view_duration: number | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          document_id: string
+          id?: string
+          page_views?: Json | null
+          stakeholder_id: string
+          view_duration?: number | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          document_id?: string
+          id?: string
+          page_views?: Json | null
+          stakeholder_id?: string
+          view_duration?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_room_access_log_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "data_room_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_room_access_log_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_room_documents: {
+        Row: {
+          access_level: string
+          avg_view_duration: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          file_type: string | null
+          file_url: string
+          id: string
+          is_active: boolean | null
+          sort_order: number | null
+          title: string
+          total_views: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string
+          avg_view_duration?: number | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title: string
+          total_views?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string
+          avg_view_duration?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title?: string
+          total_views?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       developer_challenges: {
         Row: {
           api_id: string | null
@@ -3161,6 +3667,393 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      developer_profiles: {
+        Row: {
+          api_keys_created: number | null
+          apis_explored: number | null
+          code_generations: number | null
+          created_at: string | null
+          dark_mode: boolean | null
+          developer_stage: Database["public"]["Enums"]["developer_stage"]
+          experience_level: string | null
+          favorite_apis: string[] | null
+          first_api_call_at: string | null
+          first_code_gen_at: string | null
+          first_code_gen_language: string | null
+          github_username: string | null
+          id: string
+          preferred_framework: string | null
+          preferred_language: string | null
+          primary_language: string | null
+          referral_code: string | null
+          referrals_made: number | null
+          referred_by: string | null
+          stage_entered_at: string | null
+          stage_history: Json | null
+          stakeholder_id: string
+          tech_stack: string[] | null
+          time_to_first_api_call_seconds: number | null
+          time_to_first_code_gen_seconds: number | null
+          total_api_calls: number | null
+          unique_apis_used: number | null
+          updated_at: string | null
+          use_case: string | null
+        }
+        Insert: {
+          api_keys_created?: number | null
+          apis_explored?: number | null
+          code_generations?: number | null
+          created_at?: string | null
+          dark_mode?: boolean | null
+          developer_stage?: Database["public"]["Enums"]["developer_stage"]
+          experience_level?: string | null
+          favorite_apis?: string[] | null
+          first_api_call_at?: string | null
+          first_code_gen_at?: string | null
+          first_code_gen_language?: string | null
+          github_username?: string | null
+          id?: string
+          preferred_framework?: string | null
+          preferred_language?: string | null
+          primary_language?: string | null
+          referral_code?: string | null
+          referrals_made?: number | null
+          referred_by?: string | null
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          stakeholder_id: string
+          tech_stack?: string[] | null
+          time_to_first_api_call_seconds?: number | null
+          time_to_first_code_gen_seconds?: number | null
+          total_api_calls?: number | null
+          unique_apis_used?: number | null
+          updated_at?: string | null
+          use_case?: string | null
+        }
+        Update: {
+          api_keys_created?: number | null
+          apis_explored?: number | null
+          code_generations?: number | null
+          created_at?: string | null
+          dark_mode?: boolean | null
+          developer_stage?: Database["public"]["Enums"]["developer_stage"]
+          experience_level?: string | null
+          favorite_apis?: string[] | null
+          first_api_call_at?: string | null
+          first_code_gen_at?: string | null
+          first_code_gen_language?: string | null
+          github_username?: string | null
+          id?: string
+          preferred_framework?: string | null
+          preferred_language?: string | null
+          primary_language?: string | null
+          referral_code?: string | null
+          referrals_made?: number | null
+          referred_by?: string | null
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          stakeholder_id?: string
+          tech_stack?: string[] | null
+          time_to_first_api_call_seconds?: number | null
+          time_to_first_code_gen_seconds?: number | null
+          total_api_calls?: number | null
+          unique_apis_used?: number | null
+          updated_at?: string | null
+          use_case?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "developer_profiles_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: true
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_send_log: {
+        Row: {
+          bounce_type: string | null
+          click_url: string | null
+          clicked: boolean | null
+          clicked_at: string | null
+          created_at: string | null
+          error_message: string | null
+          from_email: string
+          id: string
+          opened: boolean | null
+          opened_at: string | null
+          queue_id: string | null
+          resend_id: string | null
+          stakeholder_id: string
+          status: Database["public"]["Enums"]["nurture_status"] | null
+          subject: string
+          to_email: string
+        }
+        Insert: {
+          bounce_type?: string | null
+          click_url?: string | null
+          clicked?: boolean | null
+          clicked_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          from_email: string
+          id?: string
+          opened?: boolean | null
+          opened_at?: string | null
+          queue_id?: string | null
+          resend_id?: string | null
+          stakeholder_id: string
+          status?: Database["public"]["Enums"]["nurture_status"] | null
+          subject: string
+          to_email: string
+        }
+        Update: {
+          bounce_type?: string | null
+          click_url?: string | null
+          clicked?: boolean | null
+          clicked_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          from_email?: string
+          id?: string
+          opened?: boolean | null
+          opened_at?: string | null
+          queue_id?: string | null
+          resend_id?: string | null
+          stakeholder_id?: string
+          status?: Database["public"]["Enums"]["nurture_status"] | null
+          subject?: string
+          to_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_send_log_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "nurture_queue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_send_log_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enterprise_profiles: {
+        Row: {
+          annual_api_spend: number | null
+          apis_managed: number | null
+          champion_name: string | null
+          champion_title: string | null
+          company_name: string
+          company_size: Database["public"]["Enums"]["company_size"] | null
+          created_at: string | null
+          current_tools: string[] | null
+          deal_notes: string | null
+          deal_probability: number | null
+          decision_maker_email: string | null
+          decision_maker_name: string | null
+          decision_maker_title: string | null
+          demo_attendees: number | null
+          demo_completed_at: string | null
+          demo_feedback: string | null
+          demo_scheduled_at: string | null
+          demo_score: number | null
+          enterprise_stage: Database["public"]["Enums"]["enterprise_stage"]
+          estimated_deal_value: number | null
+          estimated_employees: number | null
+          expected_close_date: string | null
+          id: string
+          industry: string | null
+          monthly_api_calls: number | null
+          pain_points: string[] | null
+          pilot_api_calls: number | null
+          pilot_end_date: string | null
+          pilot_satisfaction_score: number | null
+          pilot_start_date: string | null
+          pilot_users: number | null
+          proposal_amount: number | null
+          proposal_sent_at: string | null
+          proposal_term_months: number | null
+          roi_calculation: Json | null
+          stage_entered_at: string | null
+          stage_history: Json | null
+          stakeholder_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          annual_api_spend?: number | null
+          apis_managed?: number | null
+          champion_name?: string | null
+          champion_title?: string | null
+          company_name?: string
+          company_size?: Database["public"]["Enums"]["company_size"] | null
+          created_at?: string | null
+          current_tools?: string[] | null
+          deal_notes?: string | null
+          deal_probability?: number | null
+          decision_maker_email?: string | null
+          decision_maker_name?: string | null
+          decision_maker_title?: string | null
+          demo_attendees?: number | null
+          demo_completed_at?: string | null
+          demo_feedback?: string | null
+          demo_scheduled_at?: string | null
+          demo_score?: number | null
+          enterprise_stage?: Database["public"]["Enums"]["enterprise_stage"]
+          estimated_deal_value?: number | null
+          estimated_employees?: number | null
+          expected_close_date?: string | null
+          id?: string
+          industry?: string | null
+          monthly_api_calls?: number | null
+          pain_points?: string[] | null
+          pilot_api_calls?: number | null
+          pilot_end_date?: string | null
+          pilot_satisfaction_score?: number | null
+          pilot_start_date?: string | null
+          pilot_users?: number | null
+          proposal_amount?: number | null
+          proposal_sent_at?: string | null
+          proposal_term_months?: number | null
+          roi_calculation?: Json | null
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          stakeholder_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          annual_api_spend?: number | null
+          apis_managed?: number | null
+          champion_name?: string | null
+          champion_title?: string | null
+          company_name?: string
+          company_size?: Database["public"]["Enums"]["company_size"] | null
+          created_at?: string | null
+          current_tools?: string[] | null
+          deal_notes?: string | null
+          deal_probability?: number | null
+          decision_maker_email?: string | null
+          decision_maker_name?: string | null
+          decision_maker_title?: string | null
+          demo_attendees?: number | null
+          demo_completed_at?: string | null
+          demo_feedback?: string | null
+          demo_scheduled_at?: string | null
+          demo_score?: number | null
+          enterprise_stage?: Database["public"]["Enums"]["enterprise_stage"]
+          estimated_deal_value?: number | null
+          estimated_employees?: number | null
+          expected_close_date?: string | null
+          id?: string
+          industry?: string | null
+          monthly_api_calls?: number | null
+          pain_points?: string[] | null
+          pilot_api_calls?: number | null
+          pilot_end_date?: string | null
+          pilot_satisfaction_score?: number | null
+          pilot_start_date?: string | null
+          pilot_users?: number | null
+          proposal_amount?: number | null
+          proposal_sent_at?: string | null
+          proposal_term_months?: number | null
+          roi_calculation?: Json | null
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          stakeholder_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_profiles_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: true
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enterprise_scoring_events: {
+        Row: {
+          created_at: string | null
+          enterprise_id: string
+          event_data: Json | null
+          event_type: string
+          id: string
+          score_impact: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          enterprise_id: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          score_impact?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          enterprise_id?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          score_impact?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_scoring_events_enterprise_id_fkey"
+            columns: ["enterprise_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escalation_rules: {
+        Row: {
+          action: string
+          action_config: Json | null
+          conditions: Json
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          rule_name: string
+          stakeholder_type:
+            | Database["public"]["Enums"]["stakeholder_type"]
+            | null
+          times_triggered: number | null
+        }
+        Insert: {
+          action: string
+          action_config?: Json | null
+          conditions: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          rule_name: string
+          stakeholder_type?:
+            | Database["public"]["Enums"]["stakeholder_type"]
+            | null
+          times_triggered?: number | null
+        }
+        Update: {
+          action?: string
+          action_config?: Json | null
+          conditions?: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          rule_name?: string
+          stakeholder_type?:
+            | Database["public"]["Enums"]["stakeholder_type"]
+            | null
+          times_triggered?: number | null
+        }
+        Relationships: []
       }
       feature_demo_interactions: {
         Row: {
@@ -3262,33 +4155,115 @@ export type Database = {
       }
       forum_topics: {
         Row: {
+          body: string | null
           category: string | null
           created_at: string | null
           id: string
+          post_count: number
           slug: string
           title: string
           updated_at: string | null
+          upvote_count: number
           user_id: string
         }
         Insert: {
+          body?: string | null
           category?: string | null
           created_at?: string | null
           id?: string
+          post_count?: number
           slug: string
           title: string
           updated_at?: string | null
+          upvote_count?: number
           user_id: string
         }
         Update: {
+          body?: string | null
           category?: string | null
           created_at?: string | null
           id?: string
+          post_count?: number
           slug?: string
           title?: string
           updated_at?: string | null
+          upvote_count?: number
           user_id?: string
         }
         Relationships: []
+      }
+      forum_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_votes_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "forum_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funnel_transitions: {
+        Row: {
+          created_at: string | null
+          from_stage: string
+          id: string
+          stakeholder_id: string
+          stakeholder_type: string
+          time_in_previous_stage_hours: number | null
+          to_stage: string
+          trigger_source: string | null
+          trigger_type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          from_stage: string
+          id?: string
+          stakeholder_id: string
+          stakeholder_type: string
+          time_in_previous_stage_hours?: number | null
+          to_stage: string
+          trigger_source?: string | null
+          trigger_type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          from_stage?: string
+          id?: string
+          stakeholder_id?: string
+          stakeholder_type?: string
+          time_in_previous_stage_hours?: number | null
+          to_stage?: string
+          trigger_source?: string | null
+          trigger_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funnel_transitions_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       gdpr_consent_logs: {
         Row: {
@@ -3367,6 +4342,113 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      investor_profiles: {
+        Row: {
+          ai_next_action: string | null
+          ai_summary: string | null
+          check_size_max: number | null
+          check_size_min: number | null
+          commitment_amount: number | null
+          created_at: string | null
+          data_room_accessed: boolean | null
+          data_room_documents_viewed: string[] | null
+          data_room_first_access: string | null
+          firm_name: string | null
+          firm_type: string | null
+          id: string
+          investment_stage: string | null
+          last_traction_view: string | null
+          meeting_notes: string | null
+          meeting_requested: boolean | null
+          meeting_scheduled_at: string | null
+          meeting_type: string | null
+          pitch_deck_view_duration: number | null
+          pitch_deck_viewed: boolean | null
+          portfolio_companies: string[] | null
+          safe_sent: boolean | null
+          safe_signed: boolean | null
+          sectors_of_interest: string[] | null
+          stakeholder_id: string
+          traction_dashboard_views: number | null
+          updated_at: string | null
+          verbal_commitment: boolean | null
+          warmth_score: number | null
+          wire_received: boolean | null
+        }
+        Insert: {
+          ai_next_action?: string | null
+          ai_summary?: string | null
+          check_size_max?: number | null
+          check_size_min?: number | null
+          commitment_amount?: number | null
+          created_at?: string | null
+          data_room_accessed?: boolean | null
+          data_room_documents_viewed?: string[] | null
+          data_room_first_access?: string | null
+          firm_name?: string | null
+          firm_type?: string | null
+          id?: string
+          investment_stage?: string | null
+          last_traction_view?: string | null
+          meeting_notes?: string | null
+          meeting_requested?: boolean | null
+          meeting_scheduled_at?: string | null
+          meeting_type?: string | null
+          pitch_deck_view_duration?: number | null
+          pitch_deck_viewed?: boolean | null
+          portfolio_companies?: string[] | null
+          safe_sent?: boolean | null
+          safe_signed?: boolean | null
+          sectors_of_interest?: string[] | null
+          stakeholder_id: string
+          traction_dashboard_views?: number | null
+          updated_at?: string | null
+          verbal_commitment?: boolean | null
+          warmth_score?: number | null
+          wire_received?: boolean | null
+        }
+        Update: {
+          ai_next_action?: string | null
+          ai_summary?: string | null
+          check_size_max?: number | null
+          check_size_min?: number | null
+          commitment_amount?: number | null
+          created_at?: string | null
+          data_room_accessed?: boolean | null
+          data_room_documents_viewed?: string[] | null
+          data_room_first_access?: string | null
+          firm_name?: string | null
+          firm_type?: string | null
+          id?: string
+          investment_stage?: string | null
+          last_traction_view?: string | null
+          meeting_notes?: string | null
+          meeting_requested?: boolean | null
+          meeting_scheduled_at?: string | null
+          meeting_type?: string | null
+          pitch_deck_view_duration?: number | null
+          pitch_deck_viewed?: boolean | null
+          portfolio_companies?: string[] | null
+          safe_sent?: boolean | null
+          safe_signed?: boolean | null
+          sectors_of_interest?: string[] | null
+          stakeholder_id?: string
+          traction_dashboard_views?: number | null
+          updated_at?: string | null
+          verbal_commitment?: boolean | null
+          warmth_score?: number | null
+          wire_received?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_profiles_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: true
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoice_line_items: {
         Row: {
@@ -3716,6 +4798,56 @@ export type Database = {
           total_revenue_platform?: number | null
         }
         Relationships: []
+      }
+      meeting_slots: {
+        Row: {
+          booked_by: string | null
+          calendar_event_id: string | null
+          created_at: string | null
+          duration_minutes: number
+          id: string
+          is_available: boolean | null
+          meeting_type: string | null
+          slot_date: string
+          slot_time: string
+          timezone: string
+          video_link: string | null
+        }
+        Insert: {
+          booked_by?: string | null
+          calendar_event_id?: string | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          is_available?: boolean | null
+          meeting_type?: string | null
+          slot_date: string
+          slot_time: string
+          timezone?: string
+          video_link?: string | null
+        }
+        Update: {
+          booked_by?: string | null
+          calendar_event_id?: string | null
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          is_available?: boolean | null
+          meeting_type?: string | null
+          slot_date?: string
+          slot_time?: string
+          timezone?: string
+          video_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_slots_booked_by_fkey"
+            columns: ["booked_by"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       migration_configs: {
         Row: {
@@ -4077,6 +5209,165 @@ export type Database = {
           },
         ]
       }
+      nurture_frequency_caps: {
+        Row: {
+          channel: Database["public"]["Enums"]["nurture_channel"]
+          id: string
+          is_active: boolean | null
+          max_per_day: number | null
+          max_per_month: number | null
+          max_per_week: number | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["nurture_channel"]
+          id?: string
+          is_active?: boolean | null
+          max_per_day?: number | null
+          max_per_month?: number | null
+          max_per_week?: number | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["nurture_channel"]
+          id?: string
+          is_active?: boolean | null
+          max_per_day?: number | null
+          max_per_month?: number | null
+          max_per_week?: number | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          stakeholder_type?: Database["public"]["Enums"]["stakeholder_type"]
+        }
+        Relationships: []
+      }
+      nurture_queue: {
+        Row: {
+          attempts: number | null
+          body_html: string | null
+          channel: Database["public"]["Enums"]["nurture_channel"] | null
+          clicked_at: string | null
+          created_at: string | null
+          current_step: number | null
+          delivered_at: string | null
+          id: string
+          last_error: string | null
+          max_attempts: number | null
+          metadata: Json | null
+          next_send_at: string
+          opened_at: string | null
+          replied_at: string | null
+          sent_at: string | null
+          sequence_id: string
+          stakeholder_id: string
+          status: Database["public"]["Enums"]["nurture_status"] | null
+          subject: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          body_html?: string | null
+          channel?: Database["public"]["Enums"]["nurture_channel"] | null
+          clicked_at?: string | null
+          created_at?: string | null
+          current_step?: number | null
+          delivered_at?: string | null
+          id?: string
+          last_error?: string | null
+          max_attempts?: number | null
+          metadata?: Json | null
+          next_send_at: string
+          opened_at?: string | null
+          replied_at?: string | null
+          sent_at?: string | null
+          sequence_id: string
+          stakeholder_id: string
+          status?: Database["public"]["Enums"]["nurture_status"] | null
+          subject?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          body_html?: string | null
+          channel?: Database["public"]["Enums"]["nurture_channel"] | null
+          clicked_at?: string | null
+          created_at?: string | null
+          current_step?: number | null
+          delivered_at?: string | null
+          id?: string
+          last_error?: string | null
+          max_attempts?: number | null
+          metadata?: Json | null
+          next_send_at?: string
+          opened_at?: string | null
+          replied_at?: string | null
+          sent_at?: string | null
+          sequence_id?: string
+          stakeholder_id?: string
+          status?: Database["public"]["Enums"]["nurture_status"] | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nurture_queue_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "nurture_sequences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurture_queue_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nurture_sequences: {
+        Row: {
+          avg_conversion_rate: number | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          sequence_name: string
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+          steps: Json
+          total_completed: number | null
+          total_enrolled: number | null
+          trigger_stage: string
+          updated_at: string | null
+        }
+        Insert: {
+          avg_conversion_rate?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          sequence_name: string
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+          steps?: Json
+          total_completed?: number | null
+          total_enrolled?: number | null
+          trigger_stage: string
+          updated_at?: string | null
+        }
+        Update: {
+          avg_conversion_rate?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          sequence_name?: string
+          stakeholder_type?: Database["public"]["Enums"]["stakeholder_type"]
+          steps?: Json
+          total_completed?: number | null
+          total_enrolled?: number | null
+          trigger_stage?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       org_governance_policies: {
         Row: {
           config: Json
@@ -4375,6 +5666,74 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          organization_id: string
+          plan: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id: string
+          plan?: string
+          status?: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id?: string
+          plan?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processed_stripe_events: {
+        Row: {
+          event_type: string
+          id: string
+          processed_at: string
+        }
+        Insert: {
+          event_type: string
+          id: string
+          processed_at?: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          processed_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -4480,6 +5839,88 @@ export type Database = {
           },
         ]
       }
+      provider_onboarding_events: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          provider_id: string
+          step_data: Json | null
+          step_name: string
+          step_status: string
+          time_spent_seconds: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          provider_id: string
+          step_data?: Json | null
+          step_name: string
+          step_status: string
+          time_spent_seconds?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          provider_id?: string
+          step_data?: Json | null
+          step_name?: string
+          step_status?: string
+          time_spent_seconds?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_onboarding_events_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_payouts: {
+        Row: {
+          amount: number
+          arrival_date: string
+          created_at: string | null
+          currency: string
+          id: string
+          organization_id: string
+          status: string
+          stripe_payout_id: string
+        }
+        Insert: {
+          amount: number
+          arrival_date: string
+          created_at?: string | null
+          currency?: string
+          id?: string
+          organization_id: string
+          status?: string
+          stripe_payout_id: string
+        }
+        Update: {
+          amount?: number
+          arrival_date?: string
+          created_at?: string | null
+          currency?: string
+          id?: string
+          organization_id?: string
+          status?: string
+          stripe_payout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_payouts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_profiles: {
         Row: {
           created_at: string | null
@@ -4498,13 +5939,12 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          display_name?: string
+          display_name: string
           documentation_url?: string | null
           id?: string
           is_verified?: boolean | null
           long_description?: string | null
-          organization_id?: string
-          stakeholder_id?: string
+          organization_id: string
           social_links?: Json | null
           support_email?: string | null
           support_url?: string | null
@@ -4567,33 +6007,96 @@ export type Database = {
       referrals: {
         Row: {
           code: string
+          converted_at: string | null
           created_at: string | null
           id: string
           referred_email: string
           referred_user_id: string | null
           referrer_id: string
+          referrer_organization_id: string | null
+          referrer_user_id: string | null
           reward_claimed_at: string | null
           status: string
         }
         Insert: {
           code: string
+          converted_at?: string | null
           created_at?: string | null
           id?: string
           referred_email: string
           referred_user_id?: string | null
           referrer_id: string
+          referrer_organization_id?: string | null
+          referrer_user_id?: string | null
           reward_claimed_at?: string | null
           status?: string
         }
         Update: {
           code?: string
+          converted_at?: string | null
           created_at?: string | null
           id?: string
           referred_email?: string
           referred_user_id?: string | null
           referrer_id?: string
+          referrer_organization_id?: string | null
+          referrer_user_id?: string | null
           reward_claimed_at?: string | null
           status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referrer_organization_id_fkey"
+            columns: ["referrer_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_user_id_fkey"
+            columns: ["referrer_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revenue_projections: {
+        Row: {
+          api_category: string
+          avg_consumer_growth_pct: number | null
+          avg_consumers_first_month: number | null
+          avg_monthly_calls_per_consumer: number | null
+          avg_price_per_1000_calls: number | null
+          created_at: string | null
+          id: string
+          median_monthly_revenue: number | null
+          platform_fee_pct: number | null
+          top_quartile_monthly_revenue: number | null
+        }
+        Insert: {
+          api_category: string
+          avg_consumer_growth_pct?: number | null
+          avg_consumers_first_month?: number | null
+          avg_monthly_calls_per_consumer?: number | null
+          avg_price_per_1000_calls?: number | null
+          created_at?: string | null
+          id?: string
+          median_monthly_revenue?: number | null
+          platform_fee_pct?: number | null
+          top_quartile_monthly_revenue?: number | null
+        }
+        Update: {
+          api_category?: string
+          avg_consumer_growth_pct?: number | null
+          avg_consumers_first_month?: number | null
+          avg_monthly_calls_per_consumer?: number | null
+          avg_price_per_1000_calls?: number | null
+          created_at?: string | null
+          id?: string
+          median_monthly_revenue?: number | null
+          platform_fee_pct?: number | null
+          top_quartile_monthly_revenue?: number | null
         }
         Relationships: []
       }
@@ -4647,6 +6150,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      segmentation_rules: {
+        Row: {
+          conditions: Json
+          confidence_boost: number | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          priority: number
+          rule_name: string
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          conditions: Json
+          confidence_boost?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number
+          rule_name: string
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          conditions?: Json
+          confidence_boost?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number
+          rule_name?: string
+          stakeholder_type?: Database["public"]["Enums"]["stakeholder_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       sla_definitions: {
         Row: {
@@ -4944,6 +6483,217 @@ export type Database = {
           },
         ]
       }
+      stakeholder_ai_context: {
+        Row: {
+          behavior_embedding: Json | null
+          created_at: string | null
+          engagement_pattern: string | null
+          id: string
+          interest_summary: string | null
+          last_updated: string | null
+          predicted_segment_shift: string | null
+          recommended_actions: string[] | null
+          stakeholder_id: string
+        }
+        Insert: {
+          behavior_embedding?: Json | null
+          created_at?: string | null
+          engagement_pattern?: string | null
+          id?: string
+          interest_summary?: string | null
+          last_updated?: string | null
+          predicted_segment_shift?: string | null
+          recommended_actions?: string[] | null
+          stakeholder_id: string
+        }
+        Update: {
+          behavior_embedding?: Json | null
+          created_at?: string | null
+          engagement_pattern?: string | null
+          id?: string
+          interest_summary?: string | null
+          last_updated?: string | null
+          predicted_segment_shift?: string | null
+          recommended_actions?: string[] | null
+          stakeholder_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stakeholder_ai_context_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: true
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stakeholder_interactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          interaction_data: Json | null
+          interaction_type: string
+          page_url: string | null
+          score_delta: number | null
+          session_id: string | null
+          stakeholder_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          interaction_data?: Json | null
+          interaction_type: string
+          page_url?: string | null
+          score_delta?: number | null
+          session_id?: string | null
+          stakeholder_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          interaction_data?: Json | null
+          interaction_type?: string
+          page_url?: string | null
+          score_delta?: number | null
+          session_id?: string | null
+          stakeholder_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stakeholder_interactions_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "stakeholders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stakeholders: {
+        Row: {
+          avatar_url: string | null
+          capture_source: Database["public"]["Enums"]["capture_source"]
+          company_name: string | null
+          consent_timestamp: string | null
+          created_at: string | null
+          email: string
+          engagement_score: number | null
+          full_name: string | null
+          funnel_entered_at: string | null
+          funnel_stage: Database["public"]["Enums"]["funnel_stage"]
+          geo_city: string | null
+          geo_country: string | null
+          id: string
+          ip_address: unknown
+          job_title: string | null
+          landing_page_url: string | null
+          last_activity_at: string | null
+          last_stage_change_at: string | null
+          linkedin_url: string | null
+          manually_overridden: boolean | null
+          marketing_consent: boolean | null
+          nurture_opt_out: boolean | null
+          nurture_paused: boolean | null
+          preferred_language: string | null
+          privacy_accepted: boolean | null
+          referrer_url: string | null
+          segmentation_confidence: number | null
+          segmentation_signals: Json | null
+          stakeholder_type: Database["public"]["Enums"]["stakeholder_type"]
+          timezone: string | null
+          total_interactions: number | null
+          updated_at: string | null
+          user_agent: string | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          capture_source?: Database["public"]["Enums"]["capture_source"]
+          company_name?: string | null
+          consent_timestamp?: string | null
+          created_at?: string | null
+          email: string
+          engagement_score?: number | null
+          full_name?: string | null
+          funnel_entered_at?: string | null
+          funnel_stage?: Database["public"]["Enums"]["funnel_stage"]
+          geo_city?: string | null
+          geo_country?: string | null
+          id?: string
+          ip_address?: unknown
+          job_title?: string | null
+          landing_page_url?: string | null
+          last_activity_at?: string | null
+          last_stage_change_at?: string | null
+          linkedin_url?: string | null
+          manually_overridden?: boolean | null
+          marketing_consent?: boolean | null
+          nurture_opt_out?: boolean | null
+          nurture_paused?: boolean | null
+          preferred_language?: string | null
+          privacy_accepted?: boolean | null
+          referrer_url?: string | null
+          segmentation_confidence?: number | null
+          segmentation_signals?: Json | null
+          stakeholder_type?: Database["public"]["Enums"]["stakeholder_type"]
+          timezone?: string | null
+          total_interactions?: number | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          capture_source?: Database["public"]["Enums"]["capture_source"]
+          company_name?: string | null
+          consent_timestamp?: string | null
+          created_at?: string | null
+          email?: string
+          engagement_score?: number | null
+          full_name?: string | null
+          funnel_entered_at?: string | null
+          funnel_stage?: Database["public"]["Enums"]["funnel_stage"]
+          geo_city?: string | null
+          geo_country?: string | null
+          id?: string
+          ip_address?: unknown
+          job_title?: string | null
+          landing_page_url?: string | null
+          last_activity_at?: string | null
+          last_stage_change_at?: string | null
+          linkedin_url?: string | null
+          manually_overridden?: boolean | null
+          marketing_consent?: boolean | null
+          nurture_opt_out?: boolean | null
+          nurture_paused?: boolean | null
+          preferred_language?: string | null
+          privacy_accepted?: boolean | null
+          referrer_url?: string | null
+          segmentation_confidence?: number | null
+          segmentation_signals?: Json | null
+          stakeholder_type?: Database["public"]["Enums"]["stakeholder_type"]
+          timezone?: string | null
+          total_interactions?: number | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_at: string | null
@@ -5144,6 +6894,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      traction_metrics: {
+        Row: {
+          api_calls_growth_pct: number | null
+          api_tests_per_user: number | null
+          arr: number | null
+          avg_session_duration: number | null
+          capital_committed: number | null
+          commitments_received: number | null
+          created_at: string | null
+          id: string
+          meetings_scheduled: number | null
+          metric_date: string
+          monthly_active_users: number | null
+          mrr: number | null
+          provider_growth_pct: number | null
+          revenue_growth_pct: number | null
+          total_api_calls: number | null
+          total_apis_listed: number | null
+          total_investor_leads: number | null
+          total_providers: number | null
+          total_signups: number | null
+          weekly_active_users: number | null
+        }
+        Insert: {
+          api_calls_growth_pct?: number | null
+          api_tests_per_user?: number | null
+          arr?: number | null
+          avg_session_duration?: number | null
+          capital_committed?: number | null
+          commitments_received?: number | null
+          created_at?: string | null
+          id?: string
+          meetings_scheduled?: number | null
+          metric_date?: string
+          monthly_active_users?: number | null
+          mrr?: number | null
+          provider_growth_pct?: number | null
+          revenue_growth_pct?: number | null
+          total_api_calls?: number | null
+          total_apis_listed?: number | null
+          total_investor_leads?: number | null
+          total_providers?: number | null
+          total_signups?: number | null
+          weekly_active_users?: number | null
+        }
+        Update: {
+          api_calls_growth_pct?: number | null
+          api_tests_per_user?: number | null
+          arr?: number | null
+          avg_session_duration?: number | null
+          capital_committed?: number | null
+          commitments_received?: number | null
+          created_at?: string | null
+          id?: string
+          meetings_scheduled?: number | null
+          metric_date?: string
+          monthly_active_users?: number | null
+          mrr?: number | null
+          provider_growth_pct?: number | null
+          revenue_growth_pct?: number | null
+          total_api_calls?: number | null
+          total_apis_listed?: number | null
+          total_investor_leads?: number | null
+          total_providers?: number | null
+          total_signups?: number | null
+          weekly_active_users?: number | null
+        }
+        Relationships: []
       }
       usage_records_daily: {
         Row: {
@@ -5417,8 +7236,9 @@ export type Database = {
       }
       webhook_deliveries: {
         Row: {
-          attempt_number: number | null
+          attempts: number | null
           created_at: string | null
+          delivered_at: string | null
           event_type: string
           id: string
           next_retry_at: string | null
@@ -5429,8 +7249,9 @@ export type Database = {
           webhook_endpoint_id: string
         }
         Insert: {
-          attempt_number?: number | null
+          attempts?: number | null
           created_at?: string | null
+          delivered_at?: string | null
           event_type: string
           id?: string
           next_retry_at?: string | null
@@ -5441,8 +7262,9 @@ export type Database = {
           webhook_endpoint_id: string
         }
         Update: {
-          attempt_number?: number | null
+          attempts?: number | null
           created_at?: string | null
+          delivered_at?: string | null
           event_type?: string
           id?: string
           next_retry_at?: string | null
@@ -5754,575 +7576,6 @@ export type Database = {
           },
         ]
       }
-      developer_profiles: {
-        Row: {
-          id: string
-          stakeholder_id: string
-          developer_stage: string
-          preferred_language: string | null
-          preferred_framework: string | null
-          experience_level: string | null
-          use_case: string | null
-          github_username: string | null
-          referral_code: string | null
-          code_generations: number | null
-          total_api_calls: number | null
-          unique_apis_used: number | null
-          first_code_gen_at: string | null
-          first_api_call_at: string | null
-          referrals_made: number | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id: string
-          developer_stage?: string
-          preferred_language?: string | null
-          preferred_framework?: string | null
-          experience_level?: string | null
-          use_case?: string | null
-          github_username?: string | null
-          referral_code?: string | null
-          code_generations?: number | null
-          total_api_calls?: number | null
-          unique_apis_used?: number | null
-          first_code_gen_at?: string | null
-          first_api_call_at?: string | null
-          referrals_made?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string
-          developer_stage?: string
-          preferred_language?: string | null
-          preferred_framework?: string | null
-          experience_level?: string | null
-          use_case?: string | null
-          github_username?: string | null
-          referral_code?: string | null
-          code_generations?: number | null
-          total_api_calls?: number | null
-          unique_apis_used?: number | null
-          first_code_gen_at?: string | null
-          first_api_call_at?: string | null
-          referrals_made?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      enterprise_profiles: {
-        Row: {
-          id: string
-          stakeholder_id: string | null
-          enterprise_stage: string | null
-          company_name: string | null
-          company_size: string | null
-          industry: string | null
-          deal_probability: number | null
-          estimated_deal_value: number | null
-          expected_close_date: string | null
-          demo_scheduled_at: string | null
-          roi_calculation: Json | null
-          apis_managed: number | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id?: string | null
-          enterprise_stage?: string | null
-          company_name?: string | null
-          company_size?: string | null
-          industry?: string | null
-          deal_probability?: number | null
-          estimated_deal_value?: number | null
-          expected_close_date?: string | null
-          demo_scheduled_at?: string | null
-          roi_calculation?: Json | null
-          apis_managed?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string | null
-          enterprise_stage?: string | null
-          company_name?: string | null
-          company_size?: string | null
-          industry?: string | null
-          deal_probability?: number | null
-          estimated_deal_value?: number | null
-          expected_close_date?: string | null
-          demo_scheduled_at?: string | null
-          roi_calculation?: Json | null
-          apis_managed?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      investor_profiles: {
-        Row: {
-          id: string
-          stakeholder_id: string
-          last_traction_view: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id: string
-          last_traction_view?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string
-          last_traction_view?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      stakeholder_interactions: {
-        Row: {
-          id: string
-          stakeholder_id: string
-          interaction_type: string
-          interaction_data: Json | null
-          page_url: string | null
-          score_delta: number | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id: string
-          interaction_type: string
-          interaction_data?: Json | null
-          page_url?: string | null
-          score_delta?: number | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string
-          interaction_type?: string
-          interaction_data?: Json | null
-          page_url?: string | null
-          score_delta?: number | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      stakeholders: {
-        Row: {
-          id: string
-          user_id: string | null
-          email: string
-          full_name: string | null
-          company_name: string | null
-          stakeholder_type: string
-          funnel_stage: string | null
-          engagement_score: number | null
-          capture_source: string | null
-          utm_source: string | null
-          utm_medium: string | null
-          utm_campaign: string | null
-          utm_content: string | null
-          landing_page_url: string | null
-          referrer_url: string | null
-          last_activity_at: string | null
-          last_stage_change_at: string | null
-          nurture_opt_out: boolean | null
-          nurture_paused: boolean | null
-          segmentation_confidence: number | null
-          segmentation_signals: string[] | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id?: string | null
-          email: string
-          full_name?: string | null
-          company_name?: string | null
-          stakeholder_type?: string
-          funnel_stage?: string | null
-          engagement_score?: number | null
-          capture_source?: string | null
-          utm_source?: string | null
-          utm_medium?: string | null
-          utm_campaign?: string | null
-          utm_content?: string | null
-          landing_page_url?: string | null
-          referrer_url?: string | null
-          last_activity_at?: string | null
-          last_stage_change_at?: string | null
-          nurture_opt_out?: boolean | null
-          nurture_paused?: boolean | null
-          segmentation_confidence?: number | null
-          segmentation_signals?: string[] | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string | null
-          email?: string
-          full_name?: string | null
-          company_name?: string | null
-          stakeholder_type?: string
-          funnel_stage?: string | null
-          engagement_score?: number | null
-          capture_source?: string | null
-          utm_source?: string | null
-          utm_medium?: string | null
-          utm_campaign?: string | null
-          utm_content?: string | null
-          landing_page_url?: string | null
-          referrer_url?: string | null
-          last_activity_at?: string | null
-          last_stage_change_at?: string | null
-          nurture_opt_out?: boolean | null
-          nurture_paused?: boolean | null
-          segmentation_confidence?: number | null
-          segmentation_signals?: string[] | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      email_send_log: {
-        Row: {
-          id: string
-          queue_id: string | null
-          resend_id: string | null
-          status: string | null
-          opened: boolean | null
-          opened_at: string | null
-          clicked: boolean | null
-          clicked_at: string | null
-          click_url: string | null
-          bounce_type: string | null
-          error_message: string | null
-          to_email: string | null
-          subject: string | null
-          stakeholder_id: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          queue_id?: string | null
-          resend_id?: string | null
-          status?: string | null
-          opened?: boolean | null
-          opened_at?: string | null
-          clicked?: boolean | null
-          clicked_at?: string | null
-          click_url?: string | null
-          bounce_type?: string | null
-          error_message?: string | null
-          to_email?: string | null
-          subject?: string | null
-          stakeholder_id?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          queue_id?: string | null
-          resend_id?: string | null
-          status?: string | null
-          opened?: boolean | null
-          opened_at?: string | null
-          clicked?: boolean | null
-          clicked_at?: string | null
-          click_url?: string | null
-          bounce_type?: string | null
-          error_message?: string | null
-          to_email?: string | null
-          subject?: string | null
-          stakeholder_id?: string | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      nurture_queue: {
-        Row: {
-          id: string
-          status: string | null
-          delivered_at: string | null
-          opened_at: string | null
-          clicked_at: string | null
-          last_error: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          status?: string | null
-          delivered_at?: string | null
-          opened_at?: string | null
-          clicked_at?: string | null
-          last_error?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          status?: string | null
-          delivered_at?: string | null
-          opened_at?: string | null
-          clicked_at?: string | null
-          last_error?: string | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      nurture_sequences: {
-        Row: {
-          id: string
-          sequence_name: string | null
-          stakeholder_type: string | null
-          trigger_stage: string | null
-          total_enrolled: number | null
-          total_completed: number | null
-          avg_conversion_rate: number | null
-          is_active: boolean | null
-        }
-        Insert: {
-          id?: string
-          sequence_name?: string | null
-          stakeholder_type?: string | null
-          trigger_stage?: string | null
-          total_enrolled?: number | null
-          total_completed?: number | null
-          avg_conversion_rate?: number | null
-          is_active?: boolean | null
-        }
-        Update: {
-          id?: string
-          sequence_name?: string | null
-          stakeholder_type?: string | null
-          trigger_stage?: string | null
-          total_enrolled?: number | null
-          total_completed?: number | null
-          avg_conversion_rate?: number | null
-          is_active?: boolean | null
-        }
-        Relationships: []
-      }
-      nurture_frequency_caps: {
-        Row: {
-          id: string
-          stakeholder_type: string | null
-          channel: string | null
-          max_per_day: number | null
-          max_per_week: number | null
-          max_per_month: number | null
-          is_active: boolean | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_type?: string | null
-          channel?: string | null
-          max_per_day?: number | null
-          max_per_week?: number | null
-          max_per_month?: number | null
-          is_active?: boolean | null
-        }
-        Update: {
-          id?: string
-          stakeholder_type?: string | null
-          channel?: string | null
-          max_per_day?: number | null
-          max_per_week?: number | null
-          max_per_month?: number | null
-          is_active?: boolean | null
-        }
-        Relationships: []
-      }
-      ai_request_log: {
-        Row: {
-          id: string
-          request_type: string | null
-          model_used: string | null
-          input_tokens: number | null
-          output_tokens: number | null
-          latency_ms: number | null
-          estimated_cost_usd: number | null
-          created_at: string | null
-          stakeholder_id: string | null
-        }
-        Insert: {
-          id?: string
-          request_type?: string | null
-          model_used?: string | null
-          input_tokens?: number | null
-          output_tokens?: number | null
-          latency_ms?: number | null
-          estimated_cost_usd?: number | null
-          created_at?: string | null
-          stakeholder_id?: string | null
-        }
-        Update: {
-          id?: string
-          request_type?: string | null
-          model_used?: string | null
-          input_tokens?: number | null
-          output_tokens?: number | null
-          latency_ms?: number | null
-          estimated_cost_usd?: number | null
-          created_at?: string | null
-          stakeholder_id?: string | null
-        }
-        Relationships: []
-      }
-      ai_content_cache: {
-        Row: {
-          id: string
-          cache_key: string | null
-          content_type: string | null
-          hit_count: number | null
-          expires_at: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          cache_key?: string | null
-          content_type?: string | null
-          hit_count?: number | null
-          expires_at?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          cache_key?: string | null
-          content_type?: string | null
-          hit_count?: number | null
-          expires_at?: string | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      stakeholder_ai_context: {
-        Row: {
-          id: string
-          stakeholder_id: string | null
-          interest_summary: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id?: string | null
-          interest_summary?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string | null
-          interest_summary?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      daily_funnel_metrics: {
-        Row: {
-          id: string
-          metric_date: string | null
-          stakeholder_type: string | null
-          captured_count: number | null
-          segmented_count: number | null
-          activated_count: number | null
-          engaged_count: number | null
-          qualified_count: number | null
-          converting_count: number | null
-          converted_count: number | null
-          churned_count: number | null
-          overall_conversion_pct: number | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          metric_date?: string | null
-          stakeholder_type?: string | null
-          captured_count?: number | null
-          segmented_count?: number | null
-          activated_count?: number | null
-          engaged_count?: number | null
-          qualified_count?: number | null
-          converting_count?: number | null
-          converted_count?: number | null
-          churned_count?: number | null
-          overall_conversion_pct?: number | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          metric_date?: string | null
-          stakeholder_type?: string | null
-          captured_count?: number | null
-          segmented_count?: number | null
-          activated_count?: number | null
-          engaged_count?: number | null
-          qualified_count?: number | null
-          converting_count?: number | null
-          converted_count?: number | null
-          churned_count?: number | null
-          overall_conversion_pct?: number | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      churn_risk_assessments: {
-        Row: {
-          id: string
-          stakeholder_id: string | null
-          risk_score: number | null
-          risk_level: string | null
-          risk_signals: Json | null
-          intervention_type: string | null
-          intervention_sent: boolean | null
-          intervention_result: string | null
-          assessed_at: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          stakeholder_id?: string | null
-          risk_score?: number | null
-          risk_level?: string | null
-          risk_signals?: Json | null
-          intervention_type?: string | null
-          intervention_sent?: boolean | null
-          intervention_result?: string | null
-          assessed_at?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          stakeholder_id?: string | null
-          risk_score?: number | null
-          risk_level?: string | null
-          risk_signals?: Json | null
-          intervention_type?: string | null
-          intervention_sent?: boolean | null
-          intervention_result?: string | null
-          assessed_at?: string | null
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "churn_risk_assessments_stakeholder_id_fkey"
-            columns: ["stakeholder_id"]
-            isOneToOne: false
-            referencedRelation: "stakeholders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       api_rankings_mv: {
@@ -6364,7 +7617,47 @@ export type Database = {
     }
     Functions: {
       aggregate_hourly_usage: { Args: never; Returns: undefined }
+      check_churn_signal: {
+        Args: { p_query_condition: string; p_stakeholder_id: string }
+        Returns: boolean
+      }
+      drop_old_api_requests_log_partitions: {
+        Args: { retention_months?: number }
+        Returns: number
+      }
+      ensure_api_requests_log_partition: { Args: never; Returns: undefined }
       generate_ticket_number: { Args: never; Returns: string }
+      get_conversion_velocity: {
+        Args: { p_days?: number; p_stakeholder_type?: string }
+        Returns: {
+          avg_hours: number
+          from_stage: string
+          to_stage: string
+          transition_count: number
+        }[]
+      }
+      get_funnel_snapshot: {
+        Args: never
+        Returns: {
+          avg_engagement_score: number
+          count: number
+          stage: string
+          stakeholder_type: string
+        }[]
+      }
+      get_top_sources: {
+        Args: { p_days?: number; p_limit?: number }
+        Returns: {
+          conversion_rate: number
+          source: string
+          total_captured: number
+          total_converted: number
+        }[]
+      }
+      increment_engagement: {
+        Args: { p_score_delta: number; p_stakeholder_id: string }
+        Returns: undefined
+      }
       is_org_admin: { Args: { org_id: string }; Returns: boolean }
       refresh_api_rankings: { Args: never; Returns: undefined }
       refresh_platform_kpis: { Args: never; Returns: undefined }
@@ -6395,12 +7688,105 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
-      get_funnel_snapshot: { Args: Record<string, never>; Returns: Json[] }
-      get_conversion_velocity: { Args: { p_stakeholder_type?: string | null; p_days?: number }; Returns: Json[] }
-      get_top_sources: { Args: { p_days?: number; p_limit?: number }; Returns: Json[] }
     }
     Enums: {
-      [_ in never]: never
+      api_import_method:
+        | "openapi_url"
+        | "openapi_upload"
+        | "postman_collection"
+        | "manual_config"
+        | "github_repo"
+        | "auto_detect"
+      capture_source:
+        | "landing_page"
+        | "product_hunt"
+        | "linkedin"
+        | "twitter"
+        | "referral"
+        | "blog"
+        | "api_docs"
+        | "google_ads"
+        | "cold_outreach"
+        | "event"
+        | "organic_search"
+        | "direct"
+        | "other"
+      company_size:
+        | "startup"
+        | "smb"
+        | "mid_market"
+        | "enterprise"
+        | "large_enterprise"
+      developer_stage:
+        | "landed"
+        | "api_explored"
+        | "code_generated"
+        | "signed_up"
+        | "api_key_created"
+        | "first_call_made"
+        | "active_user"
+        | "power_user"
+        | "churned"
+      enterprise_stage:
+        | "discovered"
+        | "governance_viewed"
+        | "roi_calculated"
+        | "demo_scheduled"
+        | "demo_completed"
+        | "pilot_started"
+        | "pilot_active"
+        | "proposal_sent"
+        | "negotiating"
+        | "contract_signed"
+        | "churned"
+      funnel_stage:
+        | "captured"
+        | "segmented"
+        | "activated"
+        | "engaged"
+        | "qualified"
+        | "converting"
+        | "converted"
+        | "churned"
+      investor_stage:
+        | "discovered"
+        | "viewed_traction"
+        | "data_room"
+        | "meeting_requested"
+        | "meeting_done"
+        | "due_diligence"
+        | "term_sheet"
+        | "closed"
+        | "passed"
+      nurture_channel: "email" | "in_app" | "webhook"
+      nurture_status:
+        | "queued"
+        | "processing"
+        | "sent"
+        | "delivered"
+        | "opened"
+        | "clicked"
+        | "replied"
+        | "bounced"
+        | "failed"
+        | "skipped"
+      provider_stage:
+        | "discovered"
+        | "value_seen"
+        | "onboarding_started"
+        | "api_configured"
+        | "testing_complete"
+        | "pricing_set"
+        | "review_pending"
+        | "live"
+        | "earning"
+        | "churned"
+      stakeholder_type:
+        | "investor"
+        | "api_provider"
+        | "developer"
+        | "enterprise_buyer"
+        | "unknown"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -6527,6 +7913,114 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      api_import_method: [
+        "openapi_url",
+        "openapi_upload",
+        "postman_collection",
+        "manual_config",
+        "github_repo",
+        "auto_detect",
+      ],
+      capture_source: [
+        "landing_page",
+        "product_hunt",
+        "linkedin",
+        "twitter",
+        "referral",
+        "blog",
+        "api_docs",
+        "google_ads",
+        "cold_outreach",
+        "event",
+        "organic_search",
+        "direct",
+        "other",
+      ],
+      company_size: [
+        "startup",
+        "smb",
+        "mid_market",
+        "enterprise",
+        "large_enterprise",
+      ],
+      developer_stage: [
+        "landed",
+        "api_explored",
+        "code_generated",
+        "signed_up",
+        "api_key_created",
+        "first_call_made",
+        "active_user",
+        "power_user",
+        "churned",
+      ],
+      enterprise_stage: [
+        "discovered",
+        "governance_viewed",
+        "roi_calculated",
+        "demo_scheduled",
+        "demo_completed",
+        "pilot_started",
+        "pilot_active",
+        "proposal_sent",
+        "negotiating",
+        "contract_signed",
+        "churned",
+      ],
+      funnel_stage: [
+        "captured",
+        "segmented",
+        "activated",
+        "engaged",
+        "qualified",
+        "converting",
+        "converted",
+        "churned",
+      ],
+      investor_stage: [
+        "discovered",
+        "viewed_traction",
+        "data_room",
+        "meeting_requested",
+        "meeting_done",
+        "due_diligence",
+        "term_sheet",
+        "closed",
+        "passed",
+      ],
+      nurture_channel: ["email", "in_app", "webhook"],
+      nurture_status: [
+        "queued",
+        "processing",
+        "sent",
+        "delivered",
+        "opened",
+        "clicked",
+        "replied",
+        "bounced",
+        "failed",
+        "skipped",
+      ],
+      provider_stage: [
+        "discovered",
+        "value_seen",
+        "onboarding_started",
+        "api_configured",
+        "testing_complete",
+        "pricing_set",
+        "review_pending",
+        "live",
+        "earning",
+        "churned",
+      ],
+      stakeholder_type: [
+        "investor",
+        "api_provider",
+        "developer",
+        "enterprise_buyer",
+        "unknown",
+      ],
+    },
   },
 } as const

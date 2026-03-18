@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
+import { generateApiKey } from '@/lib/utils/api-key';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,7 +67,7 @@ export async function POST(
         status: 'active',
         current_period_start: now.toISOString(),
         current_period_end: periodEnd.toISOString(),
-      } as any)
+      })
       .select()
       .single();
 
@@ -98,17 +99,22 @@ export async function POST(
 
       if (plans.length === 0) continue;
       const plan = plans[0];
+      const { key, prefix, hash } = generateApiKey();
 
       const { data: apiSub } = await supabase
         .from('api_subscriptions')
         .insert({
           api_id: item.api_id,
-          plan_id: plan.id,
+          pricing_plan_id: plan.id,
           organization_id: context.organization_id,
+          user_id: context.user.id,
+          api_key: hash,
+          api_key_prefix: prefix,
           status: 'active',
+          calls_this_month: 0,
           current_period_start: now.toISOString(),
           current_period_end: periodEnd.toISOString(),
-        } as any)
+        })
         .select()
         .single();
 

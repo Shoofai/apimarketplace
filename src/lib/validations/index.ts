@@ -112,16 +112,15 @@ export const createApiKeySchema = z.object({
   expires_at: z.string().datetime().optional().or(z.literal('')),
 });
 
-// Provider profile schema
+// Provider profile schema (funnel-based, keyed by stakeholder_id)
 export const createProviderProfileSchema = z.object({
-  display_name: z.string().min(2).max(100),
-  tagline: z.string().max(120).optional(),
-  long_description: z.string().max(5000).optional(),
-  website: z.string().url().optional().or(z.literal('')),
-  support_email: z.string().email().optional().or(z.literal('')),
-  support_url: z.string().url().optional().or(z.literal('')),
-  documentation_url: z.string().url().optional().or(z.literal('')),
-  social_links: z.record(z.string(), z.string().url()).optional(),
+  company_name: z.string().min(1).max(200).optional(),
+  api_name: z.string().min(1).max(200).optional(),
+  api_description: z.string().max(5000).optional(),
+  api_category: z.array(z.string()).optional(),
+  website_url: z.string().url().optional().or(z.literal('')),
+  docs_url: z.string().url().optional().or(z.literal('')),
+  api_base_url: z.string().url().optional().or(z.literal('')),
 });
 
 export const updateProviderProfileSchema = createProviderProfileSchema.partial();

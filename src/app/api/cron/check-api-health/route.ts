@@ -90,12 +90,12 @@ async function runProcess() {
 
     // Record in api_health_checks table
     void admin
-      .from('api_health_checks' as any)
+      .from('api_health_checks')
       .insert({
         api_id: api.id,
-        status,
+        is_healthy: status === 'healthy',
         status_code: statusCode,
-        response_ms: responseMs,
+        response_time_ms: responseMs,
         error_message: errorMessage,
         checked_at: now,
       });

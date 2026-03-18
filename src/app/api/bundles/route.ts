@@ -69,7 +69,7 @@ export async function POST(request: Request) {
         discount_percent: Number(discount_percent),
         tags,
         status: 'draft',
-      } as any)
+      })
       .select()
       .single();
 

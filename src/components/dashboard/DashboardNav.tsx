@@ -6,7 +6,8 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, Settings, LogOut, Sparkles, ChevronDown, Menu } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import {
   DropdownMenu,
@@ -73,49 +74,66 @@ export default function DashboardNav({ user }: DashboardNavProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm pt-[env(safe-area-inset-top)]">
-      <div className="flex h-16 items-center px-4 lg:px-8 gap-4">
-        {/* Mobile menu */}
+      <div className="flex h-16 items-center px-4 lg:px-8 gap-3">
+        {/* Mobile menu trigger */}
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild className="lg:hidden">
+          <SheetTrigger asChild className="lg:hidden shrink-0">
             <Button variant="ghost" size="icon" aria-label="Open menu">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
+            <VisuallyHidden>
+              <SheetTitle>Navigation menu</SheetTitle>
+            </VisuallyHidden>
             <DashboardSidebar user={navUser} forceExpanded />
           </SheetContent>
         </Sheet>
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight flex-shrink-0">
-          <span className="text-2xl">🚀</span>
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight shrink-0"
+        >
+          <span className="text-2xl leading-none">🚀</span>
           <span className="hidden sm:inline bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             {platformName}
           </span>
         </Link>
 
-        {/* Left spacer - equal weight with right for true center */}
-        <div className="flex-1 min-w-0" aria-hidden />
-
-        {/* Command Palette Trigger - centered */}
-        <div className="flex justify-center w-full max-w-md flex-shrink-0">
+        {/* Command palette search — hidden on xs, visible from sm */}
+        <div className="hidden sm:flex flex-1 justify-center min-w-0 px-2">
           <button
             onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
-            className="w-full flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+            className="w-full max-w-md flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
           >
             <Search className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Search APIs, docs...</span>
-            <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            <span className="flex-1 text-left truncate">Search APIs, docs...</span>
+            <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground shrink-0">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
         </div>
 
-        {/* Right spacer + actions - equal weight, icons at end */}
-        <div className="flex-1 min-w-0 flex items-center justify-end gap-2">
+        {/* On xs: spacer so actions stay right-aligned */}
+        <div className="flex-1 sm:hidden" aria-hidden />
+
+        {/* Right actions */}
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Mobile search icon — only on xs */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            aria-label="Search"
+            onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+
           {/* AI Playground Quick Access */}
-          <Link href="/dashboard/developer/playground">
-            <Button variant="ghost" size="sm" className="gap-2 hidden md:flex">
+          <Link href="/dashboard/developer/playground" className="hidden md:block">
+            <Button variant="ghost" size="sm" className="gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               <span>AI</span>
             </Button>

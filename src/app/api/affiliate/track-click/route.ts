@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       if (link) {
         await supabase
           .from('affiliate_links')
-          .update({ click_count: ((link.click_count as number) ?? 0) + 1 } as any)
+          .update({ click_count: link.click_count + 1 })
           .eq('id', link.id);
       }
     }

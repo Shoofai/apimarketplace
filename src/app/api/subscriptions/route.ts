@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         organization_id: context.organization_id,
         balance: newBalance,
         updated_at: new Date().toISOString(),
-      } as any, { onConflict: 'organization_id' });
+      }, { onConflict: 'organization_id' });
 
       // Ledger entry
       await supabase.from('credit_ledger').insert({
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
         type: 'usage',
         description: `Subscribed to ${api.name} (${plan.name})`,
         balance_after: newBalance,
-      } as any);
+      });
     }
 
     // Generate API key for this subscription
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
         status: 'active',
         current_period_start: periodStart.toISOString(),
         current_period_end: periodEnd.toISOString(),
-        current_period_usage: 0,
+        calls_this_month: 0,
       })
       .select()
       .single();
@@ -184,7 +184,7 @@ export async function POST(request: Request) {
 
           if (coversApi) {
             const commissionAmount = ((plan.price_monthly ?? 0) * (Number(affLink.commission_percent) / 100));
-            await supabase.from('provider_affiliate_commissions' as any).insert({
+            await supabase.from('provider_affiliate_commissions').insert({
               affiliate_link_id: affLink.id,
               subscription_id: subscription.id,
               api_id,
@@ -196,7 +196,7 @@ export async function POST(request: Request) {
             // Increment conversion count
             await supabase
               .from('affiliate_links')
-              .update({ conversion_count: (affLink as any).conversion_count + 1 } as any)
+              .update({ conversion_count: (affLink.conversion_count ?? 0) + 1 })
               .eq('id', affLink.id);
           }
         }

@@ -88,7 +88,7 @@ async function runProcess() {
         // Grace period expired — cancel subscription and revoke API key
         await admin
           .from('api_subscriptions')
-          .update({ status: 'cancelled' } as any)
+          .update({ status: 'cancelled' })
           .eq('id', sub.id);
 
         // Revoke API key: set revoked_at on associated api_keys

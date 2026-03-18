@@ -13,6 +13,8 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:regression": "playwright test --config=playwright.regression.config.ts; tsx scripts/write-regression-summary.ts",
+    "test:e2e:regression:report": "tsx scripts/write-regression-summary.ts",
     "load:marketplace": "k6 run tests/load/marketplace.js",
     "load:dashboard": "k6 run tests/load/dashboard.js",
     "analyze": "ANALYZE=true next build --webpack",
