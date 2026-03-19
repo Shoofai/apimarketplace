@@ -2,12 +2,31 @@ import { anthropic, CLAUDE_MODELS, calculateCost } from './client';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
 
-export type SDKLanguage = 'typescript' | 'python' | 'go';
+export type SDKLanguage =
+  | 'typescript'
+  | 'python'
+  | 'go'
+  | 'java'
+  | 'csharp'
+  | 'ruby'
+  | 'php'
+  | 'swift'
+  | 'kotlin'
+  | 'dart'
+  | 'rust';
 
 export const SDK_LANGUAGE_META: Record<SDKLanguage, { label: string; filename: string; ext: string }> = {
   typescript: { label: 'TypeScript', filename: 'client.ts', ext: 'ts' },
   python: { label: 'Python', filename: 'client.py', ext: 'py' },
   go: { label: 'Go', filename: 'client.go', ext: 'go' },
+  java: { label: 'Java', filename: 'Client.java', ext: 'java' },
+  csharp: { label: 'C#', filename: 'Client.cs', ext: 'cs' },
+  ruby: { label: 'Ruby', filename: 'client.rb', ext: 'rb' },
+  php: { label: 'PHP', filename: 'Client.php', ext: 'php' },
+  swift: { label: 'Swift', filename: 'Client.swift', ext: 'swift' },
+  kotlin: { label: 'Kotlin', filename: 'Client.kt', ext: 'kt' },
+  dart: { label: 'Dart', filename: 'client.dart', ext: 'dart' },
+  rust: { label: 'Rust', filename: 'client.rs', ext: 'rs' },
 };
 
 export interface GeneratedSDK {
@@ -15,6 +34,9 @@ export interface GeneratedSDK {
   language: SDKLanguage;
   filename: string;
 }
+
+/** Languages that tend to produce verbose output need more tokens */
+const VERBOSE_LANGUAGES: SDKLanguage[] = ['java', 'csharp', 'swift', 'kotlin'];
 
 const LANGUAGE_INSTRUCTIONS: Record<SDKLanguage, string> = {
   typescript: `Generate a complete, typed TypeScript/Node.js SDK client using the native fetch API (no external dependencies besides built-in). Include:
@@ -37,6 +59,66 @@ const LANGUAGE_INSTRUCTIONS: Record<SDKLanguage, string> = {
 - Proper error handling using Go's error interface
 - Comments on all exported types and functions
 - Uses only the standard library (net/http, encoding/json)`,
+
+  java: `Generate a complete Java 17+ SDK client. Include:
+- A Client class with methods for every endpoint using java.net.http.HttpClient
+- Record or POJO classes for all request and response types
+- Proper error handling with a custom ApiException class
+- Javadoc comments on all public methods
+- Uses only standard library (java.net.http, com.google.gson for JSON if needed, otherwise manual parsing)
+- Package declaration: package com.apimarketplace.sdk`,
+
+  csharp: `Generate a complete C# (.NET 8+) SDK client. Include:
+- A Client class with async methods for every endpoint using HttpClient
+- Record or class types for all request and response DTOs
+- Proper error handling with a custom ApiException class
+- XML doc comments on all public methods
+- Uses System.Net.Http and System.Text.Json
+- Namespace: ApiMarketplace.Sdk`,
+
+  ruby: `Generate a complete Ruby SDK client. Include:
+- A Client class with methods for every endpoint using net/http
+- Proper error handling with a custom ApiError class
+- YARD documentation comments on all public methods
+- Uses only the standard library (net/http, json, uri)
+- The file should be self-contained and require-able`,
+
+  php: `Generate a complete PHP 8.1+ SDK client. Include:
+- A Client class with methods for every endpoint using cURL
+- Typed properties and return types on all methods
+- Proper error handling with a custom ApiException class
+- PHPDoc comments on all public methods
+- Uses only built-in functions (curl_*, json_encode/decode)
+- Namespace: ApiMarketplace\\Sdk`,
+
+  swift: `Generate a complete Swift 5.9+ SDK client. Include:
+- A Client class with async/await methods for every endpoint using URLSession
+- Codable structs for all request and response types
+- Proper error handling with a custom APIError enum
+- Documentation comments on all public methods
+- Uses only Foundation framework`,
+
+  kotlin: `Generate a complete Kotlin SDK client. Include:
+- A Client class with suspend methods for every endpoint using OkHttp or java.net.http.HttpClient
+- Data classes for all request and response types
+- Proper error handling with a custom ApiException class
+- KDoc comments on all public methods
+- Uses kotlinx.serialization or Gson for JSON
+- Package: com.apimarketplace.sdk`,
+
+  dart: `Generate a complete Dart SDK client. Include:
+- A Client class with async methods for every endpoint using the http package
+- Typed classes for all request and response models with fromJson/toJson
+- Proper error handling with a custom ApiException class
+- Dartdoc comments on all public methods
+- Depends only on the \`http\` package (pub.dev)`,
+
+  rust: `Generate a complete Rust SDK client. Include:
+- A Client struct with async methods for every endpoint using reqwest
+- Serde-serializable structs for all request and response types
+- Proper error handling using thiserror or a custom Error enum
+- Doc comments on all public items
+- Dependencies: reqwest, serde, serde_json, tokio`,
 };
 
 /**
@@ -52,6 +134,7 @@ export async function generateSDK(
 ): Promise<GeneratedSDK> {
   const meta = SDK_LANGUAGE_META[language];
   const specSnippet = openApiRaw.slice(0, 12000);
+  const maxTokens = VERBOSE_LANGUAGES.includes(language) ? 8192 : 4096;
 
   const prompt = `You are an expert SDK generator. Given the following OpenAPI specification, generate a production-ready SDK client.
 
@@ -73,7 +156,7 @@ Important rules:
 
   const message = await anthropic.messages.create({
     model: CLAUDE_MODELS.HAIKU,
-    max_tokens: 4096,
+    max_tokens: maxTokens,
     temperature: 0,
     messages: [{ role: 'user', content: prompt }],
   });

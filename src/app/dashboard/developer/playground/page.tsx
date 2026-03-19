@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import { Zap } from 'lucide-react';
 import { AIPlayground } from '@/components/features/playground/AIPlayground';
+
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getFeatureFlag } from '@/lib/utils/feature-flags';
@@ -23,8 +25,9 @@ export default async function PlaygroundPage({
     redirect('/login');
   }
 
-  const playgroundEnabled = await getFeatureFlag('ai_playground');
-  if (!playgroundEnabled) {
+  // Feature flag check (non-blocking — playground defaults to enabled)
+  const playgroundDisabled = await getFeatureFlag('disable_ai_playground').catch(() => false);
+  if (playgroundDisabled === true) {
     notFound();
   }
 

@@ -255,7 +255,8 @@ export class WorkflowEngine {
     const resolvedBody = this.resolveVariables(body, context);
 
     // Make API call through Kong proxy
-    const proxyUrl = process.env.KONG_PROXY_URL || 'http://localhost:8000';
+    const proxyUrl = process.env.KONG_PROXY_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
+    if (!proxyUrl) throw new Error('KONG_PROXY_URL is required for workflow API calls');
     const response = await fetch(`${proxyUrl}${endpoint}`, {
       method: method || 'GET',
       headers: resolvedHeaders,

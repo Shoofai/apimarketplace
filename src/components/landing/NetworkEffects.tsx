@@ -29,9 +29,10 @@ export default function NetworkEffects() {
   return (
     <section
       ref={ref}
-      className="flex flex-col bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 py-24 sm:py-32"
+      className="flex flex-col bg-white py-24 dark:bg-gray-950 sm:py-32"
     >
-      <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
+      {/* Contained card with purple gradient in both modes — avoids full-bleed purple fatigue */}
+      <div className="mx-auto flex w-full max-w-7xl flex-col rounded-3xl bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 px-6 py-12 shadow-2xl ring-1 ring-primary-700/30 dark:from-primary-950/60 dark:via-purple-900/20 dark:to-gray-900/80 dark:ring-primary-700/20 sm:px-10 sm:py-16 lg:px-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

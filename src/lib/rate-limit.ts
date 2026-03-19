@@ -1,9 +1,12 @@
 /**
- * In-memory rate limiter for API routes.
- * Use per-IP or per-identifier. In serverless, limits are per-instance.
+ * Rate limiter for API routes.
+ *
+ * Uses Redis for distributed rate limiting when REDIS_URL is configured.
+ * Falls back to in-memory store (per-instance in serverless).
  */
+import { getRedisClient } from '@/lib/cache/redis';
 
-const store = new Map<string, { count: number; resetAt: number }>();
+const memoryStore = new Map<string, { count: number; resetAt: number }>();
 
 const WINDOW_MS = 60 * 1000; // 1 minute
 
@@ -20,8 +23,63 @@ export type RateLimitConfig = {
   windowMs?: number;
 };
 
+function makeResponse(retryAfterSec: number): Response {
+  return new Response(
+    JSON.stringify({
+      error: 'Too many requests',
+      retryAfter: retryAfterSec,
+    }),
+    {
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': String(retryAfterSec),
+      },
+    }
+  );
+}
+
 /**
- * Returns null if allowed, or NextResponse with 429 if rate limited.
+ * Returns null if allowed, or Response with 429 if rate limited.
+ * Tries Redis first for distributed limiting; falls back to in-memory.
+ */
+export async function rateLimitAsync(
+  request: Request,
+  config: RateLimitConfig
+): Promise<Response | null> {
+  const key = `rl:${getClientId(request)}`;
+  const windowSec = Math.ceil((config.windowMs ?? WINDOW_MS) / 1000);
+
+  try {
+    const redis = await getRedisClient();
+    if (redis) {
+      const raw = await redis.get(key);
+      const count = raw ? parseInt(raw, 10) : 0;
+
+      if (count >= config.limit) {
+        return makeResponse(windowSec);
+      }
+
+      // Increment: set new value preserving TTL window
+      if (count === 0) {
+        await redis.setEx(key, windowSec, '1');
+      } else {
+        await redis.setEx(key, windowSec, String(count + 1));
+      }
+
+      return null;
+    }
+  } catch {
+    // Redis error — fall through to in-memory
+  }
+
+  // Fallback: in-memory (per-instance)
+  return rateLimit(request, config);
+}
+
+/**
+ * Synchronous in-memory rate limiter.
+ * Returns null if allowed, or Response with 429 if rate limited.
  */
 export function rateLimit(
   request: Request,
@@ -31,28 +89,16 @@ export function rateLimit(
   const windowMs = config.windowMs ?? WINDOW_MS;
   const now = Date.now();
 
-  let entry = store.get(key);
+  let entry = memoryStore.get(key);
   if (!entry || now >= entry.resetAt) {
     entry = { count: 1, resetAt: now + windowMs };
-    store.set(key, entry);
+    memoryStore.set(key, entry);
     return null;
   }
 
   entry.count++;
   if (entry.count > config.limit) {
-    return new Response(
-      JSON.stringify({
-        error: 'Too many requests',
-        retryAfter: Math.ceil((entry.resetAt - now) / 1000),
-      }),
-      {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': String(Math.ceil((entry.resetAt - now) / 1000)),
-        },
-      }
-    );
+    return makeResponse(Math.ceil((entry.resetAt - now) / 1000));
   }
   return null;
 }

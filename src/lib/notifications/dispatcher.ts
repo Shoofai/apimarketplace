@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
 import { Resend } from 'resend';
+import { resendBreaker } from '@/lib/resilience';
 
 export interface NotificationEvent {
   type: string;
@@ -152,12 +153,14 @@ async function sendEmailNotification(
       </div>
     `;
 
-    await resend.emails.send({
-      from: `${fromName} <${fromEmail}>`,
-      to: userData.email,
-      subject: event.title,
-      html: bodyHtml,
-    });
+    await resendBreaker.execute(() =>
+      resend.emails.send({
+        from: `${fromName} <${fromEmail}>`,
+        to: userData.email,
+        subject: event.title,
+        html: bodyHtml,
+      })
+    );
 
     logger.info('Email notification sent', { type: event.type, userId: event.userId, email: userData.email });
   } catch (error) {

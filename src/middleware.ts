@@ -123,9 +123,13 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!isDev) {
+    // Generate a per-request nonce for CSP script-src
+    const nonce = crypto.randomUUID();
+    response.headers.set('x-csp-nonce', nonce);
+
     response.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com; frame-src https://js.stripe.com;"
+      `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com; frame-src https://js.stripe.com; report-uri /api/csp-report;`
     );
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-Frame-Options', 'DENY');

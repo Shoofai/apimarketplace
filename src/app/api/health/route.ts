@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getRedisClient } from '@/lib/cache/redis';
+import { stripeBreaker, kongBreaker, resendBreaker } from '@/lib/resilience';
 
 /**
  * GET /api/health
@@ -81,6 +82,13 @@ export async function GET() {
       allHealthy = false;
     }
   }
+
+  // Circuit breaker states
+  health.circuitBreakers = {
+    stripe: stripeBreaker.getStatus(),
+    kong: kongBreaker.getStatus(),
+    resend: resendBreaker.getStatus(),
+  };
 
   // Overall status
   health.status = allHealthy ? 'ok' : 'degraded';

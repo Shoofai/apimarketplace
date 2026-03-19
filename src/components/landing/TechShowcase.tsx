@@ -5,99 +5,156 @@ import { useRef, useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const codeExamples = {
-  javascript: `// AI-generated integration code
-import { APIMarketplace } from '@apimp/sdk';
+const codeExamples: Record<string, string> = {
+  javascript: `// Apinergy SDK – JavaScript
+import { Apinergy } from '@apinergy/sdk';
 
-const client = new APIMarketplace({
-  apiKey: process.env.APIMP_KEY
-});
+const api = new Apinergy({ key: process.env.APINERGY_KEY });
 
-// Call any API with unified interface
-const response = await client.call('stripe', {
+const res = await api.call('stripe', {
   method: 'charges.create',
-  params: {
-    amount: 2000,
-    currency: 'usd',
-    source: 'tok_visa'
-  }
+  params: { amount: 2000, currency: 'usd' }
 });
 
-console.log(response.data);`,
+console.log(res.data);`,
 
-  python: `# AI-generated integration code
-from apimp import APIMarketplace
+  typescript: `// Apinergy SDK – TypeScript
+import { Apinergy, ChargeResponse } from '@apinergy/sdk';
 
-client = APIMarketplace(
-    api_key=os.environ['APIMP_KEY']
+const api = new Apinergy({ key: process.env.APINERGY_KEY! });
+
+const res = await api.call<ChargeResponse>('stripe', {
+  method: 'charges.create',
+  params: { amount: 2000, currency: 'usd' }
+});
+
+console.log(res.data.id);`,
+
+  python: `# Apinergy SDK – Python
+from apinergy import Apinergy
+
+api = Apinergy(key=os.environ["APINERGY_KEY"])
+
+res = api.call("stripe",
+    method="charges.create",
+    params={"amount": 2000, "currency": "usd"}
 )
 
-# Call any API with unified interface
-response = client.call('stripe', 
-    method='charges.create',
-    params={
-        'amount': 2000,
-        'currency': 'usd',
-        'source': 'tok_visa'
-    }
+print(res.data)`,
+
+  go: `// Apinergy SDK – Go
+client := apinergy.New(os.Getenv("APINERGY_KEY"))
+
+res, err := client.Call("stripe", apinergy.Params{
+    Method: "charges.create",
+    Params: map[string]any{
+        "amount":   2000,
+        "currency": "usd",
+    },
+})
+
+fmt.Println(res.Data)`,
+
+  ruby: `# Apinergy SDK – Ruby
+require 'apinergy'
+
+api = Apinergy::Client.new(key: ENV['APINERGY_KEY'])
+
+res = api.call('stripe',
+  method: 'charges.create',
+  params: { amount: 2000, currency: 'usd' }
 )
 
-print(response.data)`,
+puts res.data`,
 
-  go: `// AI-generated integration code
-package main
+  java: `// Apinergy SDK – Java
+var api = new Apinergy(System.getenv("APINERGY_KEY"));
 
-import (
-    "github.com/apimp/go-sdk"
-    "os"
-)
-
-func main() {
-    client := apimp.NewClient(
-        os.Getenv("APIMP_KEY"),
+var res = api.call("stripe", Map.of(
+    "method", "charges.create",
+    "params", Map.of(
+        "amount", 2000,
+        "currency", "usd"
     )
-    
-    // Call any API with unified interface
-    response, err := client.Call("stripe", map[string]interface{}{
-        "method": "charges.create",
-        "params": map[string]interface{}{
-            "amount": 2000,
-            "currency": "usd",
-            "source": "tok_visa",
-        },
-    })
-}`,
+));
 
-  ruby: `# AI-generated integration code
-require 'apimp'
+System.out.println(res.getData());`,
 
-client = APIMarketplace::Client.new(
-  api_key: ENV['APIMP_KEY']
-)
+  csharp: `// Apinergy SDK – C#
+var api = new ApinergyClient(
+    Environment.GetEnvironmentVariable("APINERGY_KEY"));
 
-# Call any API with unified interface
-response = client.call('stripe',
-  method: 'charges.create',
-  params: {
-    amount: 2000,
-    currency: 'usd',
-    source: 'tok_visa'
-  }
-)
+var res = await api.CallAsync("stripe", new {
+    Method = "charges.create",
+    Params = new { Amount = 2000, Currency = "usd" }
+});
 
-puts response.data`,
+Console.WriteLine(res.Data);`,
+
+  php: `// Apinergy SDK – PHP
+$api = new Apinergy\\Client(getenv('APINERGY_KEY'));
+
+$res = $api->call('stripe', [
+    'method' => 'charges.create',
+    'params' => [
+        'amount'   => 2000,
+        'currency' => 'usd',
+    ],
+]);
+
+echo $res->data;`,
+
+  kotlin: `// Apinergy SDK – Kotlin
+val api = Apinergy(key = System.getenv("APINERGY_KEY"))
+
+val res = api.call("stripe", mapOf(
+    "method" to "charges.create",
+    "params" to mapOf(
+        "amount" to 2000,
+        "currency" to "usd"
+    )
+))
+
+println(res.data)`,
+
+  swift: `// Apinergy SDK – Swift
+let api = Apinergy(
+    key: ProcessInfo.processInfo.environment["APINERGY_KEY"]!)
+
+let res = try await api.call("stripe", params: [
+    "method": "charges.create",
+    "params": ["amount": 2000, "currency": "usd"]
+])
+
+print(res.data)`,
+
+  rust: `// Apinergy SDK – Rust
+let api = Apinergy::new(std::env::var("APINERGY_KEY")?);
+
+let res = api.call("stripe", serde_json::json!({
+    "method": "charges.create",
+    "params": {
+        "amount": 2000,
+        "currency": "usd"
+    }
+})).await?;
+
+println!("{:?}", res.data);`,
 };
 
-const technologies = [
-  { name: 'Next.js', category: 'Framework' },
-  { name: 'React 18', category: 'UI Library' },
-  { name: 'TypeScript', category: 'Language' },
-  { name: 'Supabase', category: 'Backend' },
-  { name: 'PostgreSQL', category: 'Database' },
-  { name: 'Stripe', category: 'Payments' },
-  { name: 'Cloudflare', category: 'CDN' },
-  { name: 'OpenAI', category: 'AI' },
-];
+const tabLabels: Record<string, string> = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  python: 'Python',
+  go: 'Go',
+  ruby: 'Ruby',
+  java: 'Java',
+  csharp: 'C#',
+  php: 'PHP',
+  kotlin: 'Kotlin',
+  swift: 'Swift',
+  rust: 'Rust',
+};
 
 export default function TechShowcase() {
   const ref = useRef(null);
@@ -121,86 +178,65 @@ export default function TechShowcase() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             className="mb-12 text-center"
           >
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm font-medium text-purple-300">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
+              11 Languages · AI-Generated
+            </span>
             <h2 className="section-heading mb-6 text-white">
-              Built with Modern Tech
+              One SDK. Every Language.
             </h2>
             <p className="section-subheading mx-auto max-w-3xl text-gray-300 dark:text-gray-400">
-              Production-grade infrastructure. Enterprise security. Developer-friendly APIs.
+              Describe what you want to build. Our AI generates production-ready, typed SDK code instantly.
             </p>
           </motion.div>
 
-        {/* Code Examples */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ delay: 0.2 }}
-          className="mb-16"
-        >
-          <Tabs defaultValue="javascript" className="w-full">
-            <TabsList className="mb-4 w-full justify-start overflow-x-auto">
-              <TabsTrigger value="javascript">JavaScript</TabsTrigger>
-              <TabsTrigger value="python">Python</TabsTrigger>
-              <TabsTrigger value="go">Go</TabsTrigger>
-              <TabsTrigger value="ruby">Ruby</TabsTrigger>
-            </TabsList>
+          {/* Code Examples */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Tabs defaultValue="javascript" className="w-full">
+              <TabsList className="mb-4 w-full justify-start overflow-x-auto flex-nowrap">
+                {Object.keys(codeExamples).map((lang) => (
+                  <TabsTrigger key={lang} value={lang} className="shrink-0">
+                    {tabLabels[lang]}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-            {Object.entries(codeExamples).map(([lang, code]) => (
-              <TabsContent key={lang} value={lang}>
+              {Object.entries(codeExamples).map(([lang, code]) => (
+                <TabsContent key={lang} value={lang}>
                   <div className="relative overflow-hidden rounded-xl border border-gray-600 bg-gray-800 shadow-2xl ring-1 ring-white/5 dark:border-gray-700 dark:bg-gray-900 dark:ring-white/10">
                     <div className="flex items-center justify-between border-b border-gray-700 bg-gray-800/50 px-4 py-3 backdrop-blur dark:border-gray-600">
-                    <span className="text-sm font-medium text-gray-400 dark:text-gray-500">
-                      {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(lang, code)}
-                      className="flex items-center gap-2 rounded px-2 py-1 text-sm text-gray-400 transition-colors hover:bg-gray-700 hover:text-white dark:text-gray-500 dark:hover:bg-gray-700"
-                    >
-                      {copiedLang === lang ? (
-                        <>
-                          <Check className="h-4 w-4" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                          Copy
-                        </>
-                      )}
-                    </button>
+                      <span className="text-sm font-medium text-gray-400 dark:text-gray-500">
+                        {tabLabels[lang]}
+                      </span>
+                      <button
+                        onClick={() => copyToClipboard(lang, code)}
+                        className="flex items-center gap-2 rounded px-2 py-1 text-sm text-gray-400 transition-colors hover:bg-gray-700 hover:text-white dark:text-gray-500 dark:hover:bg-gray-700"
+                      >
+                        {copiedLang === lang ? (
+                          <>
+                            <Check className="h-4 w-4" />
+                            Copied!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-4 w-4" />
+                            Copy
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="overflow-x-auto p-4">
+                      <code className="text-sm text-gray-300 dark:text-gray-400">{code}</code>
+                    </pre>
                   </div>
-                  <pre className="overflow-x-auto p-4">
-                    <code className="text-sm text-gray-300 dark:text-gray-400">{code}</code>
-                  </pre>
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-        </motion.div>
-
-        {/* Tech Stack – animated ticker */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <h3 className="mb-8 text-center text-2xl font-bold text-white">Powered By</h3>
-          <div className="relative overflow-hidden">
-            <div className="flex w-max animate-ticker gap-4 [@media(prefers-reduced-motion:reduce)]:animate-none">
-              {[...technologies, ...technologies].map((tech, index) => (
-                <div
-                  key={`${tech.name}-${index}`}
-                  className="group relative flex min-w-[140px] shrink-0 overflow-hidden rounded-xl border border-gray-700 bg-gray-800 p-6 text-center transition-all hover:-translate-y-1 hover:border-gray-600 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                  <div className="relative">
-                    <div className="mb-2 text-lg font-bold text-white">{tech.name}</div>
-                    <div className="text-sm text-gray-400 dark:text-gray-500">{tech.category}</div>
-                  </div>
-                </div>
+                </TabsContent>
               ))}
-            </div>
-          </div>
-        </motion.div>
+            </Tabs>
+          </motion.div>
         </div>
       </div>
     </section>

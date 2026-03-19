@@ -361,11 +361,18 @@ export default function APIFlowDiagram() {
             transition={{ duration: 0.4 }}
             className="mb-12 text-center"
           >
+            <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-sm font-medium text-green-400">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
+              99.9% Uptime · ~220ms Avg Latency
+            </p>
             <h2 id="flow-diagram-title" className="section-heading mb-6 text-white">
-              How Requests Flow
+              Your Code → Production in 220ms
             </h2>
             <p className="section-subheading mx-auto mb-6 max-w-3xl text-gray-300 dark:text-gray-400">
-              From your code to provider APIs in ~220ms. Auth, routing, and caching handled for you.
+              One API call. We handle auth, routing, rate limiting, and caching automatically.
             </p>
 
             {!reduceMotion && (
@@ -471,6 +478,28 @@ export default function APIFlowDiagram() {
             </svg>
           </div>
         </motion.div>
+
+          {/* Metric badges */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ delay: 0.4 }}
+            className="mt-8 grid grid-cols-3 gap-4 sm:gap-6"
+          >
+            {[
+              { value: '~220ms', label: 'Avg. Response Time', color: 'text-blue-400' },
+              { value: '0 lines', label: 'Infra Code Required', color: 'text-purple-400' },
+              { value: 'Auto', label: 'Caching & Rate Limits', color: 'text-green-400' },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3 text-center backdrop-blur"
+              >
+                <div className={`text-lg font-bold ${stat.color} sm:text-xl`}>{stat.value}</div>
+                <div className="text-xs text-gray-400 sm:text-sm">{stat.label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>

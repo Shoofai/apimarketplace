@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Github, Building2 } from 'lucide-react';
+import MFAVerifyStep from '@/components/auth/MFAVerifyStep';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const supabase = useSupabase();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showMfaVerify, setShowMfaVerify] = useState(false);
 
   const redirectTo = searchParams.get('redirect') || '/dashboard';
 
@@ -43,12 +45,19 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
       if (signInError) throw signInError;
+
+      // Check if MFA verification is needed
+      if (signInData.session === null) {
+        // MFA challenge — show TOTP verification step
+        setShowMfaVerify(true);
+        return;
+      }
 
       router.push(redirectTo);
       router.refresh();
@@ -98,6 +107,22 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (showMfaVerify) {
+    return (
+      <MFAVerifyStep
+        onSuccess={() => {
+          router.push(redirectTo);
+          router.refresh();
+        }}
+        onCancel={() => {
+          setShowMfaVerify(false);
+          setError(null);
+          form.reset();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -235,7 +260,22 @@ export default function LoginPage() {
             )}
           />
 
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                defaultChecked
+                className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                onChange={(e) => {
+                  // Supabase handles session persistence via cookies.
+                  // Store preference so auth callback can read it.
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('keep-logged-in', e.target.checked ? 'true' : 'false');
+                  }
+                }}
+              />
+              Keep me logged in
+            </label>
             <Link
               href="/forgot-password"
               className="text-sm text-primary hover:text-primary/80 transition-colors"

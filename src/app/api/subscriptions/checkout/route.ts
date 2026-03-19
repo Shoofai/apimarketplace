@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe/client';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logger } from '@/lib/utils/logger';
+import { getSiteUrl } from '@/lib/utils/env';
 
 /**
  * Creates a Stripe Checkout session for a paid API subscription plan.
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
       }, { onConflict: 'organization_id' });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3020';
+    const siteUrl = getSiteUrl();
 
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,

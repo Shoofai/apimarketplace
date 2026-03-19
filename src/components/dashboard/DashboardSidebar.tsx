@@ -189,6 +189,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       adminOnly: true,
     },
     {
+      title: 'Integrations',
+      href: '/dashboard/admin/integrations',
+      icon: Plug,
+      adminOnly: true,
+    },
+    {
       title: 'Operations',
       href: '/dashboard/admin/operations',
       icon: Gauge,
@@ -228,6 +234,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       title: 'Challenges',
       href: '/dashboard/admin/challenges',
       icon: Trophy,
+      adminOnly: true,
+    },
+    {
+      title: 'Bundles',
+      href: '/dashboard/admin/bundles',
+      icon: Package,
       adminOnly: true,
     },
   ];

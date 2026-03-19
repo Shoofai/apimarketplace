@@ -11,11 +11,28 @@ import TechShowcase from '@/components/landing/TechShowcase';
 import PlatformStats from '@/components/landing/PlatformStats';
 import Pricing from '@/components/landing/Pricing';
 import NetworkEffects from '@/components/landing/NetworkEffects';
-import Comparison, { ComparisonMini } from '@/components/landing/Comparison';
+import Comparison from '@/components/landing/Comparison';
+import EnterpriseTrust from '@/components/landing/EnterpriseTrust';
 import FinalCTA from '@/components/landing/FinalCTA';
 
-/** Set to 'true' to use gradient bands for section continuity. Set to 'false' or leave unset to use original block layout. */
-const USE_GRADIENT_BANDS = process.env.NEXT_PUBLIC_LANDING_GRADIENT_BANDS === 'true';
+/*
+ * Landing page section order & background rhythm:
+ *   1. Hero            — white / gradient (light), dark (dark)
+ *   2. LogoWall        — gray-50 strip
+ *   3. ProblemStatement— white
+ *   4. ValueProposition— gray-50
+ *   5. KillerFeatures  — white
+ *   6. APIFlowDiagram  — dark (always dark)
+ *   7. TechShowcase    — dark (always dark)
+ *   8. PlatformStats   — white
+ *   9. Comparison      — gray-50
+ *  10. EnterpriseTrust — white  (NEW — trust badges + testimonials)
+ *  11. NetworkEffects  — purple gradient
+ *  12. Pricing         — white
+ *  13. FinalCTA        — purple gradient
+ *
+ * Removed: ComparisonMini (merged into Comparison), redundant "Powered By" ticker (was in TechShowcase)
+ */
 
 export default async function Home() {
   const { data: { user } } = await getUserSafe();
@@ -26,51 +43,18 @@ export default async function Home() {
 
   const heroVariant = await getHeroVariant();
 
-  if (!USE_GRADIENT_BANDS) {
-    return (
-      <>
-        <Hero variant={heroVariant} />
-        <LogoWall />
-        <ProblemStatement />
-        <ValueProposition />
-        <ComparisonMini />
-        <KillerFeatures />
-        <APIFlowDiagram />
-        <TechShowcase />
-        <PlatformStats />
-        <Comparison />
-        <NetworkEffects />
-        <Pricing />
-        <FinalCTA />
-      </>
-    );
-  }
-
   return (
     <>
       <Hero variant={heroVariant} />
-      {/* Band 1: soft flow from top into first content */}
-      <div
-        className="bg-gradient-to-b from-white via-gray-50 to-gray-100 [&>*]:!bg-transparent dark:from-gray-950 dark:via-gray-900 dark:to-gray-900"
-        aria-hidden
-      >
-        <LogoWall />
-        <ProblemStatement />
-      </div>
-      {/* Band 2: middle sections as one continuous gradient */}
-      <div
-        className="bg-gradient-to-b from-gray-100 via-gray-50 to-gray-100 [&>*]:!bg-transparent dark:from-gray-900 dark:via-gray-900 dark:to-gray-950"
-        aria-hidden
-      >
-        <ValueProposition />
-        <ComparisonMini />
-        <KillerFeatures />
-        <APIFlowDiagram />
-        <TechShowcase />
-        <PlatformStats />
-        <Comparison />
-      </div>
-      {/* Band 3: Pricing + NetworkEffects + FinalCTA keep their own gradients */}
+      <LogoWall />
+      <ProblemStatement />
+      <ValueProposition />
+      <KillerFeatures />
+      <APIFlowDiagram />
+      <TechShowcase />
+      <PlatformStats />
+      <Comparison />
+      <EnterpriseTrust />
       <NetworkEffects />
       <Pricing />
       <FinalCTA />

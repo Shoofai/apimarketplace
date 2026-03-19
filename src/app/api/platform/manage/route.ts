@@ -3,6 +3,7 @@ import { requireAuth } from '@/lib/auth/middleware';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { stripe } from '@/lib/stripe/client';
 import { logger } from '@/lib/utils/logger';
+import { getSiteUrl } from '@/lib/utils/env';
 
 /**
  * POST /api/platform/manage
@@ -26,7 +27,7 @@ export async function POST() {
       );
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+    const siteUrl = getSiteUrl();
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: billingAccount.stripe_customer_id,

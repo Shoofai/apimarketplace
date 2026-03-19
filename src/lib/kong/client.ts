@@ -1,6 +1,8 @@
 import { logger } from '@/lib/utils/logger';
+import { getKongAdminUrl } from '@/lib/utils/env';
+import { kongBreaker } from '@/lib/resilience';
 
-const KONG_ADMIN_URL = process.env.KONG_ADMIN_URL || 'http://localhost:8001';
+const KONG_ADMIN_URL = getKongAdminUrl();
 
 export interface KongService {
   id: string;
@@ -53,6 +55,10 @@ export class KongClient {
     this.baseUrl = adminUrl || KONG_ADMIN_URL;
   }
 
+  private async fetchWithBreaker(url: string, init?: RequestInit): Promise<Response> {
+    return kongBreaker.execute(() => fetch(url, init));
+  }
+
   /**
    * Creates a new service in Kong.
    * A service represents an upstream API.
@@ -63,7 +69,7 @@ export class KongClient {
    */
   async createService(name: string, url: string): Promise<KongService> {
     try {
-      const response = await fetch(`${this.baseUrl}/services`, {
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,7 +114,7 @@ export class KongClient {
     name?: string
   ): Promise<KongRoute> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}/routes`, {
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}/routes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -150,7 +156,7 @@ export class KongClient {
     config: Record<string, any>
   ): Promise<KongPlugin> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}/plugins`, {
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}/plugins`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -181,7 +187,7 @@ export class KongClient {
    */
   async deleteService(serviceId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}`, {
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}`, {
         method: 'DELETE',
       });
 
@@ -204,7 +210,7 @@ export class KongClient {
    */
   async deleteRoute(routeId: string): Promise<void> {
     try {
-      await fetch(`${this.baseUrl}/routes/${routeId}`, {
+      await this.fetchWithBreaker(`${this.baseUrl}/routes/${routeId}`, {
         method: 'DELETE',
       });
 
@@ -222,7 +228,7 @@ export class KongClient {
    */
   async getHealth(): Promise<{ status: string }> {
     try {
-      const response = await fetch(`${this.baseUrl}/status`);
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/status`);
       return response.json();
     } catch (error) {
       logger.error('Kong health check failed', { error });
@@ -237,7 +243,7 @@ export class KongClient {
    */
   async listServices(): Promise<KongService[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/services`);
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services`);
       const data = await response.json();
       return data.data || [];
     } catch (error) {
@@ -254,8 +260,8 @@ export class KongClient {
    */
   async getService(serviceId: string): Promise<KongService> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}`);
-      
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}`);
+
       if (!response.ok) {
         throw new Error('Service not found');
       }
@@ -275,7 +281,7 @@ export class KongClient {
    */
   async listRoutes(serviceId: string): Promise<KongRoute[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}/routes`);
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}/routes`);
       const data = await response.json();
       return data.data || [];
     } catch (error) {
@@ -292,7 +298,7 @@ export class KongClient {
    */
   async listPlugins(serviceId: string): Promise<KongPlugin[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/services/${serviceId}/plugins`);
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/services/${serviceId}/plugins`);
       const data = await response.json();
       return data.data || [];
     } catch (error) {
@@ -310,7 +316,7 @@ export class KongClient {
    */
   async updatePlugin(pluginId: string, config: Record<string, any>): Promise<KongPlugin> {
     try {
-      const response = await fetch(`${this.baseUrl}/plugins/${pluginId}`, {
+      const response = await this.fetchWithBreaker(`${this.baseUrl}/plugins/${pluginId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config }),
@@ -335,7 +341,7 @@ export class KongClient {
    */
   async togglePlugin(pluginId: string, enabled: boolean): Promise<void> {
     try {
-      await fetch(`${this.baseUrl}/plugins/${pluginId}`, {
+      await this.fetchWithBreaker(`${this.baseUrl}/plugins/${pluginId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled }),

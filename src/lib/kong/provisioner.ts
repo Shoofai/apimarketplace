@@ -82,9 +82,20 @@ export class RouteProvisioner {
         hide_client_headers: false,
       });
 
+      // Fetch org-specific CORS origins from governance policies
+      const { data: corsPolicy } = await supabase
+        .from('org_governance_policies')
+        .select('config')
+        .eq('organization_id', api.organization_id)
+        .eq('policy_type', 'cors_origins')
+        .eq('is_active', true)
+        .maybeSingle();
+
+      const origins = (corsPolicy?.config as { origins?: string[] } | null)?.origins ?? ['*'];
+
       // Add CORS plugin for browser-based testing
       await this.kong.addPlugin(service.id, 'cors', {
-        origins: ['*'],
+        origins,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
         headers: ['Accept', 'Content-Type', 'Authorization', 'X-API-Key'],
         exposed_headers: [

@@ -7,6 +7,7 @@ import { ArrowLeft, Shield, Smartphone, Key } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import MFAEnrollCard from './MFAEnrollCard';
 
 export default async function SecuritySettingsPage() {
   const supabase = await createClient();
@@ -18,6 +19,10 @@ export default async function SecuritySettingsPage() {
   if (!user) {
     redirect('/login');
   }
+
+  const { data: mfaData } = await supabase.auth.mfa.listFactors();
+  const totpFactor = mfaData?.totp?.[0];
+  const isMfaEnrolled = !!totpFactor?.status && totpFactor.status === 'verified';
 
   return (
     <div className="space-y-8">
@@ -50,22 +55,13 @@ export default async function SecuritySettingsPage() {
                 Add an extra layer of security to your account
               </CardDescription>
             </div>
-            <Badge variant="outline">Not Enabled</Badge>
+            <Badge variant={isMfaEnrolled ? 'success' : 'outline'}>
+              {isMfaEnrolled ? 'Enabled' : 'Not Enabled'}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-4 p-4 border rounded-lg">
-            <div className="p-3 rounded-lg bg-primary/10">
-              <Smartphone className="h-6 w-6 text-primary" />
-            </div>
-            <div className="flex-1">
-              <p className="font-medium">Authenticator App</p>
-              <p className="text-sm text-muted-foreground">
-                Use an authenticator app like Google Authenticator or Authy
-              </p>
-            </div>
-            <Button>Enable</Button>
-          </div>
+          <MFAEnrollCard isEnrolled={isMfaEnrolled} factorId={totpFactor?.id} />
         </CardContent>
       </Card>
 

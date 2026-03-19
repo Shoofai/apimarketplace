@@ -2,22 +2,37 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 
 /**
- * Get feature flag value by name
+ * Get feature flag value.
+ * Works with both schema variants:
+ *   - New: columns `name`, `enabled_globally`
+ *   - Legacy: columns `key`, `enabled`
  */
 export async function getFeatureFlag(flagName: string): Promise<boolean> {
   const supabase = createAdminClient();
-  
-  const { data, error } = await supabase
-    .from('feature_flags')
-    .select('enabled_globally')
-    .eq('name', flagName)
-    .single();
 
-  if (error || !data) {
-    return false;
+  // Use select('*') to avoid column-not-found errors, then read whichever column exists.
+  // Try by `key` first (legacy schema), then by `name` (new schema).
+  const { data: byKey } = await (supabase as any)
+    .from('feature_flags')
+    .select('*')
+    .eq('key', flagName)
+    .maybeSingle();
+
+  if (byKey) {
+    return byKey.enabled_globally ?? byKey.enabled ?? false;
   }
 
-  return data.enabled_globally ?? false;
+  const { data: byName } = await (supabase as any)
+    .from('feature_flags')
+    .select('*')
+    .eq('name', flagName)
+    .maybeSingle();
+
+  if (byName) {
+    return byName.enabled_globally ?? byName.enabled ?? false;
+  }
+
+  return false;
 }
 
 /**
@@ -26,9 +41,15 @@ export async function getFeatureFlag(flagName: string): Promise<boolean> {
 export async function setFeatureFlag(flagName: string, isEnabled: boolean): Promise<void> {
   const supabase = createAdminClient();
 
-  await supabase
+  // Update whichever column exists
+  await (supabase as any)
     .from('feature_flags')
-    .update({ enabled_globally: isEnabled })
+    .update({ enabled_globally: isEnabled, enabled: isEnabled })
+    .eq('key', flagName);
+
+  await (supabase as any)
+    .from('feature_flags')
+    .update({ enabled_globally: isEnabled, enabled: isEnabled })
     .eq('name', flagName);
 }
 
@@ -38,13 +59,12 @@ export async function setFeatureFlag(flagName: string, isEnabled: boolean): Prom
 export async function getAllFeatureFlags() {
   const supabase = createAdminClient();
 
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .from('feature_flags')
-    .select('id, name, enabled_globally, description, enabled_for_orgs, enabled_for_plans')
-    .order('name')
+    .select('*')
     .limit(DEFAULT_LIST_LIMIT);
 
-  if (error) {
+  if (error || !data) {
     return [];
   }
 

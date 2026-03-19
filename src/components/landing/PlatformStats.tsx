@@ -34,7 +34,7 @@ export default async function PlatformStats() {
   ];
 
   return (
-    <section className="bg-white py-20 dark:bg-gray-950 sm:py-28">
+    <section className="bg-white py-24 dark:bg-gray-950 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="section-heading mb-4 text-gray-900 dark:text-white">

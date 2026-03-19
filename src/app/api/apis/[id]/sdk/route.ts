@@ -6,12 +6,15 @@ import type { SDKLanguage } from '@/lib/ai/sdk-generator';
 
 export const dynamic = 'force-dynamic';
 
-const VALID_LANGUAGES: SDKLanguage[] = ['typescript', 'python', 'go'];
+const VALID_LANGUAGES: SDKLanguage[] = [
+  'typescript', 'python', 'go', 'java', 'csharp',
+  'ruby', 'php', 'swift', 'kotlin', 'dart', 'rust',
+];
 
 /**
  * POST /api/apis/[id]/sdk
  * Generate a typed SDK client for the API from its OpenAPI spec.
- * Body: { language: 'typescript' | 'python' | 'go' }
+ * Body: { language: SDKLanguage }
  */
 export async function POST(
   req: Request,

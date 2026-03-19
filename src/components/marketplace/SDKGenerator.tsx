@@ -6,12 +6,22 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Code2, Download, Copy, Check, Loader2, Sparkles } from 'lucide-react';
 
-type SDKLanguage = 'typescript' | 'python' | 'go';
+type SDKLanguage =
+  | 'typescript' | 'python' | 'go' | 'java' | 'csharp'
+  | 'ruby' | 'php' | 'swift' | 'kotlin' | 'dart' | 'rust';
 
 const LANGUAGES: { value: SDKLanguage; label: string; badge: string }[] = [
   { value: 'typescript', label: 'TypeScript', badge: 'TS' },
   { value: 'python', label: 'Python', badge: 'PY' },
   { value: 'go', label: 'Go', badge: 'GO' },
+  { value: 'java', label: 'Java', badge: 'JV' },
+  { value: 'csharp', label: 'C#', badge: 'C#' },
+  { value: 'ruby', label: 'Ruby', badge: 'RB' },
+  { value: 'php', label: 'PHP', badge: 'PHP' },
+  { value: 'swift', label: 'Swift', badge: 'SW' },
+  { value: 'kotlin', label: 'Kotlin', badge: 'KT' },
+  { value: 'dart', label: 'Dart', badge: 'DT' },
+  { value: 'rust', label: 'Rust', badge: 'RS' },
 ];
 
 interface Props {
@@ -41,7 +51,7 @@ export function SDKGenerator({ apiId, apiName, hasSpec }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? 'Generation failed');
       setCode(data.code);
-      setFilename(data.filename ?? `client.${language === 'typescript' ? 'ts' : language === 'python' ? 'py' : 'go'}`);
+      setFilename(data.filename ?? `client.${language}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unexpected error');
     } finally {
@@ -88,10 +98,12 @@ export function SDKGenerator({ apiId, apiName, hasSpec }: Props) {
             AI-Generated SDK
           </h2>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Generate a typed client for <span className="font-medium">{apiName}</span> powered by Claude.
+            Generate a typed client for <span className="font-medium">{apiName}</span> in 11 languages.
           </p>
         </div>
-        <Badge variant="outline" className="text-purple-600 border-purple-300 dark:border-purple-700">Beta</Badge>
+        <Badge variant="outline" className="text-purple-600 border-purple-300 dark:border-purple-700">
+          11 Languages
+        </Badge>
       </div>
 
       <div className="flex items-center gap-3">
@@ -112,7 +124,7 @@ export function SDKGenerator({ apiId, apiName, hasSpec }: Props) {
         </Select>
         <Button onClick={generate} disabled={loading} className="gap-2">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Code2 className="h-4 w-4" />}
-          {loading ? 'Generating…' : 'Generate SDK'}
+          {loading ? 'Generating...' : 'Generate SDK'}
         </Button>
       </div>
 

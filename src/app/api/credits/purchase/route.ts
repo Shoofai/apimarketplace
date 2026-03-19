@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
+import { getSiteUrl } from '@/lib/utils/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     const stripeKey = process.env.STRIPE_SECRET_KEY;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+    const siteUrl = getSiteUrl();
 
     if (!stripeKey) {
       return NextResponse.json({ error: 'Stripe not configured' }, { status: 503 });

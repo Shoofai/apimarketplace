@@ -12,7 +12,7 @@ export async function generateMetadata() {
 }
 
 async function getHealth() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const base = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:3020' : '');
   try {
     const res = await fetch(`${base}/api/health`, { next: { revalidate: 60 } });
     const data = await res.json();

@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-type PolicyType = 'spend_cap' | 'approved_apis' | 'rate_limit_override';
+type PolicyType = 'spend_cap' | 'approved_apis' | 'rate_limit_override' | 'cors_origins' | 'ip_allowlist';
 
 /**
  * GET /api/organizations/current/governance
@@ -46,7 +46,7 @@ export async function PUT(req: Request) {
       is_active: boolean;
     };
 
-    if (!['spend_cap', 'approved_apis', 'rate_limit_override'].includes(policy_type)) {
+    if (!['spend_cap', 'approved_apis', 'rate_limit_override', 'cors_origins', 'ip_allowlist'].includes(policy_type)) {
       return NextResponse.json({ error: 'Invalid policy_type' }, { status: 400 });
     }
 
