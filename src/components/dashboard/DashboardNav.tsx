@@ -23,6 +23,7 @@ import { NotificationCenter } from '@/components/features/notifications/Notifica
 import { useSupabase } from '@/hooks/useSupabase';
 import { useRouter } from 'next/navigation';
 import { usePlatformName } from '@/contexts/PlatformNameContext';
+import PlatformLogo from '@/components/PlatformLogo';
 
 interface DashboardNavProps {
   user: {
@@ -95,10 +96,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
           href="/dashboard"
           className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight shrink-0"
         >
-          <span className="text-2xl leading-none">🚀</span>
-          <span className="hidden sm:inline bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            {platformName}
-          </span>
+          <PlatformLogo size={28} nameClassName="text-lg" />
         </Link>
 
         {/* Command palette search — hidden on xs, visible from sm */}

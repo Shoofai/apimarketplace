@@ -206,6 +206,7 @@ const config: Config = {
   		},
   		backgroundImage: {
   			'gradient-hero': 'linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #8b5cf6 100%)',
+  			'gradient-hero-dark': 'linear-gradient(135deg, #0d0a1a 0%, #1a1033 40%, #2d1b69 100%)',
   			'gradient-feature': 'linear-gradient(180deg, #7c3aed 0%, #8b5cf6 100%)',
   			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
   			'gradient-cta': 'linear-gradient(to right, #f59e0b, #d97706)',

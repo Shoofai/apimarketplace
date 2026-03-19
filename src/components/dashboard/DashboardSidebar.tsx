@@ -36,6 +36,7 @@ import {
   Package,
   Coins,
   UserPlus,
+  Paintbrush,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -240,6 +241,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       title: 'Bundles',
       href: '/dashboard/admin/bundles',
       icon: Package,
+      adminOnly: true,
+    },
+    {
+      title: 'Branding',
+      href: '/dashboard/admin/branding',
+      icon: Paintbrush,
       adminOnly: true,
     },
   ];

@@ -49,6 +49,10 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'The AI-Powered API Marketplace That Runs Itself',
       images: ['/og-image.png'],
     },
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/favicon.svg',
+    },
   };
 }
 

@@ -8,7 +8,7 @@ import { usePlatformName } from '@/contexts/PlatformNameContext';
 const competitorList = (platformName: string) => [
   {
     name: platformName,
-    logo: '🚀',
+    logo: '/logo.svg',
     isUs: true,
   },
   {
@@ -160,7 +160,13 @@ export default function Comparison() {
                         competitor.isUs ? 'scale-110 rounded-xl border-2 border-primary-500 bg-white p-4 shadow-lg ring-4 ring-primary-500/10 dark:bg-gray-900' : ''
                       }`}
                     >
-                      <div className="mb-1 text-3xl">{competitor.logo}</div>
+                      <div className="mb-1 text-3xl">
+                        {competitor.isUs ? (
+                          <img src={competitor.logo} alt={competitor.name} className="h-8 w-8 inline-block" />
+                        ) : (
+                          competitor.logo
+                        )}
+                      </div>
                       <div
                         className={`text-xs font-semibold ${
                           competitor.isUs ? 'text-primary-700 dark:text-primary-400' : 'text-gray-600 dark:text-gray-400'
@@ -291,7 +297,7 @@ export function ComparisonMini() {
                     key={col}
                     className={`py-3 px-3 text-center font-semibold ${i === 0 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'}`}
                   >
-                    {i === 0 ? `🚀 ${col}` : col}
+                    {i === 0 ? <><img src="/logo.svg" alt={col} className="inline-block h-4 w-4 mr-1" />{col}</> : col}
                   </th>
                 ))}
               </tr>

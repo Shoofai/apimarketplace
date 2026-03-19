@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { usePlatformName } from '@/contexts/PlatformNameContext';
+import PlatformLogo from '@/components/PlatformLogo';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Menu } from 'lucide-react';
@@ -31,8 +32,7 @@ export function PublicNav() {
           href="/"
           className="flex min-w-0 max-w-[55vw] shrink-0 items-center gap-2 font-heading text-lg font-bold tracking-tight"
         >
-          <span className="shrink-0 text-2xl leading-none">🚀</span>
-          <span className="truncate">{platformName}</span>
+          <PlatformLogo size={28} nameClassName="text-lg" />
         </Link>
 
         {/* Desktop nav — lg breakpoint so tablet gets hamburger */}

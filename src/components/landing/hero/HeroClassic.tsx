@@ -37,7 +37,7 @@ export default function HeroClassic() {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero dark:from-gray-900 dark:via-primary-900/30 dark:to-primary-900/30"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero-dark"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >

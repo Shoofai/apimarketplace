@@ -5,6 +5,7 @@ import { ArrowLeft, Code2, Zap, Shield, TrendingUp } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getPlatformName } from '@/lib/settings/platform-name';
+import PlatformLogo from '@/components/PlatformLogo';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,12 +53,7 @@ export default async function AuthLayout({
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-white/10 dark:bg-white/5 backdrop-blur-sm flex items-center justify-center">
-                <span className="text-2xl">🚀</span>
-              </div>
-              <h1 className="text-3xl font-bold text-white dark:text-foreground">
-                {platformName}
-              </h1>
+              <PlatformLogo />
             </div>
             <p className="text-lg text-white/90 dark:text-muted-foreground max-w-md">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at scale.
@@ -141,8 +137,7 @@ export default async function AuthLayout({
           {/* Mobile Logo */}
           <div className="lg:hidden mb-8 text-center">
             <div className="inline-flex items-center gap-2 mb-2">
-              <span className="text-2xl">🚀</span>
-              <h1 className="text-2xl font-bold">{platformName}</h1>
+              <PlatformLogo />
             </div>
             <p className="text-sm text-muted-foreground">
               Enterprise API Marketplace & Governance
