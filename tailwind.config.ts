@@ -116,14 +116,14 @@ const config: Config = {
   		},
   		fontSize: {
   			xs: [
-  				'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',
+  				'clamp(0.75rem, 0.725rem + 0.125vw, 0.8125rem)',
   				{
   					lineHeight: '1.5',
   					letterSpacing: '0.01em'
   				}
   			],
   			sm: [
-  				'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
+  				'clamp(0.875rem, 0.85rem + 0.125vw, 0.9375rem)',
   				{
   					lineHeight: '1.5',
   					letterSpacing: '0em'
@@ -186,12 +186,12 @@ const config: Config = {
   				}
   			],
   			hero: [
-  				'clamp(1.75rem, 4vw + 1.25rem, 3.75rem)',
-  				{ lineHeight: '1.08', letterSpacing: '-0.03em' }
+  				'clamp(1.75rem, 4vw + 1.25rem, 4rem)',
+  				{ lineHeight: '1.05', letterSpacing: '-0.03em' }
   			],
   			subhero: [
   				'clamp(1rem, 1.5vw + 0.75rem, 1.5rem)',
-  				{ lineHeight: '1.5' }
+  				{ lineHeight: '1.5', letterSpacing: '-0.01em' }
   			]
   		},
   		borderRadius: {

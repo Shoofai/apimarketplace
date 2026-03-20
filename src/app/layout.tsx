@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Bricolage_Grotesque, Fira_Code } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, Fira_Code } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { PlatformNameProvider } from '@/contexts/PlatformNameContext';
@@ -13,10 +13,10 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-const bricolage = Bricolage_Grotesque({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-heading',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['500', '600', '700', '800'],
   display: 'swap',
 });
 
@@ -63,7 +63,7 @@ export default async function RootLayout({
 }) {
   const platformName = await getPlatformName();
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${bricolage.variable} ${firaCode.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${plusJakarta.variable} ${inter.variable} ${firaCode.variable}`} suppressHydrationWarning>
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"

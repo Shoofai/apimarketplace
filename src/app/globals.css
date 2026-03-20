@@ -103,20 +103,22 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 
   h1 {
-    @apply text-3xl sm:text-4xl font-bold;
+    @apply text-3xl sm:text-4xl font-extrabold;
     letter-spacing: -0.03em;
+    text-wrap: balance;
   }
 
   h2 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-bold;
+    text-wrap: balance;
   }
 
   h3 {
-    @apply text-xl font-medium;
+    @apply text-xl font-semibold;
   }
 
   h4 {
@@ -127,13 +129,13 @@
 @layer components {
   /* Typography tokens for consistent section headers */
   .section-heading {
-    @apply font-heading text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl;
+    @apply font-heading text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl;
   }
   .section-subheading {
-    @apply text-lg leading-relaxed sm:text-xl;
+    @apply text-lg leading-relaxed tracking-tight sm:text-xl;
   }
   .page-title {
-    @apply font-heading text-3xl font-bold tracking-tight sm:text-4xl;
+    @apply font-heading text-3xl font-extrabold tracking-tight sm:text-4xl;
   }
 }
 
