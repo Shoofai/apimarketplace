@@ -19,6 +19,7 @@ function LogoUploadCard({
   previewSize,
   accept,
   onUpload,
+  previewBg = 'light',
 }: {
   title: string;
   description: string;
@@ -26,6 +27,8 @@ function LogoUploadCard({
   previewSize: number;
   accept: string;
   onUpload: (file: File) => Promise<void>;
+  /** Which background to preview on — 'light' for white bg, 'dark' for dark bg */
+  previewBg?: 'light' | 'dark';
 }) {
   const [state, setState] = useState<UploadState>({ status: 'idle' });
   const [preview, setPreview] = useState<string | null>(null);
@@ -67,11 +70,19 @@ function LogoUploadCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Current preview */}
+        {/* Preview */}
         <div className="flex items-center gap-6">
           <div className="flex flex-col items-center gap-2">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Current</p>
-            <div className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              {preview ? 'New' : 'Current'}
+            </p>
+            <div
+              className={`flex items-center justify-center rounded-lg border p-4 ${
+                previewBg === 'dark'
+                  ? 'border-gray-700 bg-gray-900'
+                  : 'border-gray-200 bg-white'
+              }`}
+            >
               <Image
                 src={preview || currentSrc}
                 alt={title}
@@ -82,27 +93,10 @@ function LogoUploadCard({
               />
             </div>
           </div>
-          {/* Dark preview */}
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">On dark</p>
-            <div className="flex items-center justify-center rounded-lg border border-gray-700 bg-gray-900 p-3">
-              <Image
-                src={preview || currentSrc}
-                alt={`${title} on dark`}
-                width={previewSize}
-                height={previewSize}
-                className="object-contain"
-                unoptimized
-              />
-            </div>
-          </div>
           {preview && (
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-xs font-medium text-green-600">New</p>
-              <Badge variant="outline" className="border-green-300 text-green-600">
-                <Check className="mr-1 h-3 w-3" /> Preview
-              </Badge>
-            </div>
+            <Badge variant="outline" className="border-green-300 text-green-600">
+              <Check className="mr-1 h-3 w-3" /> Ready to save
+            </Badge>
           )}
         </div>
 
@@ -221,6 +215,7 @@ export default function BrandingSettings() {
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoUpload}
+          previewBg="light"
         />
         <LogoUploadCard
           title="Logo (Dark Mode)"
@@ -229,6 +224,7 @@ export default function BrandingSettings() {
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoDarkUpload}
+          previewBg="dark"
         />
       </div>
 
