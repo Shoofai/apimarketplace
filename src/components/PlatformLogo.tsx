@@ -8,31 +8,66 @@ interface PlatformLogoProps {
   className?: string;
   showName?: boolean;
   nameClassName?: string;
+  /** Force a specific variant regardless of theme */
+  variant?: 'light' | 'dark';
 }
 
 /**
- * Unified platform logo component.
- * Renders the uploaded logo from /api/platform/logo, falling back to /logo.svg.
- * Used across nav, footer, auth pages, and email templates.
+ * Unified platform logo component with dark mode support.
+ * Renders /logo.svg for light mode and /logo-dark.svg for dark mode.
+ * Uses CSS-based visibility to avoid hydration mismatch and flash.
  */
 export default function PlatformLogo({
   size = 32,
   className = '',
   showName = true,
   nameClassName = '',
+  variant,
 }: PlatformLogoProps) {
   const platformName = usePlatformName();
 
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
-      <Image
-        src="/logo.svg"
-        alt={`${platformName} logo`}
-        width={size}
-        height={size}
-        className="shrink-0"
-        priority
-      />
+      {variant === 'dark' ? (
+        <Image
+          src="/logo-dark.svg"
+          alt={`${platformName} logo`}
+          width={size}
+          height={size}
+          className="shrink-0"
+          priority
+        />
+      ) : variant === 'light' ? (
+        <Image
+          src="/logo.svg"
+          alt={`${platformName} logo`}
+          width={size}
+          height={size}
+          className="shrink-0"
+          priority
+        />
+      ) : (
+        <>
+          {/* Light mode logo — hidden in dark mode via Tailwind */}
+          <Image
+            src="/logo.svg"
+            alt={`${platformName} logo`}
+            width={size}
+            height={size}
+            className="shrink-0 dark:hidden"
+            priority
+          />
+          {/* Dark mode logo — hidden in light mode via Tailwind */}
+          <Image
+            src="/logo-dark.svg"
+            alt={`${platformName} logo`}
+            width={size}
+            height={size}
+            className="hidden shrink-0 dark:block"
+            priority
+          />
+        </>
+      )}
       {showName && (
         <span className={`truncate font-heading font-bold ${nameClassName}`}>
           {platformName}

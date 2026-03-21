@@ -169,6 +169,22 @@ export default function BrandingSettings() {
     }
   };
 
+  const handleLogoDarkUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', 'logo-dark');
+
+    const res = await fetch('/api/admin/branding/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({ error: 'Upload failed' }));
+      throw new Error(data.error || 'Upload failed');
+    }
+  };
+
   const handleFaviconUpload = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -199,13 +215,24 @@ export default function BrandingSettings() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <LogoUploadCard
-          title="Platform Logo"
-          description="Displayed in the navigation bar, footer, emails, and auth pages."
+          title="Logo (Light Mode)"
+          description="Used on light backgrounds — navbar, footer, emails, and auth pages."
           currentSrc="/logo.svg"
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoUpload}
         />
+        <LogoUploadCard
+          title="Logo (Dark Mode)"
+          description="Used on dark backgrounds — dark theme navbar, footer, and dashboard."
+          currentSrc="/logo-dark.svg"
+          previewSize={48}
+          accept=".svg,.png,.jpg,.jpeg,.webp"
+          onUpload={handleLogoDarkUpload}
+        />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
         <LogoUploadCard
           title="Favicon"
           description="Browser tab icon. Shown in bookmarks and browser tabs."
@@ -221,9 +248,9 @@ export default function BrandingSettings() {
         <CardContent className="p-4">
           <h3 className="text-sm font-medium text-primary-900 dark:text-primary-300">How it works</h3>
           <ul className="mt-2 space-y-1 text-xs text-primary-700 dark:text-primary-400">
-            <li>&#8226; Uploaded files replace <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/logo.svg</code> and <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/favicon.svg</code></li>
+            <li>&#8226; Light logo replaces <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/logo.svg</code>, dark logo replaces <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/logo-dark.svg</code></li>
             <li>&#8226; SVG format is recommended for crisp rendering at all sizes</li>
-            <li>&#8226; The logo appears in the navbar, footer, login page, and emails</li>
+            <li>&#8226; The component auto-switches between light and dark variants based on theme</li>
             <li>&#8226; Changes take effect on next page load (browser cache may need clearing)</li>
           </ul>
         </CardContent>

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing file or type' }, { status: 400 });
     }
 
-    if (!['logo', 'favicon'].includes(type)) {
+    if (!['logo', 'logo-dark', 'favicon'].includes(type)) {
       return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
     }
 
@@ -46,7 +46,12 @@ export async function POST(request: NextRequest) {
 
     // Determine filename
     const ext = file.name.split('.').pop()?.toLowerCase() || 'svg';
-    const filename = type === 'logo' ? `logo.${ext}` : `favicon.${ext}`;
+    const filenameMap: Record<string, string> = {
+      logo: `logo.${ext}`,
+      'logo-dark': `logo-dark.${ext}`,
+      favicon: `favicon.${ext}`,
+    };
+    const filename = filenameMap[type] || `logo.${ext}`;
 
     // Write to public directory
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -59,7 +64,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       filename,
-      message: `${type === 'logo' ? 'Logo' : 'Favicon'} uploaded successfully`
+      message: `${type === 'logo' ? 'Logo (light)' : type === 'logo-dark' ? 'Logo (dark)' : 'Favicon'} uploaded successfully`
     });
   } catch (err) {
     console.error('Branding upload error:', err);
