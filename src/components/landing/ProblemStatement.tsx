@@ -93,7 +93,7 @@ function PersonaCard({
       {/* Solution — expands on hover */}
       <motion.div
         animate={{
-          backgroundColor: hovered ? 'rgba(139, 92, 246, 0.05)' : 'rgba(0, 0, 0, 0)',
+          backgroundColor: hovered ? 'rgba(124, 79, 242, 0.05)' : 'rgba(0, 0, 0, 0)',
         }}
         transition={{ duration: 0.3 }}
         className="flex flex-col gap-3 p-8 pt-4"

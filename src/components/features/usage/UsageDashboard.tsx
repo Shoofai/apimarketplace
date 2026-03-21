@@ -81,8 +81,8 @@ export function UsageDashboard({ subscriptionId, data }: UsageDashboardProps) {
   const isDark = mounted ? (resolvedTheme === 'dark' || theme === 'dark') : false;
   const textColor = isDark ? 'rgb(226, 232, 240)' : 'rgb(51, 65, 85)';
   const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.2)';
-  const primaryColor = isDark ? 'rgb(167, 139, 250)' : 'rgb(139, 92, 246)';
-  const primaryBg = isDark ? 'rgba(167, 139, 250, 0.2)' : 'rgba(139, 92, 246, 0.1)';
+  const primaryColor = isDark ? 'rgb(167, 139, 250)' : 'rgb(124, 79, 242)';
+  const primaryBg = isDark ? 'rgba(167, 139, 250, 0.2)' : 'rgba(124, 79, 242, 0.1)';
 
   const apiCallsData = {
     labels: data?.timeSeries?.labels ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

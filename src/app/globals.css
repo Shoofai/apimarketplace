@@ -11,19 +11,19 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 262 83% 58%; /* Purple primary - Violet-500 */
+    --primary: 256 86% 63%; /* Purple-indigo primary — warmer, more premium */
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 220 14% 96%;
     --muted-foreground: 215 16% 47%; /* Better contrast for muted text */
-    --accent: 262 90% 96%; /* Light purple tint */
-    --accent-foreground: 262 83% 30%;
+    --accent: 43 96% 56%; /* Warm amber — distinct from primary */
+    --accent-foreground: 43 96% 16%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --ring: 256 86% 63%;
     --radius: 0.5rem;
     
     /* Additional colors for badges and status */
@@ -37,7 +37,7 @@
     --cta-foreground: 0 0% 100%;
     
     /* Chart colors - light mode */
-    --chart-1: 262 83% 58%;
+    --chart-1: 256 86% 63%;
     --chart-2: 142 76% 36%;
     --chart-3: 199 89% 48%;
     --chart-4: 32 95% 44%;
@@ -52,19 +52,19 @@
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
-    --primary: 262 80% 65%; /* Lighter purple for dark mode - Violet-400 */
+    --primary: 256 82% 70%; /* Lighter purple-indigo for dark mode */
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 19%; /* Better contrast secondary */
     --secondary-foreground: 210 40% 98%;
     --muted: 223 47% 19%;
     --muted-foreground: 215 20% 65%; /* More readable muted text */
-    --accent: 262 70% 25%; /* Dark purple tint */
-    --accent-foreground: 262 80% 85%;
+    --accent: 43 96% 46%; /* Warm amber for dark mode */
+    --accent-foreground: 43 96% 95%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
     --border: 217 33% 17%; /* Subtle borders */
     --input: 217 33% 17%;
-    --ring: 262 80% 65%;
+    --ring: 256 82% 70%;
     
     /* Additional colors for badges and status */
     --success: 142 69% 58%;

@@ -69,7 +69,7 @@ export default function HeroDeveloper() {
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 28%, rgba(139, 92, 246, 0.12), transparent 55%)',
+          background: 'radial-gradient(ellipse 80% 50% at 50% 28%, rgba(124, 79, 242, 0.12), transparent 55%)',
         }}
       />
 

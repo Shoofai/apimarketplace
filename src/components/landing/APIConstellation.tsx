@@ -90,7 +90,7 @@ export function APIConstellation({ mouseX: propMouseX = 0, mouseY: propMouseY = 
         <defs>
           <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="rgb(147, 51, 234)" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="rgb(139, 92, 246)" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="rgb(124, 79, 242)" stopOpacity="0.6" />
             <stop offset="100%" stopColor="rgb(167, 139, 250)" stopOpacity="0.4" />
           </linearGradient>
           <filter id="glow">
@@ -187,7 +187,7 @@ export function APIConstellation({ mouseX: propMouseX = 0, mouseY: propMouseY = 
               cx={coordStr(node.x)}
               cy={coordStr(node.y)}
               r={8}
-              fill="rgba(139, 92, 246, 0.4)"
+              fill="rgba(124, 79, 242, 0.4)"
               stroke="rgba(167, 139, 250, 0.6)"
               strokeWidth="1"
               initial={{ scale: 0, opacity: 0 }}
