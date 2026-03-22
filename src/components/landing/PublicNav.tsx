@@ -32,7 +32,7 @@ export function PublicNav() {
           href="/"
           className="flex min-w-0 max-w-[55vw] shrink-0 items-center gap-2 font-heading text-lg font-bold tracking-tight"
         >
-          <PlatformLogo size={40} showName={false} />
+          <PlatformLogo height={32} />
         </Link>
 
         {/* Desktop nav — lg breakpoint so tablet gets hamburger */}

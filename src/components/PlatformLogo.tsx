@@ -1,78 +1,100 @@
 'use client';
 
 import Image from 'next/image';
-import { usePlatformName } from '@/contexts/PlatformNameContext';
 
 interface PlatformLogoProps {
-  size?: number;
+  /** Height of the logo in pixels. Width auto-scales to aspect ratio. */
+  height?: number;
   className?: string;
-  showName?: boolean;
-  nameClassName?: string;
   /** Force a specific variant regardless of theme */
   variant?: 'light' | 'dark';
+  /** Show only the favicon/icon mark instead of the full horizontal logo.
+   *  Useful for collapsed sidebars and small spaces. */
+  iconOnly?: boolean;
 }
 
 /**
  * Unified platform logo component with dark mode support.
- * Renders /logo.svg for light mode and /logo-dark.svg for dark mode.
+ *
+ * Full logo: /logo.svg (light) and /logo-dark.svg (dark) — horizontal with icon + text
+ * Icon only: /favicon.svg — square mark for collapsed menus and small spaces
+ *
  * Uses CSS-based visibility to avoid hydration mismatch and flash.
  */
 export default function PlatformLogo({
-  size = 32,
+  height = 36,
   className = '',
-  showName = true,
-  nameClassName = '',
   variant,
+  iconOnly = false,
 }: PlatformLogoProps) {
-  const platformName = usePlatformName();
+  // Icon-only mode uses the square favicon
+  if (iconOnly) {
+    return (
+      <span className={`inline-flex shrink-0 items-center ${className}`}>
+        <Image
+          src="/favicon.svg"
+          alt="Logo"
+          width={height}
+          height={height}
+          className="shrink-0"
+          priority
+        />
+      </span>
+    );
+  }
 
-  return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      {variant === 'dark' ? (
+  // Full horizontal logo — aspect ratio ~3:1 (viewBox 225x75)
+  const width = Math.round(height * 3);
+
+  if (variant === 'dark') {
+    return (
+      <span className={`inline-flex shrink-0 items-center ${className}`}>
         <Image
           src="/logo-dark.svg"
-          alt={`${platformName} logo`}
-          width={size}
-          height={size}
-          className="shrink-0"
+          alt="Logo"
+          width={width}
+          height={height}
+          className="shrink-0 object-contain"
           priority
         />
-      ) : variant === 'light' ? (
+      </span>
+    );
+  }
+
+  if (variant === 'light') {
+    return (
+      <span className={`inline-flex shrink-0 items-center ${className}`}>
         <Image
           src="/logo.svg"
-          alt={`${platformName} logo`}
-          width={size}
-          height={size}
-          className="shrink-0"
+          alt="Logo"
+          width={width}
+          height={height}
+          className="shrink-0 object-contain"
           priority
         />
-      ) : (
-        <>
-          {/* Light mode logo — hidden in dark mode via Tailwind */}
-          <Image
-            src="/logo.svg"
-            alt={`${platformName} logo`}
-            width={size}
-            height={size}
-            className="shrink-0 dark:hidden"
-            priority
-          />
-          {/* Dark mode logo — hidden in light mode via Tailwind */}
-          <Image
-            src="/logo-dark.svg"
-            alt={`${platformName} logo`}
-            width={size}
-            height={size}
-            className="hidden shrink-0 dark:block"
-            priority
-          />
-        </>
-      )}
-      {showName && (
-        <span className={`truncate font-heading font-bold ${nameClassName}`}>
-          {platformName}
-        </span>
-      )}
+      </span>
+    );
+  }
+
+  // Auto mode — swap based on theme via CSS
+  return (
+    <span className={`inline-flex shrink-0 items-center ${className}`}>
+      <Image
+        src="/logo.svg"
+        alt="Logo"
+        width={width}
+        height={height}
+        className="shrink-0 object-contain dark:hidden"
+        priority
+      />
+      <Image
+        src="/logo-dark.svg"
+        alt="Logo"
+        width={width}
+        height={height}
+        className="hidden shrink-0 object-contain dark:block"
+        priority
+      />
     </span>
   );
 }

@@ -96,7 +96,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
           href="/dashboard"
           className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight shrink-0"
         >
-          <PlatformLogo size={40} showName={false} />
+          <PlatformLogo height={32} />
         </Link>
 
         {/* Command palette search — hidden on xs, visible from sm */}

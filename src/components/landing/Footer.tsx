@@ -151,7 +151,7 @@ export default function Footer() {
         {/* Row 1: Branding + Newsletter */}
         <div className="mb-12 flex flex-col gap-6 border-b border-gray-200 pb-12 dark:border-gray-800 md:flex-row md:items-center md:justify-between md:gap-8">
           <div className="flex flex-col gap-2">
-            <PlatformLogo size={24} nameClassName="text-base" />
+            <PlatformLogo height={28} />
             <p className="max-w-md text-gray-600 dark:text-gray-400">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at
               scale.
