@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
@@ -268,6 +269,21 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       )}
     >
       <nav className="p-3 space-y-4 flex-1 overflow-x-hidden overflow-y-auto">
+        {/* Favicon logo when collapsed */}
+        {isCollapsed && (
+          <div className="flex justify-center pb-2">
+            <Link href="/dashboard">
+              <Image
+                src="/favicon.svg"
+                alt="Logo"
+                width={28}
+                height={28}
+                className="shrink-0"
+                priority
+              />
+            </Link>
+          </div>
+        )}
         {/* Main Navigation */}
         <div>
           {!isCollapsed && (
