@@ -43,8 +43,8 @@ export default function PlatformLogo({
     );
   }
 
-  // Full horizontal logo — aspect ratio ~3:1 (viewBox 225x75)
-  const width = Math.round(height * 3);
+  // Full horizontal logo — aspect ratio 225:60 = 3.75:1
+  const width = Math.round(height * 3.75);
 
   if (variant === 'dark') {
     return (
