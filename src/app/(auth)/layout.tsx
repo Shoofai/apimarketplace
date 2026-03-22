@@ -53,7 +53,7 @@ export default async function AuthLayout({
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <PlatformLogo height={40} variant="dark" />
+              <PlatformLogo height={48} variant="dark" />
             </div>
             <p className="text-lg text-white/90 dark:text-muted-foreground max-w-md">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at scale.

@@ -297,7 +297,7 @@ export function ComparisonMini() {
                     key={col}
                     className={`py-3 px-3 text-center font-semibold ${i === 0 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'}`}
                   >
-                    {i === 0 ? <><img src="/favicon.svg" alt={col} className="inline-block h-4 w-4 mr-1" />{col}</> : col}
+                    {i === 0 ? <><img src="/favicon.svg" alt={col} className="inline-block h-5 w-5 mr-1" />{col}</> : col}
                   </th>
                 ))}
               </tr>
