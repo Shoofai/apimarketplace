@@ -52,8 +52,8 @@ export default async function AuthLayout({
           </Link>
           
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <PlatformLogo height={48} variant="dark" />
+            <div className="inline-flex items-center rounded-xl bg-white/10 backdrop-blur-sm px-4 py-3">
+              <PlatformLogo height={44} variant="dark" />
             </div>
             <p className="text-lg text-white/90 dark:text-muted-foreground max-w-md">
               The AI-powered API marketplace that runs itself. Monetize, discover, and govern APIs at scale.
@@ -136,8 +136,8 @@ export default async function AuthLayout({
         <div className="w-full max-w-md rounded-2xl border border-border bg-card/50 dark:bg-card/30 p-8 shadow-sm ring-1 ring-primary/5 dark:ring-primary-900/20 lg:p-10">
           {/* Mobile Logo */}
           <div className="lg:hidden mb-8 text-center">
-            <div className="inline-flex items-center gap-2 mb-2">
-              <PlatformLogo />
+            <div className="inline-flex items-center justify-center mb-2">
+              <PlatformLogo height={40} />
             </div>
             <p className="text-sm text-muted-foreground">
               Enterprise API Marketplace & Governance
