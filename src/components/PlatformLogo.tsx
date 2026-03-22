@@ -43,8 +43,8 @@ export default function PlatformLogo({
     );
   }
 
-  // Full horizontal logo — aspect ratio 225:60 = 3.75:1
-  const width = Math.round(height * 3.75);
+  // Full horizontal logo — SVG natural size 350x100 (3.5:1)
+  const width = Math.round(height * 3.5);
 
   if (variant === 'dark') {
     return (
