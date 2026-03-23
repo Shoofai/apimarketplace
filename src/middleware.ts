@@ -119,7 +119,12 @@ export async function middleware(request: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: affCode }),
-    }).catch(() => {}); // Fire-and-forget, non-blocking
+    }).catch((err) => {
+      console.error('[middleware] Affiliate click tracking failed', {
+        error: err instanceof Error ? err.message : String(err),
+        affCode,
+      });
+    });
   }
 
   if (!isDev) {

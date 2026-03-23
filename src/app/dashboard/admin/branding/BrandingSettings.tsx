@@ -7,6 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
+/** Build Supabase Storage public URL for a branding file, with cache-bust param */
+function brandingUrl(filename: string): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!base) return `/${filename}`;
+  return `${base}/storage/v1/object/public/branding/${filename}?v=${Date.now()}`;
+}
+
 interface UploadState {
   status: 'idle' | 'uploading' | 'success' | 'error';
   message?: string;
@@ -211,7 +218,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Logo (Light Mode)"
           description="Used on light backgrounds — navbar, footer, emails, and auth pages."
-          currentSrc="/logo.svg"
+          currentSrc={brandingUrl('logo.svg')}
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoUpload}
@@ -220,7 +227,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Logo (Dark Mode)"
           description="Used on dark backgrounds — dark theme navbar, footer, and dashboard."
-          currentSrc="/logo-dark.svg"
+          currentSrc={brandingUrl('logo-dark.svg')}
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoDarkUpload}
@@ -232,7 +239,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Favicon"
           description="Browser tab icon. Shown in bookmarks and browser tabs."
-          currentSrc="/favicon.svg"
+          currentSrc={brandingUrl('favicon.svg')}
           previewSize={32}
           accept=".svg,.png,.ico"
           onUpload={handleFaviconUpload}
@@ -244,10 +251,10 @@ export default function BrandingSettings() {
         <CardContent className="p-4">
           <h3 className="text-sm font-medium text-primary-900 dark:text-primary-300">How it works</h3>
           <ul className="mt-2 space-y-1 text-xs text-primary-700 dark:text-primary-400">
-            <li>&#8226; Light logo replaces <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/logo.svg</code>, dark logo replaces <code className="rounded bg-primary-100 px-1 dark:bg-primary-900/30">/public/logo-dark.svg</code></li>
+            <li>&#8226; Logos are stored in Supabase Storage and served globally via CDN</li>
             <li>&#8226; SVG format is recommended for crisp rendering at all sizes</li>
             <li>&#8226; The component auto-switches between light and dark variants based on theme</li>
-            <li>&#8226; Changes take effect on next page load (browser cache may need clearing)</li>
+            <li>&#8226; Changes take effect immediately on next page load</li>
           </ul>
         </CardContent>
       </Card>

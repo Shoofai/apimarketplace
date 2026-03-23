@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabase/admin';
+
+const BUCKET = 'branding';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid file type. Use SVG, PNG, JPG, or ICO.' }, { status: 400 });
     }
 
-    // Determine filename
+    // Determine filename stored in the bucket
     const ext = file.name.split('.').pop()?.toLowerCase() || 'svg';
     const filenameMap: Record<string, string> = {
       logo: `logo.${ext}`,
@@ -53,18 +54,45 @@ export async function POST(request: NextRequest) {
     };
     const filename = filenameMap[type] || `logo.${ext}`;
 
-    // Write to public directory
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const publicDir = path.join(process.cwd(), 'public');
-    await writeFile(path.join(publicDir, filename), buffer);
+    // Use admin client (service role) to bypass RLS for storage operations
+    const adminClient = createAdminClient();
 
-    // If the extension changed (e.g. from .svg to .png), we need to update references
-    // For now, we overwrite the same filename pattern
+    // Ensure the branding bucket exists (public so logos can be served without auth)
+    const { error: bucketError } = await adminClient.storage.createBucket(BUCKET, {
+      public: true,
+      allowedMimeTypes: allowedTypes,
+      fileSizeLimit: 2 * 1024 * 1024,
+    });
+
+    // Ignore "already exists" errors
+    if (bucketError && !bucketError.message.includes('already exists')) {
+      console.error('Bucket creation error:', bucketError);
+      return NextResponse.json({ error: 'Storage setup failed' }, { status: 500 });
+    }
+
+    // Upload (upsert) the file to the bucket
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const { error: uploadError } = await adminClient.storage
+      .from(BUCKET)
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: true,
+        cacheControl: '0', // No cache so new uploads appear immediately
+      });
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    }
+
+    // Build the public URL
+    const { data: urlData } = adminClient.storage.from(BUCKET).getPublicUrl(filename);
 
     return NextResponse.json({
       success: true,
       filename,
-      message: `${type === 'logo' ? 'Logo (light)' : type === 'logo-dark' ? 'Logo (dark)' : 'Favicon'} uploaded successfully`
+      publicUrl: urlData.publicUrl,
+      message: `${type === 'logo' ? 'Logo (light)' : type === 'logo-dark' ? 'Logo (dark)' : 'Favicon'} uploaded successfully`,
     });
   } catch (err) {
     console.error('Branding upload error:', err);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { requireAuth } from '@/lib/auth/middleware';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { DEFAULT_LIST_LIMIT } from '@/lib/utils/constants';
 import { generateApiKey, hashApiKey } from '@/lib/utils/api-key';
 import { logger } from '@/lib/utils/logger';
@@ -41,16 +42,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Pricing plan not found' }, { status: 404 });
     }
 
-    // Check if already subscribed
+    // Idempotency: check if already subscribed (also serves as double-submit guard)
     const { data: existingSubscription } = await supabase
       .from('api_subscriptions')
-      .select('id')
+      .select('*, api:apis(id, name, slug, logo_url), pricing_plan:api_pricing_plans(name, price_monthly, included_calls)')
       .eq('api_id', api_id)
       .eq('organization_id', context.organization_id)
       .eq('status', 'active')
       .single();
 
     if (existingSubscription) {
+      // Check for idempotency_key header: if present and matches, return success (idempotent)
+      const idempotencyKey = request.headers.get('idempotency-key');
+      if (idempotencyKey) {
+        logger.info('Idempotent subscription request returned existing subscription', {
+          idempotency_key: idempotencyKey,
+          subscription_id: existingSubscription.id,
+        });
+        return NextResponse.json({
+          success: true,
+          subscription: {
+            ...existingSubscription,
+            api_key: undefined,
+          },
+          api_key: undefined, // Cannot re-issue the plain key
+          message: 'Subscription already exists (idempotent response). API key was issued on original creation.',
+          idempotent: true,
+        });
+      }
       return NextResponse.json(
         { error: 'Already subscribed to this API' },
         { status: 400 }
@@ -84,8 +103,12 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      // Check balance
-      const { data: balanceRow } = await supabase
+
+      // Use admin client to bypass RLS for the atomic balance update.
+      const adminClient = createAdminClient();
+
+      // Read current balance
+      const { data: balanceRow } = await adminClient
         .from('credit_balances')
         .select('balance')
         .eq('organization_id', context.organization_id)
@@ -99,14 +122,27 @@ export async function POST(request: Request) {
         );
       }
 
+      // Atomic deduct: optimistic lock using eq('balance', currentBalance) ensures
+      // no concurrent request has modified the balance between our read and write.
+      // If another request changed the balance, zero rows match and the update is a no-op.
       const newBalance = currentBalance - priceInCredits;
+      const { data: updatedRows, error: updateError } = await adminClient
+        .from('credit_balances')
+        .update({
+          balance: newBalance,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('organization_id', context.organization_id)
+        .eq('balance', currentBalance) // optimistic lock: only succeeds if balance unchanged
+        .select('balance');
 
-      // Deduct balance
-      await supabase.from('credit_balances').upsert({
-        organization_id: context.organization_id,
-        balance: newBalance,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'organization_id' });
+      if (updateError || !updatedRows || updatedRows.length === 0) {
+        // Balance was modified by a concurrent request between our read and write
+        return NextResponse.json(
+          { error: 'Credit deduction failed due to a concurrent request. Please try again.' },
+          { status: 409 }
+        );
+      }
 
       // Ledger entry
       await supabase.from('credit_ledger').insert({

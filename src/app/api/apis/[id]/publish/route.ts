@@ -128,7 +128,12 @@ export async function POST(
           category: cat?.name ?? null,
           tags: (apiMeta as any).tags ?? null,
         });
-        upsertAPIEmbedding(apiMeta.id, text).catch(() => {});
+        upsertAPIEmbedding(apiMeta.id, text).catch((err) => {
+          logger.error('Failed to upsert API embedding', {
+            error: err instanceof Error ? err.message : String(err),
+            apiId: apiMeta.id,
+          });
+        });
       }
     } catch { /* embedding is optional */ }
 
