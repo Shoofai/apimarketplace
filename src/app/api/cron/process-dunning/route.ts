@@ -11,6 +11,8 @@ function isAuthorized(request: NextRequest): boolean {
   return request.headers.get('x-cron-secret') === secret;
 }
 
+const BATCH_SIZE = 15;
+
 /**
  * GET/POST /api/cron/process-dunning
  * Escalates past-due subscriptions through a dunning sequence:
@@ -49,7 +51,8 @@ async function runProcess() {
       status,
       api:apis(name)
     `)
-    .eq('status', 'past_due') as unknown as {
+    .eq('status', 'past_due')
+    .limit(BATCH_SIZE) as unknown as {
       data: Array<{
         id: string;
         organization_id: string;
@@ -143,6 +146,7 @@ async function runProcess() {
     }
   }
 
-  logger.info('process-dunning completed', { reminded3d, warned7d, cancelled, total: pastDueSubs.length });
-  return NextResponse.json({ reminded3d, warned7d, cancelled, total: pastDueSubs.length });
+  const hasMore = pastDueSubs.length === BATCH_SIZE;
+  logger.info('process-dunning completed', { reminded3d, warned7d, cancelled, total: pastDueSubs.length, hasMore });
+  return NextResponse.json({ reminded3d, warned7d, cancelled, processed: pastDueSubs.length, hasMore });
 }

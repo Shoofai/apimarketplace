@@ -24,6 +24,98 @@ async function resolveCustomDomain(host: string): Promise<string | null> {
 }
 
 /**
+ * Decode a base64url string to a UTF-8 string (Edge Runtime compatible).
+ */
+function base64UrlDecode(str: string): string {
+  // Convert base64url to standard base64
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  // Pad with '=' to make length a multiple of 4
+  const pad = base64.length % 4;
+  if (pad) base64 += '='.repeat(4 - pad);
+  // atob is available in Edge Runtime
+  return atob(base64);
+}
+
+/**
+ * Validate a Supabase auth cookie value by decoding the JWT and checking
+ * structural claims (exp, sub). This is NOT full signature verification
+ * (we don't have the secret at the edge), but it prevents trivially forged
+ * cookies from bypassing the dashboard guard.
+ *
+ * Cookie format: the cookie named `sb-<ref>-auth-token.0` (or without chunk
+ * suffix) contains a base64-encoded JSON blob with `access_token`.
+ * Supabase may chunk the cookie across `.0`, `.1`, etc.
+ */
+function hasValidAuthToken(request: NextRequest): boolean {
+  try {
+    // Collect the cookie value — Supabase may split it into numbered chunks
+    const cookieHeader = request.headers.get('cookie') ?? '';
+    const authCookieMatch = cookieHeader.match(/sb-[a-z0-9]+-auth-token/);
+    if (!authCookieMatch) return false;
+
+    const cookieName = authCookieMatch[0];
+
+    // Try to reassemble chunked cookies (.0, .1, .2, …) or read the single cookie
+    let raw = '';
+    const singleCookie = request.cookies.get(cookieName);
+    if (singleCookie?.value) {
+      raw = singleCookie.value;
+    } else {
+      // Reassemble chunks
+      for (let i = 0; i < 10; i++) {
+        const chunk = request.cookies.get(`${cookieName}.${i}`);
+        if (!chunk?.value) break;
+        raw += chunk.value;
+      }
+    }
+
+    if (!raw) return false;
+
+    // The cookie value is base64-encoded JSON containing access_token
+    let accessToken: string;
+    try {
+      const decoded = base64UrlDecode(raw);
+      const parsed = JSON.parse(decoded);
+      accessToken = parsed?.access_token;
+    } catch {
+      // Might already be raw JSON (some Supabase versions)
+      try {
+        const parsed = JSON.parse(decodeURIComponent(raw));
+        accessToken = parsed?.access_token;
+      } catch {
+        return false;
+      }
+    }
+
+    if (!accessToken || typeof accessToken !== 'string') return false;
+
+    // JWT structure: header.payload.signature
+    const parts = accessToken.split('.');
+    if (parts.length !== 3) return false;
+
+    // Decode the payload (middle segment)
+    const payloadJson = base64UrlDecode(parts[1]);
+    const payload = JSON.parse(payloadJson);
+
+    // Check required claims
+    if (!payload.sub || typeof payload.sub !== 'string' || payload.sub.length === 0) {
+      return false;
+    }
+
+    if (typeof payload.exp !== 'number') return false;
+
+    // Check expiration (exp is in seconds since epoch)
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    if (payload.exp <= nowSeconds) return false;
+
+    return true;
+  } catch {
+    // Any unexpected error means the token is invalid
+    return false;
+  }
+}
+
+/**
  * Security headers middleware.
  * - Applies strict security headers in production.
  * - Handles custom domain → internal portal rewrites.
@@ -79,14 +171,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Dashboard auth guard — redirect unauthenticated users to /login
-  // We check for the presence of a Supabase session cookie as a fast heuristic.
-  // Individual pages still do server-side auth checks, but this prevents
-  // unauthenticated users from receiving dashboard HTML at the edge.
+  // We decode the JWT from the Supabase auth cookie and verify structural
+  // claims (exp, sub). This prevents trivially forged cookies from bypassing
+  // the guard. Individual pages still do full server-side auth checks.
   if (pathname.startsWith('/dashboard')) {
-    const cookieHeader = request.headers.get('cookie') ?? '';
-    // Supabase cookies are named sb-<project-ref>-auth-token
-    const hasAuthCookie = /sb-[a-z0-9]+-auth-token/.test(cookieHeader);
-    if (!hasAuthCookie) {
+    if (!hasValidAuthToken(request)) {
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = '/login';
       loginUrl.searchParams.set('redirect', pathname);

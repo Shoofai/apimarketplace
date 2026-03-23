@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TEST_USER_EMAIL, TEST_USER_PASSWORD, TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD } from './fixtures/auth';
 
 test.describe('Dashboard links (unauthenticated)', () => {
   test('dashboard redirects to login when not logged in', async ({ page }) => {
@@ -22,10 +23,10 @@ test.describe('Dashboard links (unauthenticated)', () => {
 
 test.describe('Dashboard links (authenticated)', () => {
   test.beforeEach(async ({ page }) => {
-    test.skip(!process.env.TEST_USER_EMAIL, 'Test user not configured');
+    test.skip(!TEST_USER_EMAIL, 'Test user not configured');
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.TEST_USER_EMAIL!);
-    await page.fill('input[name="password"]', process.env.TEST_USER_PASSWORD!);
+    await page.fill('input[name="email"]', TEST_USER_EMAIL);
+    await page.fill('input[name="password"]', TEST_USER_PASSWORD);
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/\/dashboard/);
   });
@@ -128,10 +129,10 @@ test.describe('Dashboard links (authenticated)', () => {
 
 test.describe('Dashboard links (admin)', () => {
   test.beforeEach(async ({ page }) => {
-    test.skip(!process.env.TEST_ADMIN_EMAIL, 'Admin test user not configured');
+    test.skip(!TEST_ADMIN_EMAIL, 'Admin test user not configured');
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.TEST_ADMIN_EMAIL!);
-    await page.fill('input[name="password"]', process.env.TEST_ADMIN_PASSWORD!);
+    await page.fill('input[name="email"]', TEST_ADMIN_EMAIL);
+    await page.fill('input[name="password"]', TEST_ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/\/dashboard/);
   });

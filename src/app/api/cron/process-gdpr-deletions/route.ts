@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
   return runProcess();
 }
 
+const BATCH_SIZE = 10;
+
 async function runProcess() {
 
   const admin = createAdminClient();
@@ -39,7 +41,8 @@ async function runProcess() {
     .from('data_deletion_requests')
     .select('id, user_id, organization_id')
     .eq('status', 'grace_period')
-    .lte('grace_period_ends_at', now);
+    .lte('grace_period_ends_at', now)
+    .limit(BATCH_SIZE);
 
   if (fetchError) {
     console.error('process-gdpr-deletions fetch error', fetchError);
@@ -92,5 +95,6 @@ async function runProcess() {
     }
   }
 
-  return NextResponse.json({ processed, total: overdue.length });
+  const hasMore = overdue.length === BATCH_SIZE;
+  return NextResponse.json({ processed, hasMore });
 }

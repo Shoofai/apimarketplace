@@ -10,6 +10,8 @@ function isAuthorized(request: NextRequest): boolean {
   return request.headers.get('x-cron-secret') === secret;
 }
 
+const BATCH_SIZE = 25;
+
 /**
  * GET/POST /api/cron/process-nurture
  * Processes the nurture_queue table and triggers the developer-nurture Supabase Edge Function
@@ -39,7 +41,7 @@ async function runProcess() {
     .eq('status', 'pending')
     .lte('send_at', now)
     .order('send_at', { ascending: true })
-    .limit(50);
+    .limit(BATCH_SIZE);
 
   if (error) {
     logger.error('process-nurture: failed to fetch queue', { error });
@@ -104,6 +106,7 @@ async function runProcess() {
     }
   }
 
-  logger.info('process-nurture completed', { processed, failed, total: dueItems.length });
-  return NextResponse.json({ processed, failed, total: dueItems.length });
+  const hasMore = dueItems.length === BATCH_SIZE;
+  logger.info('process-nurture completed', { processed, failed, total: dueItems.length, hasMore });
+  return NextResponse.json({ processed, failed, hasMore });
 }

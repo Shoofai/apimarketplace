@@ -7,6 +7,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from './fixtures/auth';
 
 // Use relative paths; baseURL comes from playwright.config.ts (e.g. BASE_URL or localhost:3000).
 
@@ -128,10 +129,10 @@ test.describe('Pre-production: critical pages — no console/page errors', () =>
 
 test.describe('Pre-production: authenticated smoke (optional)', () => {
   test.beforeEach(async ({ page }) => {
-    test.skip(!process.env.TEST_USER_EMAIL || !process.env.TEST_USER_PASSWORD, 'Test user not configured');
+    test.skip(!TEST_USER_EMAIL || !TEST_USER_PASSWORD, 'Test user not configured');
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.TEST_USER_EMAIL!);
-    await page.fill('input[name="password"]', process.env.TEST_USER_PASSWORD!);
+    await page.fill('input[name="email"]', TEST_USER_EMAIL);
+    await page.fill('input[name="password"]', TEST_USER_PASSWORD);
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/\/dashboard/);
   });

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from './fixtures/auth';
 
 test.describe('Authentication', () => {
   test('should display signup form', async ({ page }) => {
@@ -43,12 +44,12 @@ test.describe('Authentication', () => {
   test('should redirect to dashboard after successful login', async ({ page }) => {
     // This test would require a test user account
     // Skip in CI unless test accounts are configured
-    test.skip(!process.env.TEST_USER_EMAIL, 'Test user not configured');
-    
+    test.skip(!TEST_USER_EMAIL, 'Test user not configured');
+
     await page.goto('/login');
-    
-    await page.fill('input[name="email"]', process.env.TEST_USER_EMAIL!);
-    await page.fill('input[name="password"]', process.env.TEST_USER_PASSWORD!);
+
+    await page.fill('input[name="email"]', TEST_USER_EMAIL);
+    await page.fill('input[name="password"]', TEST_USER_PASSWORD);
     await page.click('button[type="submit"]');
     
     await expect(page).toHaveURL('/dashboard');

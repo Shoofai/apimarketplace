@@ -11,6 +11,7 @@ function isAuthorized(request: NextRequest): boolean {
 }
 
 const MAX_ATTEMPTS = 5;
+const BATCH_SIZE = 20;
 
 /**
  * GET/POST /api/cron/retry-webhooks
@@ -55,7 +56,8 @@ async function runProcess() {
     `)
     .eq('status', 'failed')
     .lt('attempts', MAX_ATTEMPTS)
-    .or(`next_retry_at.is.null,next_retry_at.lte.${now.toISOString()}`) as unknown as {
+    .or(`next_retry_at.is.null,next_retry_at.lte.${now.toISOString()}`)
+    .limit(BATCH_SIZE) as unknown as {
       data: Array<{
         id: string;
         webhook_endpoint_id: string;
@@ -125,8 +127,9 @@ async function runProcess() {
     }
   }
 
-  logger.info('retry-webhooks completed', { retried, permanentlyFailed, total: deliveries.length });
-  return NextResponse.json({ retried, permanentlyFailed, total: deliveries.length });
+  const hasMore = deliveries.length === BATCH_SIZE;
+  logger.info('retry-webhooks completed', { retried, permanentlyFailed, total: deliveries.length, hasMore });
+  return NextResponse.json({ retried, permanentlyFailed, processed: deliveries.length, hasMore });
 }
 
 async function scheduleRetry(
