@@ -58,8 +58,8 @@ export class APITreeProvider implements vscode.TreeDataProvider<APITreeItem> {
     if (!element) {
       // Root level
       if (!token) {
-        const item = new APITreeItem('Sign in to Kinetic', vscode.TreeItemCollapsibleState.None, 'root');
-        item.command = { command: 'kineticapi.auth', title: 'Sign In' };
+        const item = new APITreeItem('Sign in to LukeAPI', vscode.TreeItemCollapsibleState.None, 'root');
+        item.command = { command: 'lukeapi.auth', title: 'Sign In' };
         item.iconPath = new vscode.ThemeIcon('sign-in');
         return [item];
       }
@@ -73,7 +73,7 @@ export class APITreeProvider implements vscode.TreeDataProvider<APITreeItem> {
           const item = new APITreeItem('No subscriptions yet', vscode.TreeItemCollapsibleState.None, 'root');
           item.iconPath = new vscode.ThemeIcon('info');
           const search = new APITreeItem('Search marketplace APIs', vscode.TreeItemCollapsibleState.None, 'action', { action: 'search' });
-          search.command = { command: 'kineticapi.search', title: 'Search APIs' };
+          search.command = { command: 'lukeapi.search', title: 'Search APIs' };
           return [item, search];
         }
 
@@ -102,12 +102,12 @@ export class APITreeProvider implements vscode.TreeDataProvider<APITreeItem> {
       const actions: APITreeItem[] = [
         (() => {
           const item = new APITreeItem('Generate code snippet', vscode.TreeItemCollapsibleState.None, 'action', { action: 'snippet', apiId, apiSlug, orgSlug });
-          item.command = { command: 'kineticapi.generateSnippet', title: 'Generate Snippet', arguments: [apiId, apiSlug, orgSlug] };
+          item.command = { command: 'lukeapi.generateSnippet', title: 'Generate Snippet', arguments: [apiId, apiSlug, orgSlug] };
           return item;
         })(),
         (() => {
           const item = new APITreeItem('Test an endpoint', vscode.TreeItemCollapsibleState.None, 'action', { action: 'test', apiId, apiSlug, orgSlug });
-          item.command = { command: 'kineticapi.testEndpoint', title: 'Test Endpoint', arguments: [apiId, apiSlug, orgSlug] };
+          item.command = { command: 'lukeapi.testEndpoint', title: 'Test Endpoint', arguments: [apiId, apiSlug, orgSlug] };
           return item;
         })(),
         (() => {

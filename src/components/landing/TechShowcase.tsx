@@ -6,10 +6,10 @@ import { Copy, Check } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const codeExamples: Record<string, string> = {
-  javascript: `// Apinergy SDK – JavaScript
-import { Apinergy } from '@apinergy/sdk';
+  javascript: `// LukeAPI SDK – JavaScript
+import { LukeAPI } from '@lukeapi/sdk';
 
-const api = new Apinergy({ key: process.env.APINERGY_KEY });
+const api = new LukeAPI({ key: process.env.LUKEAPI_KEY });
 
 const res = await api.call('stripe', {
   method: 'charges.create',
@@ -18,10 +18,10 @@ const res = await api.call('stripe', {
 
 console.log(res.data);`,
 
-  typescript: `// Apinergy SDK – TypeScript
-import { Apinergy, ChargeResponse } from '@apinergy/sdk';
+  typescript: `// LukeAPI SDK – TypeScript
+import { LukeAPI, ChargeResponse } from '@lukeapi/sdk';
 
-const api = new Apinergy({ key: process.env.APINERGY_KEY! });
+const api = new LukeAPI({ key: process.env.LUKEAPI_KEY! });
 
 const res = await api.call<ChargeResponse>('stripe', {
   method: 'charges.create',
@@ -30,10 +30,10 @@ const res = await api.call<ChargeResponse>('stripe', {
 
 console.log(res.data.id);`,
 
-  python: `# Apinergy SDK – Python
-from apinergy import Apinergy
+  python: `# LukeAPI SDK – Python
+from lukeapi import LukeAPI
 
-api = Apinergy(key=os.environ["APINERGY_KEY"])
+api = LukeAPI(key=os.environ["LUKEAPI_KEY"])
 
 res = api.call("stripe",
     method="charges.create",
@@ -42,10 +42,10 @@ res = api.call("stripe",
 
 print(res.data)`,
 
-  go: `// Apinergy SDK – Go
-client := apinergy.New(os.Getenv("APINERGY_KEY"))
+  go: `// LukeAPI SDK – Go
+client := lukeapi.New(os.Getenv("LUKEAPI_KEY"))
 
-res, err := client.Call("stripe", apinergy.Params{
+res, err := client.Call("stripe", lukeapi.Params{
     Method: "charges.create",
     Params: map[string]any{
         "amount":   2000,
@@ -55,10 +55,10 @@ res, err := client.Call("stripe", apinergy.Params{
 
 fmt.Println(res.Data)`,
 
-  ruby: `# Apinergy SDK – Ruby
-require 'apinergy'
+  ruby: `# LukeAPI SDK – Ruby
+require 'lukeapi'
 
-api = Apinergy::Client.new(key: ENV['APINERGY_KEY'])
+api = LukeAPI::Client.new(key: ENV['LUKEAPI_KEY'])
 
 res = api.call('stripe',
   method: 'charges.create',
@@ -67,8 +67,8 @@ res = api.call('stripe',
 
 puts res.data`,
 
-  java: `// Apinergy SDK – Java
-var api = new Apinergy(System.getenv("APINERGY_KEY"));
+  java: `// LukeAPI SDK – Java
+var api = new LukeAPI(System.getenv("LUKEAPI_KEY"));
 
 var res = api.call("stripe", Map.of(
     "method", "charges.create",
@@ -80,9 +80,9 @@ var res = api.call("stripe", Map.of(
 
 System.out.println(res.getData());`,
 
-  csharp: `// Apinergy SDK – C#
-var api = new ApinergyClient(
-    Environment.GetEnvironmentVariable("APINERGY_KEY"));
+  csharp: `// LukeAPI SDK – C#
+var api = new LukeAPIClient(
+    Environment.GetEnvironmentVariable("LUKEAPI_KEY"));
 
 var res = await api.CallAsync("stripe", new {
     Method = "charges.create",
@@ -91,8 +91,8 @@ var res = await api.CallAsync("stripe", new {
 
 Console.WriteLine(res.Data);`,
 
-  php: `// Apinergy SDK – PHP
-$api = new Apinergy\\Client(getenv('APINERGY_KEY'));
+  php: `// LukeAPI SDK – PHP
+$api = new LukeAPI\\Client(getenv('LUKEAPI_KEY'));
 
 $res = $api->call('stripe', [
     'method' => 'charges.create',
@@ -104,8 +104,8 @@ $res = $api->call('stripe', [
 
 echo $res->data;`,
 
-  kotlin: `// Apinergy SDK – Kotlin
-val api = Apinergy(key = System.getenv("APINERGY_KEY"))
+  kotlin: `// LukeAPI SDK – Kotlin
+val api = LukeAPI(key = System.getenv("LUKEAPI_KEY"))
 
 val res = api.call("stripe", mapOf(
     "method" to "charges.create",
@@ -117,9 +117,9 @@ val res = api.call("stripe", mapOf(
 
 println(res.data)`,
 
-  swift: `// Apinergy SDK – Swift
-let api = Apinergy(
-    key: ProcessInfo.processInfo.environment["APINERGY_KEY"]!)
+  swift: `// LukeAPI SDK – Swift
+let api = LukeAPI(
+    key: ProcessInfo.processInfo.environment["LUKEAPI_KEY"]!)
 
 let res = try await api.call("stripe", params: [
     "method": "charges.create",
@@ -128,8 +128,8 @@ let res = try await api.call("stripe", params: [
 
 print(res.data)`,
 
-  rust: `// Apinergy SDK – Rust
-let api = Apinergy::new(std::env::var("APINERGY_KEY")?);
+  rust: `// LukeAPI SDK – Rust
+let api = LukeAPI::new(std::env::var("LUKEAPI_KEY")?);
 
 let res = api.call("stripe", serde_json::json!({
     "method": "charges.create",

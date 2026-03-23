@@ -5,21 +5,21 @@ import { apiFetch, apiJson } from './lib/client';
 
 export function activate(context: vscode.ExtensionContext): void {
   const treeProvider = new APITreeProvider(context);
-  vscode.window.registerTreeDataProvider('kineticapi.apiExplorer', treeProvider);
+  vscode.window.registerTreeDataProvider('lukeapi.apiExplorer', treeProvider);
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.auth', async () => {
+    vscode.commands.registerCommand('lukeapi.auth', async () => {
       const email = await vscode.window.showInputBox({
-        prompt: 'Kinetic API — Email address',
+        prompt: 'LukeAPI API — Email address',
         placeHolder: 'you@example.com',
         validateInput: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Enter a valid email',
       });
       if (!email) return;
 
       const password = await vscode.window.showInputBox({
-        prompt: 'Kinetic API — Password',
+        prompt: 'LukeAPI API — Password',
         password: true,
       });
       if (!password) return;
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext): void {
       try {
         // Fetch Supabase credentials from the platform
         const cfgRes = await apiFetch('/api/auth/cli-config');
-        if (!cfgRes.ok) throw new Error('Cannot reach the platform. Check kineticapi.platformUrl in settings.');
+        if (!cfgRes.ok) throw new Error('Cannot reach the platform. Check lukeapi.platformUrl in settings.');
         const { supabase_url, supabase_anon_key } = await cfgRes.json() as {
           supabase_url: string;
           supabase_anon_key: string;
@@ -47,33 +47,33 @@ export function activate(context: vscode.ExtensionContext): void {
 
         await storeToken(context, data.access_token, email);
         treeProvider.refresh();
-        vscode.window.showInformationMessage(`Kinetic: Signed in as ${email}`);
+        vscode.window.showInformationMessage(`LukeAPI: Signed in as ${email}`);
       } catch (e) {
-        vscode.window.showErrorMessage(`Kinetic: ${e instanceof Error ? e.message : 'Sign-in failed'}`);
+        vscode.window.showErrorMessage(`LukeAPI: ${e instanceof Error ? e.message : 'Sign-in failed'}`);
       }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.logout', async () => {
+    vscode.commands.registerCommand('lukeapi.logout', async () => {
       await clearToken(context);
       treeProvider.refresh();
-      vscode.window.showInformationMessage('Kinetic: Signed out.');
+      vscode.window.showInformationMessage('LukeAPI: Signed out.');
     })
   );
 
   // ── Refresh tree ──────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.refreshTree', () => treeProvider.refresh())
+    vscode.commands.registerCommand('lukeapi.refreshTree', () => treeProvider.refresh())
   );
 
   // ── Search ────────────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.search', async () => {
+    vscode.commands.registerCommand('lukeapi.search', async () => {
       const query = await vscode.window.showInputBox({
-        prompt: 'Search Kinetic API Marketplace',
+        prompt: 'Search LukeAPI API Marketplace',
         placeHolder: 'e.g. payment processing, geolocation, weather',
       });
       if (!query) return;
@@ -122,10 +122,10 @@ export function activate(context: vscode.ExtensionContext): void {
   // ── Generate Snippet ──────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.generateSnippet', async (apiId?: string, apiSlug?: string, orgSlug?: string) => {
+    vscode.commands.registerCommand('lukeapi.generateSnippet', async (apiId?: string, apiSlug?: string, orgSlug?: string) => {
       const token = await getToken(context);
       if (!token) {
-        vscode.window.showErrorMessage('Kinetic: Sign in first (run "Kinetic: Sign In")');
+        vscode.window.showErrorMessage('LukeAPI: Sign in first (run "LukeAPI: Sign In")');
         return;
       }
 
@@ -215,10 +215,10 @@ export function activate(context: vscode.ExtensionContext): void {
   // ── Test Endpoint ─────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('kineticapi.testEndpoint', async (apiId?: string, apiSlug?: string, orgSlug?: string) => {
+    vscode.commands.registerCommand('lukeapi.testEndpoint', async (apiId?: string, apiSlug?: string, orgSlug?: string) => {
       const token = await getToken(context);
       if (!token) {
-        vscode.window.showErrorMessage('Kinetic: Sign in first (run "Kinetic: Sign In")');
+        vscode.window.showErrorMessage('LukeAPI: Sign in first (run "LukeAPI: Sign In")');
         return;
       }
 

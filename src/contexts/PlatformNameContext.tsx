@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react';
 
-const PlatformNameContext = createContext<string>('Apinergy');
+const PlatformNameContext = createContext<string>('LukeAPI');
 
 export function PlatformNameProvider({
   name,
@@ -12,7 +12,7 @@ export function PlatformNameProvider({
   children: React.ReactNode;
 }) {
   return (
-    <PlatformNameContext.Provider value={name || 'Apinergy'}>
+    <PlatformNameContext.Provider value={name || 'LukeAPI'}>
       {children}
     </PlatformNameContext.Provider>
   );

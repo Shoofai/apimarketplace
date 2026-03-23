@@ -1,6 +1,6 @@
-name: 'Kinetic API SLA Check'
-description: 'Fail a CI pipeline if an upstream API on the Kinetic API Marketplace has a degraded SLA.'
-author: 'Kinetic API'
+name: 'LukeAPI SLA Check'
+description: 'Fail a CI pipeline if an upstream API on the LukeAPI Marketplace has a degraded SLA.'
+author: 'LukeAPI'
 
 branding:
   icon: 'activity'
@@ -8,14 +8,14 @@ branding:
 
 inputs:
   api-id:
-    description: 'The Kinetic API Marketplace UUID of the API to check (e.g. from the API detail page URL).'
+    description: 'The LukeAPI Marketplace UUID of the API to check (e.g. from the API detail page URL).'
     required: true
   platform-url:
-    description: 'Kinetic API Marketplace platform URL.'
+    description: 'LukeAPI Marketplace platform URL.'
     required: false
-    default: 'https://api.kineticapi.com'
+    default: 'https://api.lukeapi.com'
   api-token:
-    description: 'Bearer token for authentication. Store as a repository secret (e.g. secrets.KINETIC_TOKEN).'
+    description: 'Bearer token for authentication. Store as a repository secret (e.g. secrets.LUKEAPI_TOKEN).'
     required: true
   fail-on-breach:
     description: 'Set to "false" to report SLA status without failing the job.'

@@ -9,18 +9,18 @@ interface ProxyResponse {
 }
 
 /**
- * kinetic test <url>
+ * lukeapi test <url>
  * Test an API endpoint by routing through the platform proxy.
  *
  * Usage:
- *   kinetic test https://api.example.com/v1/users
- *   kinetic test https://api.example.com/v1/users --method POST --data '{"name":"Alice"}'
- *   kinetic test https://api.example.com/v1/users -H "X-API-Key: sk_live_..." --json
+ *   lukeapi test https://api.example.com/v1/users
+ *   lukeapi test https://api.example.com/v1/users --method POST --data '{"name":"Alice"}'
+ *   lukeapi test https://api.example.com/v1/users -H "X-API-Key: sk_live_..." --json
  */
 export function registerTest(program: Command): void {
   program
     .command('test <url>')
-    .description('Test an API endpoint through the Kinetic proxy')
+    .description('Test an API endpoint through the LukeAPI proxy')
     .option('-X, --method <method>', 'HTTP method', 'GET')
     .option('-H, --header <header...>', 'request headers (format: "Key: Value")')
     .option('-d, --data <body>', 'request body (JSON string)')

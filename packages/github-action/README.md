@@ -1,16 +1,16 @@
-# kinetic-api/check-sla
+# lukeapi/check-sla
 
-GitHub Action that fails a CI pipeline if an upstream API on the Kinetic API Marketplace has a degraded SLA.
+GitHub Action that fails a CI pipeline if an upstream API on the LukeAPI Marketplace has a degraded SLA.
 
 ## Usage
 
 ```yaml
 - name: Check upstream API SLA
-  uses: kineticapi/check-sla@v1
+  uses: lukeapi/check-sla@v1
   with:
     api-id: ${{ vars.PAYMENTS_API_ID }}
-    platform-url: https://api.kineticapi.com
-    api-token: ${{ secrets.KINETIC_TOKEN }}
+    platform-url: https://api.lukeapi.com
+    api-token: ${{ secrets.LUKEAPI_TOKEN }}
     fail-on-breach: true
 ```
 
@@ -18,8 +18,8 @@ GitHub Action that fails a CI pipeline if an upstream API on the Kinetic API Mar
 
 | Input | Required | Default | Description |
 |---|---|---|---|
-| `api-id` | Yes | — | Kinetic API UUID (from the API detail page URL) |
-| `platform-url` | No | `https://api.kineticapi.com` | Platform URL (override for self-hosted) |
+| `api-id` | Yes | — | LukeAPI UUID (from the API detail page URL) |
+| `platform-url` | No | `https://api.lukeapi.com` | Platform URL (override for self-hosted) |
 | `api-token` | Yes | — | Bearer token for authentication |
 | `fail-on-breach` | No | `true` | Set to `false` to report without failing |
 | `min-uptime` | No | — | Custom uptime % threshold (overrides API-defined target) |
@@ -37,14 +37,14 @@ GitHub Action that fails a CI pipeline if an upstream API on the Kinetic API Mar
 
 ## Getting a token
 
-Authenticate with the Kinetic CLI and copy the JWT from `~/.kinetic/config.json`:
+Authenticate with the LukeAPI CLI and copy the JWT from `~/.lukeapi/config.json`:
 
 ```bash
-npx @kineticapi/cli auth
-cat ~/.kinetic/config.json | jq -r .access_token
+npx @lukeapi/cli auth
+cat ~/.lukeapi/config.json | jq -r .access_token
 ```
 
-Store it as a repository secret named `KINETIC_TOKEN`.
+Store it as a repository secret named `LUKEAPI_TOKEN`.
 
 ## Finding your API ID
 
@@ -54,7 +54,7 @@ Open the API detail page in the marketplace and copy the UUID from the URL:
 Or use the CLI:
 
 ```bash
-kinetic search "your api name" --json | jq -r '.apis[0].id'
+lukeapi search "your api name" --json | jq -r '.apis[0].id'
 ```
 
 ## Example: multi-API dependency check
@@ -65,18 +65,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Payments API SLA
-        uses: kineticapi/check-sla@v1
+        uses: lukeapi/check-sla@v1
         id: payments
         with:
           api-id: ${{ vars.PAYMENTS_API_ID }}
-          api-token: ${{ secrets.KINETIC_TOKEN }}
+          api-token: ${{ secrets.LUKEAPI_TOKEN }}
           fail-on-breach: false   # warn but don't block
 
       - name: Check Geocoding API SLA
-        uses: kineticapi/check-sla@v1
+        uses: lukeapi/check-sla@v1
         with:
           api-id: ${{ vars.GEOCODING_API_ID }}
-          api-token: ${{ secrets.KINETIC_TOKEN }}
+          api-token: ${{ secrets.LUKEAPI_TOKEN }}
 
       - name: Report payment SLA
         if: steps.payments.outputs.sla-status == 'breached'

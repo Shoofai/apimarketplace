@@ -22,7 +22,7 @@ const trustBadges = [
 const testimonials = [
   {
     quote:
-      'Apinergy cut our API integration time from weeks to hours. The AI code generation is a game-changer for our engineering team.',
+      'LukeAPI cut our API integration time from weeks to hours. The AI code generation is a game-changer for our engineering team.',
     name: 'Sarah Chen',
     title: 'VP Engineering at TechFlow',
     initials: 'SC',
@@ -36,7 +36,7 @@ const testimonials = [
   },
   {
     quote:
-      'Finally, one platform where our providers and developers both thrive. Revenue grew 3x after listing on Apinergy.',
+      'Finally, one platform where our providers and developers both thrive. Revenue grew 3x after listing on LukeAPI.',
     name: 'Priya Patel',
     title: 'Head of API Strategy at CloudNine',
     initials: 'PP',

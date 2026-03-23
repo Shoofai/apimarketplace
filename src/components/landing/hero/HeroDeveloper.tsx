@@ -129,7 +129,7 @@ export default function HeroDeveloper() {
           >
             <pre className="overflow-x-auto text-left text-sm leading-relaxed text-gray-800 dark:text-gray-300">
               <code>
-                <span className="text-primary-600 dark:text-primary-300">$</span> curl -X POST https://gateway.kineticapi.com/weather/v1/forecast
+                <span className="text-primary-600 dark:text-primary-300">$</span> curl -X POST https://gateway.lukeapi.com/weather/v1/forecast
                 {'\n  '}-H <span className="text-green-700 dark:text-green-400">&quot;Authorization: Bearer $API_KEY&quot;</span>
                 {'\n  '}-d <span className="text-green-700 dark:text-green-400">&apos;{'{ "method": "charges.create" }'}&apos;</span>
                 {'\n'}

@@ -1,10 +1,10 @@
 {
-  "name": "@kineticapi/cli",
+  "name": "@lukeapi/cli",
   "version": "0.1.0",
-  "description": "Kinetic API Marketplace — official CLI",
+  "description": "LukeAPI Marketplace — official CLI",
   "license": "MIT",
   "bin": {
-    "kinetic": "./dist/index.js"
+    "lukeapi": "./dist/index.js"
   },
   "files": [
     "dist"

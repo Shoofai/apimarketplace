@@ -137,7 +137,7 @@ export default function MFAVerifyStep({
           <ShieldCheck className="h-5 w-5 text-primary" />
           <p className="text-sm text-muted-foreground">
             Open your authenticator app (e.g. Google Authenticator, Authy) and
-            enter the verification code for Apinergy.
+            enter the verification code for LukeAPI.
           </p>
         </div>
 

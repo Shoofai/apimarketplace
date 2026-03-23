@@ -20,13 +20,13 @@ interface SearchResult {
 }
 
 /**
- * kinetic subscribe <slug>
+ * lukeapi subscribe <slug>
  * Subscribe to a marketplace API. Authenticates and creates a subscription.
  * The API key is printed once and never stored.
  *
  * Usage:
- *   kinetic subscribe stripe-api
- *   kinetic subscribe stripe-api --plan free
+ *   lukeapi subscribe stripe-api
+ *   lukeapi subscribe stripe-api --plan free
  */
 export function registerSubscribe(program: Command): void {
   program
@@ -44,7 +44,7 @@ export function registerSubscribe(program: Command): void {
         ) ?? search.apis[0];
 
         if (!found) {
-          console.error(`No API found matching "${slug}". Use "kinetic search ${slug}" to find the correct slug.`);
+          console.error(`No API found matching "${slug}". Use "lukeapi search ${slug}" to find the correct slug.`);
           process.exit(1);
         }
 
@@ -100,7 +100,7 @@ export function registerSubscribe(program: Command): void {
         console.log(`\nYour API key (shown once, store it securely):\n`);
         console.log(`  ${result.api_key}\n`);
         console.log(`Add to your environment:`);
-        console.log(`  export KINETIC_API_KEY="${result.api_key}"\n`);
+        console.log(`  export LUKEAPI_KEY="${result.api_key}"\n`);
       } catch (e) {
         console.error(e instanceof Error ? e.message : 'Subscribe failed');
         process.exit(1);

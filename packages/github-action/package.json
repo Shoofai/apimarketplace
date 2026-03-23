@@ -1,7 +1,7 @@
 {
-  "name": "@kineticapi/check-sla",
+  "name": "@lukeapi/check-sla",
   "version": "1.0.0",
-  "description": "GitHub Action: fail CI if an upstream Kinetic API Marketplace API has a degraded SLA",
+  "description": "GitHub Action: fail CI if an upstream LukeAPI Marketplace API has a degraded SLA",
   "license": "MIT",
   "private": true,
   "main": "dist/index.js",

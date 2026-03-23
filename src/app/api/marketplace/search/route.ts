@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/marketplace/search
  * Public, unauthenticated marketplace search endpoint.
- * Used by the Kinetic CLI and VS Code extension.
+ * Used by the LukeAPI CLI and VS Code extension.
  *
  * Query params:
  *   q          – search term (optional)

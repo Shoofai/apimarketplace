@@ -2,17 +2,17 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
-const CONFIG_DIR = join(homedir(), '.kinetic');
+const CONFIG_DIR = join(homedir(), '.lukeapi');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 
-export interface KineticConfig {
+export interface LukeAPIConfig {
   access_token?: string;
   refresh_token?: string;
   platform_url?: string;
   user_email?: string;
 }
 
-export function readConfig(): KineticConfig {
+export function readConfig(): LukeAPIConfig {
   if (!existsSync(CONFIG_FILE)) return {};
   try {
     return JSON.parse(readFileSync(CONFIG_FILE, 'utf8'));
@@ -21,7 +21,7 @@ export function readConfig(): KineticConfig {
   }
 }
 
-export function writeConfig(config: KineticConfig): void {
+export function writeConfig(config: LukeAPIConfig): void {
   if (!existsSync(CONFIG_DIR)) {
     mkdirSync(CONFIG_DIR, { recursive: true });
   }
@@ -35,12 +35,12 @@ export function clearConfig(): void {
 export function getRequiredToken(): string {
   const { access_token } = readConfig();
   if (!access_token) {
-    console.error('Not authenticated. Run: kinetic auth');
+    console.error('Not authenticated. Run: lukeapi auth');
     process.exit(1);
   }
   return access_token;
 }
 
 export function getPlatformUrl(): string {
-  return readConfig().platform_url ?? 'https://api.kineticapi.com';
+  return readConfig().platform_url ?? 'https://api.lukeapiapi.com';
 }

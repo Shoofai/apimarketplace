@@ -5,18 +5,18 @@ import { readConfig, writeConfig, clearConfig, getPlatformUrl } from '../lib/con
 import { apiFetch } from '../lib/client';
 
 /**
- * kinetic auth
- * Authenticate with the Kinetic API Marketplace and store the JWT locally.
+ * lukeapi auth
+ * Authenticate with the LukeAPI Marketplace and store the JWT locally.
  *
  * Subcommands:
- *   kinetic auth          – sign in interactively
- *   kinetic auth status   – print current user
- *   kinetic auth logout   – clear stored credentials
+ *   lukeapi auth          – sign in interactively
+ *   lukeapi auth status   – print current user
+ *   lukeapi auth logout   – clear stored credentials
  */
 export function registerAuth(program: Command): void {
   const auth = program.command('auth').description('Manage authentication');
 
-  // kinetic auth (default: sign in)
+  // lukeapi auth (default: sign in)
   auth
     .action(async () => {
       const { email } = await prompts({
@@ -42,9 +42,9 @@ export function registerAuth(program: Command): void {
           type: 'text',
           name: 'url',
           message: 'Platform URL (press Enter for default)',
-          initial: 'https://api.kineticapi.com',
+          initial: 'https://api.lukeapi.com',
         });
-        platformUrl = (url as string) || 'https://api.kineticapi.com';
+        platformUrl = (url as string) || 'https://api.lukeapi.com';
       }
 
       try {
@@ -78,7 +78,7 @@ export function registerAuth(program: Command): void {
         });
 
         console.log(`\nSigned in as ${data.user?.email}`);
-        console.log(`Token stored in ~/.kinetic/config.json\n`);
+        console.log(`Token stored in ~/.lukeapi/config.json\n`);
       } catch (e) {
         console.error(e instanceof Error ? e.message : 'Authentication failed');
         process.exit(1);
@@ -92,9 +92,9 @@ export function registerAuth(program: Command): void {
       const cfg = readConfig();
       if (cfg.access_token) {
         console.log(`Signed in as: ${cfg.user_email ?? '(unknown)'}`);
-        console.log(`Platform: ${cfg.platform_url ?? 'https://api.kineticapi.com'}`);
+        console.log(`Platform: ${cfg.platform_url ?? 'https://api.lukeapi.com'}`);
       } else {
-        console.log('Not signed in. Run: kinetic auth');
+        console.log('Not signed in. Run: lukeapi auth');
       }
     });
 

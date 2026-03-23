@@ -1,5 +1,5 @@
 /**
- * Kinetic API SLA Check — GitHub Action
+ * LukeAPI SLA Check — GitHub Action
  *
  * Calls GET {platform-url}/api/apis/{api-id}/sla with a Bearer token,
  * reads the last measurement window, and optionally fails the job if the
@@ -75,7 +75,7 @@ function logEndGroup(): void {
 
 async function run(): Promise<void> {
   const apiId = getInput('api-id');
-  const platformUrl = getInput('platform-url') || 'https://api.kineticapi.com';
+  const platformUrl = getInput('platform-url') || 'https://api.lukeapi.com';
   const apiToken = getInput('api-token');
   const failOnBreach = getInput('fail-on-breach') !== 'false';
   const minUptimeStr = getInput('min-uptime');

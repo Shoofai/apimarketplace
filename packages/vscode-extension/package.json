@@ -1,9 +1,9 @@
 {
-  "name": "kineticapi",
-  "displayName": "Kinetic API Marketplace",
+  "name": "lukeapi",
+  "displayName": "LukeAPI Marketplace",
   "description": "Discover, test, and generate code for marketplace APIs directly in VS Code and Cursor.",
   "version": "0.1.0",
-  "publisher": "kineticapi",
+  "publisher": "lukeapi",
   "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
@@ -12,7 +12,7 @@
     "Other",
     "Snippets"
   ],
-  "keywords": ["api", "marketplace", "rest", "sdk", "kinetic"],
+  "keywords": ["api", "marketplace", "rest", "sdk", "lukeapi"],
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -20,31 +20,31 @@
   "contributes": {
     "commands": [
       {
-        "command": "kineticapi.auth",
-        "title": "Kinetic: Sign In",
+        "command": "lukeapi.auth",
+        "title": "LukeAPI: Sign In",
         "icon": "$(sign-in)"
       },
       {
-        "command": "kineticapi.logout",
-        "title": "Kinetic: Sign Out"
+        "command": "lukeapi.logout",
+        "title": "LukeAPI: Sign Out"
       },
       {
-        "command": "kineticapi.search",
-        "title": "Kinetic: Search APIs",
+        "command": "lukeapi.search",
+        "title": "LukeAPI: Search APIs",
         "icon": "$(search)"
       },
       {
-        "command": "kineticapi.generateSnippet",
-        "title": "Kinetic: Generate Code Snippet",
+        "command": "lukeapi.generateSnippet",
+        "title": "LukeAPI: Generate Code Snippet",
         "icon": "$(sparkle)"
       },
       {
-        "command": "kineticapi.testEndpoint",
-        "title": "Kinetic: Test API Endpoint",
+        "command": "lukeapi.testEndpoint",
+        "title": "LukeAPI: Test API Endpoint",
         "icon": "$(play)"
       },
       {
-        "command": "kineticapi.refreshTree",
+        "command": "lukeapi.refreshTree",
         "title": "Refresh",
         "icon": "$(refresh)"
       }
@@ -52,43 +52,43 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "kineticapi",
-          "title": "Kinetic APIs",
+          "id": "lukeapi",
+          "title": "LukeAPIs",
           "icon": "$(cloud)"
         }
       ]
     },
     "views": {
-      "kineticapi": [
+      "lukeapi": [
         {
-          "id": "kineticapi.apiExplorer",
+          "id": "lukeapi.apiExplorer",
           "name": "API Explorer",
           "icon": "$(cloud)",
-          "contextualTitle": "Kinetic API Marketplace"
+          "contextualTitle": "LukeAPI Marketplace"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "kineticapi.search",
-          "when": "view == kineticapi.apiExplorer",
+          "command": "lukeapi.search",
+          "when": "view == lukeapi.apiExplorer",
           "group": "navigation"
         },
         {
-          "command": "kineticapi.refreshTree",
-          "when": "view == kineticapi.apiExplorer",
+          "command": "lukeapi.refreshTree",
+          "when": "view == lukeapi.apiExplorer",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "Kinetic API",
+      "title": "LukeAPI",
       "properties": {
-        "kineticapi.platformUrl": {
+        "lukeapi.platformUrl": {
           "type": "string",
-          "default": "https://api.kineticapi.com",
-          "description": "Kinetic API Marketplace platform URL (override for self-hosted instances)"
+          "default": "https://api.lukeapi.com",
+          "description": "LukeAPI Marketplace platform URL (override for self-hosted instances)"
         }
       }
     }

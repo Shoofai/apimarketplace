@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 
-const JWT_KEY = 'kineticapi.jwt';
-const EMAIL_KEY = 'kineticapi.email';
+const JWT_KEY = 'lukeapi.jwt';
+const EMAIL_KEY = 'lukeapi.email';
 
 export function getPlatformUrl(): string {
   return (
-    vscode.workspace.getConfiguration('kineticapi').get<string>('platformUrl') ??
-    'https://api.kineticapi.com'
+    vscode.workspace.getConfiguration('lukeapi').get<string>('platformUrl') ??
+    'https://api.lukeapi.com'
   );
 }
 

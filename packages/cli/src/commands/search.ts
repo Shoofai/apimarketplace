@@ -3,7 +3,7 @@ import { apiFetch } from '../lib/client';
 import { getPlatformUrl } from '../lib/config';
 
 /**
- * kinetic search <query>
+ * lukeapi search <query>
  * Search the marketplace catalog (public, no auth required).
  *
  * Options:
@@ -14,7 +14,7 @@ import { getPlatformUrl } from '../lib/config';
 export function registerSearch(program: Command): void {
   program
     .command('search <query>')
-    .description('Search the Kinetic API Marketplace catalog')
+    .description('Search the LukeAPI Marketplace catalog')
     .option('-l, --limit <n>', 'results per page', '10')
     .option('-c, --category <slug>', 'filter by category slug')
     .option('--json', 'output raw JSON')
