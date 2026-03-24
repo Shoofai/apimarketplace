@@ -24,7 +24,8 @@
     "scanner:build": "npm run build --prefix prod-readiness-scanner",
     "audit:prod": "node prod-readiness-scanner/dist/cli/index.js scan --project . --out . --format json,md --fail-on CRITICAL",
     "audit:prod:strict": "node prod-readiness-scanner/dist/cli/index.js scan --project . --out . --format json,md --fail-on HIGH",
-    "deployment-check": "tsx scripts/deployment-check.ts"
+    "deployment-check": "tsx scripts/deployment-check.ts",
+    "preflight": "tsx scripts/preflight.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
@@ -86,6 +87,8 @@
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.49.1",
     "@tailwindcss/typography": "^0.5.15",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22",
     "@types/react": "^19",

@@ -68,10 +68,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'URL not allowed' }, { status: 400 });
     }
 
+    const ALLOWED_HEADERS = new Set([
+      'content-type', 'accept', 'accept-language', 'accept-encoding',
+      'x-api-key', 'x-request-id', 'x-correlation-id',
+      'authorization', 'user-agent',
+    ]);
+    const BLOCKED_HEADERS = new Set([
+      'cookie', 'host', 'origin', 'referer', 'x-forwarded-for',
+    ]);
+
     const start = Date.now();
-    const fetchHeaders: Record<string, string> = { ...headers };
+    const fetchHeaders: Record<string, string> = {};
+    for (const [key, value] of Object.entries(headers as Record<string, string>)) {
+      const lower = key.toLowerCase();
+      if (BLOCKED_HEADERS.has(lower)) continue;
+      if (!ALLOWED_HEADERS.has(lower)) continue;
+      fetchHeaders[key] = value;
+    }
     if (body !== undefined && body !== null && method !== 'GET' && method !== 'HEAD') {
-      if (!fetchHeaders['Content-Type']) {
+      if (!fetchHeaders['Content-Type'] && !fetchHeaders['content-type']) {
         fetchHeaders['Content-Type'] = 'application/json';
       }
     }

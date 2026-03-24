@@ -1,6 +1,7 @@
 // Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { reinvokeIfNeeded } from '@/lib/utils/cron-reinvoke';
 
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
@@ -62,13 +63,41 @@ async function runProcess() {
       await admin.from('data_deletion_requests').update({ status: 'processing' }).eq('id', req.id);
 
       if (userId) {
-        await admin.from('notifications').delete().eq('user_id', userId);
-        await admin.from('api_keys').delete().eq('user_id', userId);
-        await admin.from('organization_members').delete().eq('user_id', userId);
-        await admin.from('audit_logs').delete().eq('user_id', userId);
-        await admin.from('gdpr_consent_logs').delete().eq('user_id', userId);
-        await admin.from('users').delete().eq('id', userId);
-        // Invoices and financial records are retained for 7 years (legal requirement); see process-retention cron
+        const deletionSteps: { table: string; column: string }[] = [
+          { table: 'notifications', column: 'user_id' },
+          { table: 'api_keys', column: 'user_id' },
+          { table: 'organization_members', column: 'user_id' },
+          { table: 'audit_logs', column: 'user_id' },
+          { table: 'gdpr_consent_logs', column: 'user_id' },
+          { table: 'users', column: 'id' },
+          // Invoices and financial records are retained for 7 years (legal requirement); see process-retention cron
+        ];
+
+        for (const step of deletionSteps) {
+          const { error: delError } = await admin
+            .from(step.table)
+            .delete()
+            .eq(step.column, userId);
+          if (delError) {
+            const reason = `Failed to delete from ${step.table}: ${delError.message}`;
+            console.error(`process-gdpr-deletions step failed for request ${req.id}`, reason);
+            await admin
+              .from('data_deletion_requests')
+              .update({ status: 'error', error_reason: reason })
+              .eq('id', req.id);
+            continue; // skip to next deletion request
+          }
+        }
+
+        // If we reach here after a step failure the status is already 'error'
+        const { data: currentReq } = await admin
+          .from('data_deletion_requests')
+          .select('status')
+          .eq('id', req.id)
+          .single();
+        if (currentReq?.status === 'error') {
+          continue; // skip to next request in the for-loop
+        }
       }
 
       if (orgId) {
@@ -77,7 +106,16 @@ async function runProcess() {
           .select('id')
           .eq('organization_id', orgId);
         if (!members?.length) {
-          await admin.from('organizations').delete().eq('id', orgId);
+          const { error: orgDelError } = await admin.from('organizations').delete().eq('id', orgId);
+          if (orgDelError) {
+            const reason = `Failed to delete organization ${orgId}: ${orgDelError.message}`;
+            console.error(`process-gdpr-deletions org delete failed for request ${req.id}`, reason);
+            await admin
+              .from('data_deletion_requests')
+              .update({ status: 'error', error_reason: reason })
+              .eq('id', req.id);
+            continue;
+          }
         }
       }
 
@@ -87,14 +125,18 @@ async function runProcess() {
         .eq('id', req.id);
       processed++;
     } catch (err) {
+      const reason = err instanceof Error ? err.message : String(err);
       console.error('process-gdpr-deletions error for request', req.id, err);
       await admin
         .from('data_deletion_requests')
-        .update({ status: 'grace_period' })
+        .update({ status: 'error', error_reason: reason })
         .eq('id', req.id);
     }
   }
 
   const hasMore = overdue.length === BATCH_SIZE;
+
+  await reinvokeIfNeeded(hasMore, '/api/cron/process-gdpr-deletions', process.env.CRON_SECRET || '');
+
   return NextResponse.json({ processed, hasMore });
 }

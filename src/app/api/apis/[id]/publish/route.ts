@@ -92,14 +92,23 @@ export async function POST(
         logger.info('API provisioned in Kong', { apiId: id });
       } catch (kongError) {
         // Rollback status if Kong provisioning fails
-        await supabase
+        const { error: rollbackError } = await supabase
           .from('apis')
           .update({ status: 'draft', published_at: null })
           .eq('id', id);
 
+        if (rollbackError) {
+          logger.error('CRITICAL: Kong provisioning failed AND rollback failed', {
+            originalError: kongError,
+            rollbackError,
+            apiId: id,
+          });
+        }
+
         logger.error('Kong provisioning failed, rolled back publish', {
           error: kongError,
           apiId: id,
+          rollbackSucceeded: !rollbackError,
         });
 
         return NextResponse.json(

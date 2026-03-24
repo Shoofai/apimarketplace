@@ -1,5 +1,30 @@
 import * as Sentry from '@sentry/nextjs';
 
+/**
+ * Ensure the 'branding' storage bucket exists in Supabase.
+ * Silently ignores "already exists" errors; logs warnings for other failures.
+ */
+async function ensureBrandingBucket() {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin');
+    const admin = createAdminClient();
+    const { error } = await admin.storage.createBucket('branding', {
+      public: true,
+      fileSizeLimit: 5 * 1024 * 1024, // 5 MB
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'],
+    });
+
+    if (error && !error.message.includes('already exists')) {
+      console.warn('[storage] Failed to create branding bucket:', error.message);
+    }
+  } catch (err) {
+    console.warn(
+      '[storage] Could not ensure branding bucket:',
+      err instanceof Error ? err.message : String(err)
+    );
+  }
+}
+
 export async function register() {
   const dsn = process.env.SENTRY_DSN;
 
@@ -37,6 +62,9 @@ export async function register() {
         Sentry.captureMessage(msg, 'error');
       }
     }
+
+    // Ensure required storage buckets exist (Node.js runtime only)
+    await ensureBrandingBucket();
   }
 
   if (process.env.NEXT_RUNTIME === 'edge') {
