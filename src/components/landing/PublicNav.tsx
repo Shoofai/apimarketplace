@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: '/enterprise', label: 'Enterprise' },
   { href: '/audit', label: 'API Audit' },
   { href: '/docs', label: 'Docs' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 export function PublicNav() {

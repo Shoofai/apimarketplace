@@ -1,0 +1,9 @@
+{
+  "appName": "LukeAPI",
+  "googleSheetId": "YOUR_GOOGLE_SHEET_ID_HERE",
+  "sheetName": "Sheet1",
+  "driveFolderId": "YOUR_GOOGLE_DRIVE_FOLDER_ID_HERE",
+  "outputPath": "./content/blog",
+  "imageOutputPath": "./public/images/blog",
+  "googleCredentialsPath": "./blog-import-oauth-credentials.json"
+}

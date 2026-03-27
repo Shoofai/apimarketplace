@@ -38,3 +38,8 @@ next-env.d.ts
 # adaptive deployment auditor
 .deployment-snapshot.json
 .deployment-report.json
+
+# blog import credentials
+.blog-import-credentials.json
+blog-import.config.json
+blog-import-oauth-credentials.json

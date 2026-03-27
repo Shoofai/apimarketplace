@@ -50,6 +50,7 @@ const footerColumns: { title: string; links: FooterLink[] }[] = [
       { name: 'Use Cases', href: '/use-cases' },
       { name: 'Contact & Support', href: '/contact' },
       { name: 'Help Center', href: '/help' },
+      { name: 'Blog', href: '/blog' },
       { name: 'Changelog', href: '/changelog' },
       { name: 'Forum', href: '/dashboard/forum' },
     ],

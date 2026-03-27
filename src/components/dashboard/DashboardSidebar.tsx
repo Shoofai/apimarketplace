@@ -250,6 +250,12 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
       icon: Paintbrush,
       adminOnly: true,
     },
+    {
+      title: 'Blog Import',
+      href: '/dashboard/admin/blog-import',
+      icon: FolderOpen,
+      adminOnly: true,
+    },
   ];
 
   const filteredNavItems = navItems.filter((item) => {
