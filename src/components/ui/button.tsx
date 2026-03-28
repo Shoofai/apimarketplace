@@ -22,7 +22,7 @@ const buttonVariants = cva(
         gradient:
           "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow hover:opacity-90",
         cta:
-          "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow hover:from-amber-600 hover:to-amber-700",
+          "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border-t border-white/10 hover:from-amber-600 hover:to-amber-700 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-amber-500/50",
       },
       size: {
         default: "h-9 px-4 py-2",

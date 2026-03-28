@@ -188,12 +188,12 @@ export default function KillerFeatures() {
   };
 
   return (
-    <section ref={ref} className="bg-white py-24 dark:bg-gray-950 sm:py-32">
+    <section ref={ref} className="relative noise-overlay bg-white py-24 dark:bg-gray-950 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          className="mb-12 text-center"
+          className="mb-12 text-center heading-glow"
         >
           <h2 className="section-heading mb-6 text-gray-900 dark:text-white">
             Discover Our 12 Power Features
@@ -228,7 +228,7 @@ export default function KillerFeatures() {
                   onClick={() => handleCardClick(feature)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCardClick(feature)}
                   className={cn(
-                    'group relative h-full cursor-pointer overflow-hidden rounded-2xl border-0 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl dark:bg-gray-900',
+                    'group relative h-full cursor-pointer overflow-hidden card-elevated p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl',
                     hoveredFeature === feature.id && 'ring-2 ring-primary-500/50 shadow-lg'
                   )}
                 >

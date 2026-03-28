@@ -203,7 +203,9 @@ const config: Config = {
   		boxShadow: {
   			glow: '0 0 40px rgba(124, 79, 242, 0.3)',
   			'glow-purple': '0 0 40px rgba(124, 79, 242, 0.3)',
-  			'glow-cta': '0 0 40px rgba(245, 158, 11, 0.3)'
+  			'glow-cta': '0 0 40px rgba(245, 158, 11, 0.3)',
+  			'elevated': '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.04)',
+  			'elevated-hover': '0 2px 6px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.06)',
   		},
   		backgroundImage: {
   			'gradient-hero': 'linear-gradient(135deg, #3f1a87 0%, #5b22c9 50%, #7c4ff2 100%)',
@@ -211,7 +213,8 @@ const config: Config = {
   			'gradient-feature': 'linear-gradient(180deg, #6c30e8 0%, #7c4ff2 100%)',
   			'gradient-glow': 'radial-gradient(circle at 50% 0%, rgba(124, 79, 242, 0.15) 0%, transparent 70%)',
   			'gradient-cta': 'linear-gradient(to right, #f59e0b, #d97706)',
-  			'gradient-tech': 'linear-gradient(to right, #7c4ff2, #9171f8)'
+  			'gradient-tech': 'linear-gradient(to right, #7c4ff2, #9171f8)',
+  			'gradient-mesh': 'radial-gradient(ellipse at 20% 50%, rgba(124, 79, 242, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(145, 113, 248, 0.04) 0%, transparent 50%)',
   		},
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-out',

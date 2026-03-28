@@ -4,6 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Building2, Frown, Landmark, Laptop, Sparkles, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
+import { scaleIn, staggerFast } from '@/lib/animations';
 
 const problems = [
   {
@@ -55,12 +56,13 @@ function PersonaCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      variants={scaleIn}
+      initial="initial"
+      animate={isInView ? 'animate' : 'initial'}
       transition={{ delay: index * 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 dark:border-gray-800 dark:from-gray-900 dark:to-gray-800 ${item.accentBorder} dark:focus-within:ring-offset-gray-950`}
+      className={`group relative flex h-full flex-col overflow-hidden card-elevated p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${item.accentBorder} dark:focus-within:ring-offset-gray-950`}
     >
       {/* Top section — icon + title + pain */}
       <div className="flex flex-1 flex-col p-8 pb-0">
@@ -164,7 +166,7 @@ export default function ProblemStatement() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          className="mb-16 text-center"
+          className="mb-16 text-center heading-glow"
         >
           <h2
             id="problem-statement-heading"
@@ -179,11 +181,11 @@ export default function ProblemStatement() {
         </motion.div>
 
         {/* Problem Cards */}
-        <div className="grid gap-8 md:grid-cols-3">
+        <motion.div variants={staggerFast} initial="initial" animate={isInView ? 'animate' : 'initial'} className="grid gap-8 md:grid-cols-3">
           {problems.map((item, index) => (
             <PersonaCard key={item.audience} item={item} index={index} isInView={isInView} />
           ))}
-        </div>
+        </motion.div>
 
         {/* CTA + Social proof */}
         <motion.div

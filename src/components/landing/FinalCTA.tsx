@@ -59,7 +59,7 @@ export default function FinalCTA() {
               variant="cta"
               size="xl"
               asChild
-              className="group h-14 px-8 text-lg shadow-glow-cta transition-all hover:scale-105"
+              className="group h-14 px-8 text-lg shadow-glow-cta transition-all hover:scale-[1.02]"
             >
               <Link href="/start" onClick={() => handleCTAClick('final_start_free_trial')}>
                 Get Started Free

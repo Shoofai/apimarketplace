@@ -44,3 +44,30 @@ export const sparkleBurst = {
     transition: { duration: 0.6, ease: 'easeOut' },
   },
 };
+
+/** Card scale-in: subtle grow + fade for grid items */
+export const scaleIn: Variants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+  exit: { opacity: 0, scale: 0.95 },
+};
+
+/** Faster stagger for snappier grid reveals */
+export const staggerFast: Variants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.06,
+    },
+  },
+};
+
+/** Refined hover: subtle scale for buttons/cards */
+export const hoverLift: Variants = {
+  initial: { scale: 1, y: 0 },
+  hover: { scale: 1.02, y: -2, transition: { duration: 0.3, ease: 'easeOut' } },
+  tap: { scale: 0.98 },
+};

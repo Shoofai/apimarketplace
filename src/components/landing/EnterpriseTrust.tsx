@@ -51,14 +51,14 @@ export default function EnterpriseTrust() {
     <section
       ref={ref}
       aria-labelledby="enterprise-trust-heading"
-      className="bg-gray-50 py-24 dark:bg-gray-900 sm:py-32"
+      className="bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 py-24 sm:py-32"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          className="mb-16 text-center"
+          className="mb-16 text-center heading-glow"
         >
           <h2
             id="enterprise-trust-heading"
@@ -107,7 +107,7 @@ export default function EnterpriseTrust() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ delay: 0.3 + index * 0.15 }}
-              className="flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+              className="flex flex-col card-elevated p-8"
             >
               {/* Quote icon */}
               <Quote className="mb-4 h-8 w-8 text-gray-200 dark:text-gray-600" aria-hidden />
