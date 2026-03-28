@@ -13,11 +13,30 @@ export const slideUp: Variants = {
 };
 
 export const staggerContainer: Variants = {
+  initial: {},
   animate: {
     transition: {
+      delayChildren: 0,
       staggerChildren: 0.1,
     },
   },
+};
+
+/** Hero stagger: first 2 children (badge + headline) appear instantly */
+export const heroStaggerContainer: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      delayChildren: 0,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+/** Variant that starts visible (no animation delay for critical content) */
+export const noDelay: Variants = {
+  initial: { opacity: 1, y: 0 },
+  animate: { opacity: 1, y: 0 },
 };
 
 export const scaleOnHover: Variants = {

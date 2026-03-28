@@ -199,7 +199,7 @@ export default function KillerFeatures() {
             Discover Our 12 Power Features
           </h2>
           <p className="section-subheading mx-auto mb-8 max-w-3xl text-gray-600 dark:text-gray-300">
-            Explore our 12 power features. Click any card to learn more.
+            Everything you need to discover, integrate, monetize, and govern APIs — built into one platform.
           </p>
         </motion.div>
 

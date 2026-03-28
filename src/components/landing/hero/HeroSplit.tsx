@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackCTAClick } from '@/lib/analytics';
-import { fadeIn, slideUp, staggerContainer } from '@/lib/animations';
+import { fadeIn, slideUp, staggerContainer, noDelay } from '@/lib/animations';
 import AISearchDemo from '@/components/api-builder/AISearchDemo';
 import { DemoModal } from '../DemoModal';
 import { HeroQuiz } from '../HeroQuiz';
@@ -86,8 +86,8 @@ export default function HeroSplit() {
             animate="animate"
             className="flex flex-col"
           >
-          {/* Badge — top-left aligned */}
-          <motion.div variants={fadeIn} className="mb-4 self-start sm:mb-6">
+          {/* Badge — top-left aligned (no delay: visible immediately) */}
+          <motion.div variants={noDelay} className="mb-4 self-start sm:mb-6">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/90 px-4 py-2 text-sm font-medium text-gray-900 shadow-sm dark:border-primary-700/50 dark:bg-white/5 dark:text-white">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
@@ -97,9 +97,9 @@ export default function HeroSplit() {
             </span>
           </motion.div>
 
-          {/* Headline — clamp() for viewport-scaled type */}
+          {/* Headline — clamp() for viewport-scaled type (no delay: visible immediately) */}
           <motion.h1
-            variants={slideUp}
+            variants={noDelay}
             className="mb-3 max-w-5xl font-heading text-hero font-extrabold tracking-tight text-gray-900 sm:mb-5 dark:text-white"
           >
             <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 bg-clip-text text-transparent dark:from-primary-300 dark:via-primary-400 dark:to-primary-500">

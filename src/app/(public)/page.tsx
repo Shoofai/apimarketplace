@@ -8,7 +8,6 @@ import ProblemStatement from '@/components/landing/ProblemStatement';
 import KillerFeatures from '@/components/landing/KillerFeatures';
 import APIFlowDiagram from '@/components/landing/APIFlowDiagram';
 import TechShowcase from '@/components/landing/TechShowcase';
-import PlatformStats from '@/components/landing/PlatformStats';
 import Pricing from '@/components/landing/Pricing';
 import NetworkEffects from '@/components/landing/NetworkEffects';
 import Comparison from '@/components/landing/Comparison';
@@ -52,7 +51,6 @@ export default async function Home() {
       <KillerFeatures />
       <APIFlowDiagram />
       <TechShowcase />
-      <PlatformStats />
       <Comparison />
       <EnterpriseTrust />
       <NetworkEffects />

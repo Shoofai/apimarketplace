@@ -66,13 +66,23 @@ export function CookieConsentBanner() {
     hide();
   };
 
+  // Add bottom padding to body when banner is visible so content isn't hidden behind it
+  useEffect(() => {
+    if (visible) {
+      document.body.style.paddingBottom = '5rem';
+    }
+    return () => {
+      document.body.style.paddingBottom = '';
+    };
+  }, [visible]);
+
   if (!mounted || !visible) return null;
 
   return (
     <div
       role="dialog"
       aria-label="Cookie consent"
-      className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg md:px-6"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur-sm p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg md:px-6"
     >
       <div className="container mx-auto flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <p className="text-sm text-muted-foreground">
