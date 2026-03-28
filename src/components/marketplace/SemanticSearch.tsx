@@ -35,8 +35,8 @@ export function SemanticSearch() {
     setError(null);
   }
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSearch(e?: React.SyntheticEvent) {
+    e?.preventDefault();
     if (!query.trim()) return;
     startTransition(async () => {
       setError(null);
@@ -59,12 +59,13 @@ export function SemanticSearch() {
 
   return (
     <div className="space-y-4">
-      <form onSubmit={handleSearch} className="flex gap-2">
+      <div className="flex gap-2" role="search">
         <div className="relative flex-1">
           <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-500 pointer-events-none" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(e); } }}
             placeholder="Describe what you need, e.g. 'send SMS notifications to users'"
             className="pl-9 pr-9"
           />
@@ -78,11 +79,11 @@ export function SemanticSearch() {
             </button>
           )}
         </div>
-        <Button type="submit" disabled={isPending || !query.trim()} className="gap-2 shrink-0">
+        <Button type="button" onClick={handleSearch} disabled={isPending || !query.trim()} className="gap-2 shrink-0">
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
           Ask AI
         </Button>
-      </form>
+      </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
