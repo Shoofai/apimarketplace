@@ -33,12 +33,15 @@ export default async function ForumPage() {
 
       {(!topics || topics.length === 0) ? (
         <Card>
-          <CardHeader>
-            <CardTitle>No topics yet</CardTitle>
-            <CardDescription>Start a discussion.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <NewTopicForm triggerLabel="New topic" />
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/20 flex items-center justify-center mb-6">
+              <MessageSquare className="h-10 w-10 text-primary-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No topics yet</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+              Be the first to start a conversation. Ask a question, share a tip, or discuss your favorite APIs with the community.
+            </p>
+            <NewTopicForm triggerLabel="Start a Discussion" />
           </CardContent>
         </Card>
       ) : (

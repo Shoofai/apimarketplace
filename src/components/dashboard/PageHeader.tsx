@@ -21,7 +21,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 export type PageHeaderIconName = keyof typeof ICON_MAP;
 
 interface PageHeaderProps {
-  title: string;
+  title: React.ReactNode;
   description?: React.ReactNode;
   /** Icon name (serializable). Use when PageHeader is rendered from a Server Component. */
   icon?: PageHeaderIconName;

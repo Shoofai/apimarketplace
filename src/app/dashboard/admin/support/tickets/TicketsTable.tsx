@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Ticket } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -18,8 +18,14 @@ interface Ticket {
 export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
   if (!tickets.length) {
     return (
-      <div className="py-12 text-center text-muted-foreground">
-        No tickets found.
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/20 flex items-center justify-center mb-6">
+          <Ticket className="h-10 w-10 text-primary-400" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No tickets found</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+          There are no support tickets matching your filters. Adjust your search or check back later for new submissions.
+        </p>
       </div>
     );
   }

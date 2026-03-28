@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { BundleCard } from '@/components/marketplace/BundleCard';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { Package } from 'lucide-react';
 
 export const metadata = {
@@ -41,12 +43,17 @@ export default async function BundlesPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <Package className="h-14 w-14 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No bundles yet</h2>
-          <p className="text-muted-foreground max-w-md">
-            Check back soon — curated API bundles are coming!
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/20 flex items-center justify-center mb-6">
+            <Package className="h-10 w-10 text-primary-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No bundles yet</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+            Curated API bundles are coming soon. Browse individual APIs in the marketplace while you wait.
           </p>
+          <Button asChild>
+            <Link href="/marketplace">Browse Marketplace</Link>
+          </Button>
         </div>
       )}
     </div>

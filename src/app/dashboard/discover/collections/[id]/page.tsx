@@ -78,7 +78,18 @@ export default async function CollectionDetailPage({ params }: { params: Promise
         </CardHeader>
         <CardContent>
           {apis.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No APIs yet. Add some from the marketplace.</p>
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/20 flex items-center justify-center mb-6">
+                  <FolderOpen className="h-10 w-10 text-primary-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No APIs yet</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+                  This collection is empty. Browse the marketplace to find and add APIs that fit your project.
+                </p>
+                <Button asChild>
+                  <Link href="/marketplace">Browse Marketplace</Link>
+                </Button>
+              </div>
             ) : (
               <div className="space-y-4 mt-4">
                 {(apis as { id: string }[]).map((api) => (

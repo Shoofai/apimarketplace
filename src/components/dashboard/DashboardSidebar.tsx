@@ -314,11 +314,11 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
                   href={item.comingSoon ? '#' : item.href}
                   title={isCollapsed ? item.title : undefined}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150',
                     isCollapsed ? 'justify-center px-2' : '',
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                      ? 'bg-primary text-primary-foreground shadow-sm border-l-[3px] border-primary-500 font-semibold'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground font-medium',
                     item.comingSoon && 'opacity-50 cursor-not-allowed'
                   )}
                   onClick={(e) => item.comingSoon && e.preventDefault()}
@@ -371,11 +371,11 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
                     href={item.href}
                     title={isCollapsed ? item.title : undefined}
                     className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150',
                       isCollapsed ? 'justify-center px-2' : '',
                       isActive
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-primary text-primary-foreground shadow-sm border-l-[3px] border-primary-500 font-semibold'
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground font-medium'
                     )}
                   >
                     <Icon className={cn('h-4 w-4 shrink-0', isActive && 'text-primary-foreground')} />

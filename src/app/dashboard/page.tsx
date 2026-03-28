@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/dashboard/PageHeader';
 import { getRecommendations } from '@/lib/recommendations/engine';
 import { RecommendedAPIs } from '@/components/marketplace/RecommendedAPIs';
 import { DashboardOnboarding } from '@/components/onboarding/DashboardOnboarding';
+import { TimeGreeting } from '@/components/dashboard/TimeGreeting';
 import {
   Activity,
   Box,
@@ -73,7 +74,7 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <DashboardOnboarding />
       <PageHeader
-        title={`Welcome back, ${userData.full_name}`}
+        title={<TimeGreeting name={userData.full_name} />}
         description={
           <div className="flex items-center gap-3 text-muted-foreground">
             <span className="text-base">{org?.name}</span>
@@ -98,10 +99,12 @@ export default async function DashboardPage() {
 
       {/* Platform Admin Section */}
       {isAdmin && (
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-cyan-500/5 to-accent/10 dark:from-primary/10 dark:via-cyan-500/5 dark:to-accent/5">
+        <Card className="card-elevated relative border-2 border-transparent bg-gradient-to-br from-primary/5 via-cyan-500/5 to-accent/10 dark:from-primary/10 dark:via-cyan-500/5 dark:to-accent/5 shadow-[0_0_20px_-5px_rgba(168,85,247,0.25)] dark:shadow-[0_0_25px_-5px_rgba(168,85,247,0.35)]" style={{ backgroundClip: 'padding-box', borderImage: 'linear-gradient(135deg, #a855f7, #f59e0b) 1' }}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Crown className="w-5 h-5 text-primary" />
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-amber-500/20">
+                <Crown className="w-7 h-7 text-purple-500 dark:text-purple-400" />
+              </div>
               Platform Admin Access
             </CardTitle>
             <CardDescription className="text-base">
@@ -145,7 +148,7 @@ export default async function DashboardPage() {
           {isProvider && (
             <>
               <Link href="/dashboard/provider/apis/new" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+                <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-cyan-500">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
@@ -164,7 +167,7 @@ export default async function DashboardPage() {
               </Link>
 
               <Link href="/dashboard/analytics/provider" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+                <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-primary/50 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-primary">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -187,7 +190,7 @@ export default async function DashboardPage() {
           {isConsumer && (
             <>
               <Link href="/marketplace" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+                <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-cyan-500">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
@@ -206,7 +209,7 @@ export default async function DashboardPage() {
               </Link>
 
               <Link href="/dashboard/developer/sandbox" className="group">
-                <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+                <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-cyan-500">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
@@ -227,7 +230,7 @@ export default async function DashboardPage() {
           )}
 
           <Link href="/dashboard/developer/playground" className="group">
-            <Card className="cursor-pointer hover:shadow-lg hover:border-cyan-500/40 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+            <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-cyan-500">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
@@ -246,7 +249,7 @@ export default async function DashboardPage() {
           </Link>
 
           <Link href="/dashboard/analytics/usage" className="group">
-            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group-hover:-translate-y-0.5 h-full">
+            <Card className="card-elevated cursor-pointer hover:shadow-lg hover:border-primary/50 hover:-translate-y-1 transition-all duration-200 h-full border-l-4 border-l-transparent group-hover:border-l-primary">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -278,6 +281,11 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Getting Started Progress */}
+      <Suspense fallback={null}>
+        <GettingStartedProgress orgId={org?.id} hasOrg={!!org} isProvider={isProvider} />
+      </Suspense>
 
       {/* Overview Stats */}
       <div>
@@ -393,18 +401,18 @@ async function DashboardStats({
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {isProvider && (
         <>
-          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+          <Card className="card-elevated border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-500/5 to-transparent hover:shadow-lg hover:border-blue-500/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Published APIs
               </CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
                 <Box className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-xl font-bold">{publishedAPIsCount}</div>
+                  <div className="text-3xl font-bold">{publishedAPIsCount}</div>
                 </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Active in marketplace
@@ -412,18 +420,18 @@ async function DashboardStats({
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+          <Card className="card-elevated border-l-4 border-l-emerald-500 bg-gradient-to-br from-emerald-500/5 to-transparent hover:shadow-lg hover:border-emerald-500/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Subscribers
               </CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <Users className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-xl font-bold">{totalSubscribers}</div>
+                <div className="text-3xl font-bold">{totalSubscribers}</div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Across all APIs
@@ -431,18 +439,18 @@ async function DashboardStats({
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+          <Card className="card-elevated border-l-4 border-l-amber-500 bg-gradient-to-br from-amber-500/5 to-transparent hover:shadow-lg hover:border-amber-500/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Revenue (30d)
               </CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
                 <DollarSign className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-xl font-bold">{formatCurrency(providerRevenue)}</div>
+                <div className="text-3xl font-bold">{formatCurrency(providerRevenue)}</div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Last 30 days
@@ -452,19 +460,19 @@ async function DashboardStats({
         </>
       )}
 
-      <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+      <Card className="card-elevated border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-500/5 to-transparent hover:shadow-lg hover:border-purple-500/20 transition-all duration-200">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             {isProvider ? 'API Calls (30d)' : 'Active Subscriptions'}
           </CardTitle>
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
+          <div className="p-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
             <Activity className="h-4 w-4" />
           </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <div className="text-xl font-bold">
-              {isProvider ? '—' : (subscriptionCount ?? 0)}
+            <div className="text-3xl font-bold">
+              {isProvider ? '\u2014' : (subscriptionCount ?? 0)}
             </div>
             {!isProvider && apiCalls30d > 0 && (
               <div className="text-xs text-muted-foreground">
@@ -480,31 +488,31 @@ async function DashboardStats({
 
       {!isProvider && (
         <>
-          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+          <Card className="card-elevated border-l-4 border-l-amber-500 bg-gradient-to-br from-amber-500/5 to-transparent hover:shadow-lg hover:border-amber-500/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Monthly Spend
               </CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
                 <DollarSign className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-bold">{formatCurrency(monthlySpend)}</div>
+              <div className="text-3xl font-bold">{formatCurrency(monthlySpend)}</div>
               <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-lg hover:border-primary/20 transition-all duration-200">
+          <Card className="card-elevated border-l-4 border-l-emerald-500 bg-gradient-to-br from-emerald-500/5 to-transparent hover:shadow-lg hover:border-emerald-500/20 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Success Rate
               </CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <CheckCircle className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-bold">{successRate}%</div>
+              <div className="text-3xl font-bold">{successRate}%</div>
               <p className="text-xs text-muted-foreground mt-2">API calls (30d)</p>
             </CardContent>
           </Card>
@@ -620,6 +628,116 @@ async function RecentActivity({ userId }: { userId: string }) {
                   minute: '2-digit',
                 })}
               </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function GettingStartedProgress({
+  orgId,
+  hasOrg,
+  isProvider,
+}: {
+  orgId: string;
+  hasOrg: boolean;
+  isProvider: boolean;
+}) {
+  const supabase = await createClient();
+
+  // Check published APIs count
+  let publishedCount = 0;
+  if (orgId) {
+    const { count } = await supabase
+      .from('apis')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('status', 'published');
+    publishedCount = count || 0;
+  }
+
+  // Check subscribers count
+  let subscriberCount = 0;
+  if (orgId && isProvider) {
+    const { data: apiIds } = await supabase.from('apis').select('id').eq('organization_id', orgId);
+    const ids = (apiIds ?? []).map((a) => a.id);
+    if (ids.length > 0) {
+      const { count } = await supabase
+        .from('api_subscriptions')
+        .select('*', { count: 'exact', head: true })
+        .in('api_id', ids)
+        .eq('status', 'active');
+      subscriberCount = count ?? 0;
+    }
+  } else if (orgId) {
+    const { count } = await supabase
+      .from('api_subscriptions')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('status', 'active');
+    subscriberCount = count ?? 0;
+  }
+
+  // Only show if user is still onboarding (0 published APIs and 0 subscribers)
+  if (publishedCount > 0 && subscriberCount > 0) {
+    return null;
+  }
+
+  const steps = [
+    { label: 'Create account', done: true },
+    { label: 'Set up organization', done: hasOrg },
+    { label: isProvider ? 'Publish your first API' : 'Subscribe to an API', done: isProvider ? publishedCount > 0 : subscriberCount > 0 },
+    { label: isProvider ? 'Get your first subscriber' : 'Make your first API call', done: isProvider ? subscriberCount > 0 : false },
+  ];
+
+  const completedCount = steps.filter((s) => s.done).length;
+  const progressPercent = Math.round((completedCount / steps.length) * 100);
+
+  return (
+    <Card className="card-elevated border-primary/20">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            Getting Started
+          </CardTitle>
+          <Badge variant="outline" className="text-xs font-medium border-primary/30 text-primary">
+            {completedCount}/{steps.length} complete
+          </Badge>
+        </div>
+        <div className="w-full bg-muted rounded-full h-2 mt-3">
+          <div
+            className="bg-gradient-to-r from-primary to-cyan-500 h-2 rounded-full transition-all duration-500"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step.label} className="flex items-center flex-1 last:flex-initial">
+              <div className="flex flex-col items-center text-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    step.done
+                      ? 'bg-gradient-to-br from-primary to-cyan-500 text-white shadow-md shadow-primary/25'
+                      : 'bg-muted text-muted-foreground border-2 border-dashed border-muted-foreground/30'
+                  }`}
+                >
+                  {step.done ? (
+                    <CheckCircle className="h-5 w-5" />
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                <span className={`text-xs mt-2 max-w-[100px] leading-tight ${step.done ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                  {step.label}
+                </span>
+              </div>
+              {index < steps.length - 1 && (
+                <div className={`flex-1 h-0.5 mx-2 mt-[-1.25rem] ${step.done ? 'bg-gradient-to-r from-primary to-cyan-500' : 'bg-muted-foreground/20'}`} />
+              )}
             </div>
           ))}
         </div>

@@ -43,6 +43,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
   const pathname = usePathname();
   const platformName = usePlatformName();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -74,7 +75,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 shadow-sm pt-[env(safe-area-inset-top)]">
       <div className="flex h-16 items-center px-4 lg:px-8 gap-3">
         {/* Mobile menu trigger */}
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -103,7 +104,9 @@ export default function DashboardNav({ user }: DashboardNavProps) {
         <div className="hidden sm:flex flex-1 justify-center min-w-0 px-2">
           <button
             onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
-            className="w-full max-w-md flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            className={`w-full flex items-center gap-2 pl-3 pr-4 py-2 rounded-lg border bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 ${searchFocused ? 'max-w-md border-primary-400' : 'max-w-sm border-input'}`}
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left truncate">Search APIs, docs...</span>
@@ -138,7 +141,9 @@ export default function DashboardNav({ user }: DashboardNavProps) {
           </Link>
 
           {/* Notifications */}
-          <NotificationCenter />
+          <div className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1 transition-colors">
+            <NotificationCenter />
+          </div>
 
           {/* Theme Switcher */}
           <ThemeSwitcher />
@@ -146,7 +151,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
           {/* User / Account Menu */}
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="ghost" className="gap-2 pl-2" aria-label="Account menu" data-testid="account-menu-trigger">
+              <Button type="button" variant="ghost" className="gap-2 pl-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" aria-label="Account menu" data-testid="account-menu-trigger">
                 <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm shrink-0">
                   {(user.full_name || user.email || '?').charAt(0).toUpperCase()}
                 </div>

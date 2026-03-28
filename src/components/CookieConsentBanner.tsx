@@ -25,11 +25,16 @@ const essentialOnly = {
 export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isDashboard, setIsDashboard] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     if (typeof window === 'undefined') return;
+    const onDashboard = window.location.pathname.startsWith('/dashboard');
+    setIsDashboard(onDashboard);
     const given = localStorage.getItem(CONSENT_KEY);
+    // If consent was previously given and we're on a dashboard page, don't show
+    if (given && onDashboard) return;
     if (!given) setVisible(true);
   }, []);
 
@@ -66,17 +71,43 @@ export function CookieConsentBanner() {
     hide();
   };
 
-  // Add bottom padding to body when banner is visible so content isn't hidden behind it
+  // Add bottom padding to body when banner is visible (only for full-width style)
   useEffect(() => {
-    if (visible) {
+    if (visible && !isDashboard) {
       document.body.style.paddingBottom = '5rem';
     }
     return () => {
       document.body.style.paddingBottom = '';
     };
-  }, [visible]);
+  }, [visible, isDashboard]);
 
   if (!mounted || !visible) return null;
+
+  // On dashboard pages (consent not yet given), show a subtle toast in bottom-right
+  if (isDashboard) {
+    return (
+      <div
+        role="dialog"
+        aria-label="Cookie consent"
+        className="fixed bottom-4 right-4 z-50 max-w-sm rounded-lg border bg-card/95 backdrop-blur-sm p-4 shadow-lg"
+      >
+        <p className="text-xs text-muted-foreground mb-3">
+          We use cookies for authentication &amp; analytics.{' '}
+          <Link href="/legal/cookies" className="text-primary underline hover:no-underline">
+            Learn more
+          </Link>
+        </p>
+        <div className="flex items-center gap-2">
+          <Button size="sm" className="h-7 text-xs" onClick={handleAccept}>
+            Accept
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleDecline}>
+            Decline
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

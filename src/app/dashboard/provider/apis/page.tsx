@@ -150,13 +150,13 @@ async function APIsList({ orgId, orgSlug, query }: { orgId: string; orgSlug: str
   if (!apis || apis.length === 0) {
     return (
       <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center justify-center py-16">
-          <div className="rounded-full bg-primary/10 p-6 mb-4">
-            <Box className="h-12 w-12 text-primary" />
+        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/20 flex items-center justify-center mb-6">
+            <Box className="h-10 w-10 text-primary-400" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">No APIs yet</h3>
-          <p className="text-muted-foreground text-center mb-6 max-w-md">
-            Get started by publishing your first API to the marketplace
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No APIs yet</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+            Share your API with thousands of developers. Publish your first API to start earning revenue and growing your subscriber base.
           </p>
           <Link href="/dashboard/provider/apis/publish">
             <Button size="lg" className="gap-2">
