@@ -47,21 +47,26 @@ function base64UrlDecode(str: string): string {
  * Supabase may chunk the cookie across `.0`, `.1`, etc.
  */
 function hasValidAuthToken(request: NextRequest): boolean {
-  try {
-    // Collect the cookie value — Supabase may split it into numbered chunks
-    const cookieHeader = request.headers.get('cookie') ?? '';
-    const authCookieMatch = cookieHeader.match(/sb-[a-z0-9]+-auth-token/);
-    if (!authCookieMatch) return false;
+  const cookieHeader = request.headers.get('cookie') ?? '';
 
+  // First check: cookie must exist with the Supabase naming pattern
+  const hasAuthCookie = /sb-[a-z0-9]+-auth-token/.test(cookieHeader);
+  if (!hasAuthCookie) return false;
+
+  // Second check: try to decode and validate the JWT payload.
+  // If decoding fails (cookie format varies across Supabase versions),
+  // fall back to accepting the cookie presence — the server-side
+  // getUserSafe() in the dashboard layout will do the definitive check.
+  try {
+    const authCookieMatch = cookieHeader.match(/sb-[a-z0-9]+-auth-token/)!;
     const cookieName = authCookieMatch[0];
 
-    // Try to reassemble chunked cookies (.0, .1, .2, …) or read the single cookie
+    // Reassemble chunked cookies (.0, .1, .2, …) or read single cookie
     let raw = '';
     const singleCookie = request.cookies.get(cookieName);
     if (singleCookie?.value) {
       raw = singleCookie.value;
     } else {
-      // Reassemble chunks
       for (let i = 0; i < 10; i++) {
         const chunk = request.cookies.get(`${cookieName}.${i}`);
         if (!chunk?.value) break;
@@ -69,49 +74,49 @@ function hasValidAuthToken(request: NextRequest): boolean {
       }
     }
 
-    if (!raw) return false;
+    if (!raw) return true; // Cookie name exists but value unreadable — let server verify
 
-    // The cookie value is base64-encoded JSON containing access_token
-    let accessToken: string;
+    // Try to extract access_token from the cookie value
+    let accessToken: string | undefined;
     try {
+      // Format 1: base64-encoded JSON
       const decoded = base64UrlDecode(raw);
       const parsed = JSON.parse(decoded);
       accessToken = parsed?.access_token;
     } catch {
-      // Might already be raw JSON (some Supabase versions)
       try {
+        // Format 2: URL-encoded JSON
         const parsed = JSON.parse(decodeURIComponent(raw));
         accessToken = parsed?.access_token;
       } catch {
-        return false;
+        // Format 3: raw JWT string (some Supabase SSR versions)
+        if (raw.split('.').length === 3) {
+          accessToken = raw;
+        }
       }
     }
 
-    if (!accessToken || typeof accessToken !== 'string') return false;
+    if (!accessToken || typeof accessToken !== 'string') return true; // Can't parse — let server verify
 
     // JWT structure: header.payload.signature
     const parts = accessToken.split('.');
-    if (parts.length !== 3) return false;
+    if (parts.length !== 3) return true; // Malformed but cookie exists — let server verify
 
-    // Decode the payload (middle segment)
+    // Decode and check payload
     const payloadJson = base64UrlDecode(parts[1]);
     const payload = JSON.parse(payloadJson);
 
-    // Check required claims
-    if (!payload.sub || typeof payload.sub !== 'string' || payload.sub.length === 0) {
-      return false;
+    // Only reject if we can definitively prove the token is expired
+    if (typeof payload.exp === 'number') {
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      if (payload.exp <= nowSeconds) return false; // Definitively expired
     }
-
-    if (typeof payload.exp !== 'number') return false;
-
-    // Check expiration (exp is in seconds since epoch)
-    const nowSeconds = Math.floor(Date.now() / 1000);
-    if (payload.exp <= nowSeconds) return false;
 
     return true;
   } catch {
-    // Any unexpected error means the token is invalid
-    return false;
+    // JWT validation failed but cookie exists — allow through,
+    // the server-side check will do the definitive verification
+    return true;
   }
 }
 
