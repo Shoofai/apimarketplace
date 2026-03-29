@@ -123,17 +123,17 @@ export async function searchAPIs(
   const safeQuery = query && query.trim().length > 0 ? sanitizeQuery(query) : '';
   const pattern = safeQuery ? `%${safeQuery}%` : '';
 
+  // Build select — some columns may not exist in all DB versions
+  const selectFields = `
+    *,
+    organization:organizations!apis_organization_id_fkey(name, slug, logo_url),
+    category:api_categories(name, slug),
+    pricing_plans:api_pricing_plans(price_monthly)
+  `;
+
   let queryBuilder = supabase
     .from('apis')
-    .select(
-      `
-      *,
-      organization:organizations!apis_organization_id_fkey(name, slug, logo_url),
-      category:api_categories(name, slug),
-      pricing_plans:api_pricing_plans(price_monthly)
-    `,
-      { count: 'exact' }
-    )
+    .select(selectFields, { count: 'exact' })
     .in('status', ['published', 'unclaimed'])
     .eq('visibility', 'public');
 
@@ -185,7 +185,27 @@ export async function searchAPIs(
   const to = from + limit - 1;
   queryBuilder = queryBuilder.range(from, to);
 
-  const { data, error, count } = await queryBuilder;
+  let { data, error, count } = await queryBuilder;
+
+  // If query fails (e.g., missing column like 'visibility'), retry without visibility filter
+  if (error && error.code === '42703') {
+    const retryBuilder = supabase
+      .from('apis')
+      .select(selectFields, { count: 'exact' })
+      .in('status', ['published', 'unclaimed']);
+
+    // Re-apply filters without visibility
+    let rb = retryBuilder;
+    if (pattern) rb = rb.or(`name.ilike.${pattern},description.ilike.${pattern},short_description.ilike.${pattern}`);
+    if (filters.category) rb = rb.eq('category_id', filters.category);
+    if (filters.minRating != null) rb = rb.gte('avg_rating', filters.minRating);
+    rb = rb.order('created_at', { ascending: false }).range((page - 1) * limit, (page - 1) * limit + limit - 1);
+
+    const retry = await rb;
+    data = retry.data;
+    error = retry.error;
+    count = retry.count;
+  }
 
   if (error) throw error;
 
