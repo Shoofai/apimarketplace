@@ -96,7 +96,6 @@ export function PublicNav() {
 
           {/* Mobile hamburger */}
           <div className="flex shrink-0 items-center gap-2 lg:hidden">
-            <ThemeSwitcher />
             <button
               onClick={() => setMobileOpen(true)}
               className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-accent"
@@ -210,12 +209,15 @@ export function PublicNav() {
             </Link>
           </div>
 
-          {/* Bottom badge */}
-          <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-muted/50 px-4 py-2.5">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <span className="text-[11px] font-medium text-muted-foreground">
-              500+ APIs · 11 SDKs · Free to start
-            </span>
+          {/* Theme switcher + bottom badge */}
+          <div className="mt-5 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-2.5">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-[11px] font-medium text-muted-foreground">
+                500+ APIs · 11 SDKs
+              </span>
+            </div>
+            <ThemeSwitcher />
           </div>
         </div>
       </div>
