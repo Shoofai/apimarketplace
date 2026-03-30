@@ -96,8 +96,7 @@ function LogoUploadCard({
                 alt={title}
                 width={previewSize}
                 height={previewSize}
-                className="object-contain"
-                style={{ height: 'auto' }}
+                className="h-auto object-contain"
                 unoptimized
               />
             </div>
