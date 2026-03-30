@@ -12,6 +12,10 @@ export async function generateMetadata() {
   return {
     title: `Dashboard | ${name}`,
     description: 'Manage your APIs, subscriptions, and analytics',
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/favicon.svg',
+    },
   };
 }
 
