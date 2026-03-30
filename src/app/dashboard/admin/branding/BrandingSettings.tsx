@@ -1,17 +1,18 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Upload, Palette, ImageIcon, RefreshCw, Check, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-/** Build Supabase Storage public URL for a branding file, with cache-bust param */
-function brandingUrl(filename: string): string {
+/** Build Supabase Storage public URL for a branding file */
+function brandingUrl(filename: string, cacheBust?: number): string {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!base) return `/${filename}`;
-  return `${base}/storage/v1/object/public/branding/${filename}?v=${Date.now()}`;
+  const v = cacheBust ? `?v=${cacheBust}` : '';
+  return `${base}/storage/v1/object/public/branding/${filename}${v}`;
 }
 
 interface UploadState {
@@ -96,6 +97,7 @@ function LogoUploadCard({
                 width={previewSize}
                 height={previewSize}
                 className="object-contain"
+                style={{ height: 'auto' }}
                 unoptimized
               />
             </div>
@@ -154,6 +156,9 @@ function LogoUploadCard({
 }
 
 export default function BrandingSettings() {
+  const [cacheBust, setCacheBust] = useState<number | undefined>(undefined);
+  useEffect(() => { setCacheBust(Date.now()); }, []);
+
   const handleLogoUpload = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -218,7 +223,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Logo (Light Mode)"
           description="Used on light backgrounds — navbar, footer, emails, and auth pages."
-          currentSrc={brandingUrl('logo.svg')}
+          currentSrc={brandingUrl('logo.svg', cacheBust)}
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoUpload}
@@ -227,7 +232,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Logo (Dark Mode)"
           description="Used on dark backgrounds — dark theme navbar, footer, and dashboard."
-          currentSrc={brandingUrl('logo-dark.svg')}
+          currentSrc={brandingUrl('logo-dark.svg', cacheBust)}
           previewSize={48}
           accept=".svg,.png,.jpg,.jpeg,.webp"
           onUpload={handleLogoDarkUpload}
@@ -239,7 +244,7 @@ export default function BrandingSettings() {
         <LogoUploadCard
           title="Favicon"
           description="Browser tab icon. Shown in bookmarks and browser tabs."
-          currentSrc={brandingUrl('favicon.svg')}
+          currentSrc={brandingUrl('favicon.svg', cacheBust)}
           previewSize={32}
           accept=".svg,.png,.ico"
           onUpload={handleFaviconUpload}

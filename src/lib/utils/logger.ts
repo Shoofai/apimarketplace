@@ -1,10 +1,7 @@
-import pino from 'pino';
-
 type LogContext = Record<string, unknown>;
 
 /**
  * Logger interface that accepts (message, context) for all levels.
- * Pino uses (obj, msg?) for merging; we expose (msg, context?) for consistency.
  */
 export interface AppLogger {
   trace(msg: string, context?: LogContext): void;
@@ -16,59 +13,45 @@ export interface AppLogger {
   child(bindings: Record<string, unknown>): AppLogger;
 }
 
-const pinoLogger = pino({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  transport:
-    process.env.NODE_ENV !== 'production'
-      ? {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'HH:MM:ss',
-            ignore: 'pid,hostname',
-          },
-        }
-      : undefined,
-  formatters: {
-    level: (label) => {
-      return { level: label };
-    },
-  },
-  base: {
-    env: process.env.NODE_ENV,
-  },
-});
-
-function wrapPino(log: pino.Logger): AppLogger {
-  const logWithContext = (level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal') =>
-    (msg: string, context?: LogContext) => {
-      if (context && Object.keys(context).length > 0) {
-        log[level]({ ...context, msg });
+// Use console-based logging to avoid pino-pretty worker thread issues in Next.js dev.
+// In production, structured JSON logging is handled by the platform (Vercel/etc).
+function makeLogger(bindings: Record<string, unknown> = {}): AppLogger {
+  const format = (level: string, msg: string, context?: LogContext) => {
+    if (process.env.NODE_ENV === 'production') {
+      const entry = { level, msg, ...bindings, ...context };
+      console.log(JSON.stringify(entry));
+    } else {
+      const prefix = `[${level.toUpperCase()}] ${msg}`;
+      const extra = { ...bindings, ...context };
+      if (Object.keys(extra).length > 0) {
+        console.log(prefix, extra);
       } else {
-        log[level](msg);
+        console.log(prefix);
       }
-    };
+    }
+  };
   return {
-    trace: logWithContext('trace'),
-    debug: logWithContext('debug'),
-    info: logWithContext('info'),
-    warn: logWithContext('warn'),
-    error: logWithContext('error'),
-    fatal: logWithContext('fatal'),
-    child: (bindings) => wrapPino(log.child(bindings)),
+    trace: (msg, ctx) => format('trace', msg, ctx),
+    debug: (msg, ctx) => format('debug', msg, ctx),
+    info: (msg, ctx) => format('info', msg, ctx),
+    warn: (msg, ctx) => format('warn', msg, ctx),
+    error: (msg, ctx) => format('error', msg, ctx),
+    fatal: (msg, ctx) => format('fatal', msg, ctx),
+    child: (b) => makeLogger({ ...bindings, ...b }),
   };
 }
 
 /**
- * Logger instance using Pino.
- * Configured for development (pretty printing) and production (JSON).
+ * Logger instance.
+ * Development: colorized console output.
+ * Production: JSON to stdout.
  *
  * Usage:
  * - logger.info('Message', { context })
  * - logger.error('Error occurred', { error })
  * - logger.debug('Debug info', { data })
  */
-export const logger: AppLogger = wrapPino(pinoLogger);
+export const logger: AppLogger = makeLogger();
 
 /**
  * Creates a child logger with additional context.
