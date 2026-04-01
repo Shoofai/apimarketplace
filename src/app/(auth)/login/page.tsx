@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Github, Building2 } from 'lucide-react';
+import { Github, Building2, Mail } from 'lucide-react';
+import { PasswordInput } from '@/components/ui/password-input';
 import MFAVerifyStep from '@/components/auth/MFAVerifyStep';
 import { Button } from '@/components/ui/button';
 import {
@@ -229,12 +230,16 @@ export default function LoginPage() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    {...field}
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      type="email"
+                      placeholder="you@example.com"
+                      className="pl-9"
+                      {...field}
+                      disabled={loading}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -248,8 +253,7 @@ export default function LoginPage() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
+                  <PasswordInput
                     placeholder="••••••••"
                     {...field}
                     disabled={loading}

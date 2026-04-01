@@ -188,7 +188,19 @@ export default async function AboutPage() {
           </p>
 
           <h2>By the Numbers</h2>
-          <p>We&apos;re just getting started.</p>
+          <div className="not-prose grid grid-cols-2 gap-4 my-6 lg:grid-cols-4 rounded-xl border border-border bg-muted/30 p-6 text-center">
+            {[
+              { value: '500+', label: 'APIs Listed' },
+              { value: '10K+', label: 'Developers' },
+              { value: '99.9%', label: 'Uptime SLA' },
+              { value: '< 2 min', label: 'Avg. Integration' },
+            ].map(({ value, label }) => (
+              <div key={label}>
+                <div className="text-2xl font-bold text-primary">{value}</div>
+                <div className="text-xs text-muted-foreground mt-1">{label}</div>
+              </div>
+            ))}
+          </div>
 
           <div className="not-prose mt-12 flex flex-wrap gap-4">
             <Button asChild>

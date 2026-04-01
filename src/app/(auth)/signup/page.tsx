@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Github } from 'lucide-react';
+import { Github, Mail, User, Building2 } from 'lucide-react';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -194,7 +195,10 @@ export default function SignupPage() {
               <FormItem>
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} disabled={loading} />
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input placeholder="John Doe" className="pl-9" {...field} disabled={loading} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -208,11 +212,15 @@ export default function SignupPage() {
               <FormItem>
                 <FormLabel>Organization Name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Acme Inc"
-                    {...field}
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      placeholder="Acme Inc"
+                      className="pl-9"
+                      {...field}
+                      disabled={loading}
+                    />
+                  </div>
                 </FormControl>
                 <FormDescription>
                   This will be your organization&apos;s display name
@@ -229,12 +237,16 @@ export default function SignupPage() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    {...field}
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      type="email"
+                      placeholder="you@example.com"
+                      className="pl-9"
+                      {...field}
+                      disabled={loading}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -248,8 +260,7 @@ export default function SignupPage() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
+                  <PasswordInput
                     placeholder="••••••••"
                     {...field}
                     disabled={loading}

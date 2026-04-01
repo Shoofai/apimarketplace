@@ -21,12 +21,14 @@ import {
   Menu,
   ChevronRight,
   Sparkles,
+  BarChart3,
 } from 'lucide-react';
 
 const NAV_LINKS = [
   { href: '/marketplace', label: 'Browse APIs', icon: Globe, description: 'Discover 500+ APIs' },
   { href: '/pricing', label: 'Pricing', icon: CreditCard, description: 'Free, Pro & Enterprise' },
   { href: '/enterprise', label: 'Enterprise', icon: Building2, description: 'Custom solutions' },
+  { href: '/comparison', label: 'Compare', icon: BarChart3, description: 'Side-by-side comparison' },
   { href: '/audit', label: 'API Audit', icon: Shield, description: 'Free spec analysis' },
   { href: '/docs', label: 'Docs', icon: BookOpen, description: 'Guides & references' },
   { href: '/blog', label: 'Blog', icon: FileText, description: 'News & tutorials' },

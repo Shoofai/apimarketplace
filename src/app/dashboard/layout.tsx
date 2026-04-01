@@ -6,6 +6,7 @@ import DashboardNav from '@/components/dashboard/DashboardNav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
 import { getPlatformName } from '@/lib/settings/platform-name';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export async function generateMetadata() {
   const name = await getPlatformName();
@@ -69,20 +70,22 @@ export default async function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
-      <DashboardNav user={userForNav} />
+    <TooltipProvider delayDuration={300}>
+      <div className="min-h-screen bg-background">
+        {/* Top Navigation */}
+        <DashboardNav user={userForNav} />
 
-      <div className="flex">
-        {/* Sidebar */}
-        <DashboardSidebar user={userForNav} />
+        <div className="flex">
+          {/* Sidebar */}
+          <DashboardSidebar user={userForNav} />
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-8">
-          {children}
-        </main>
+          {/* Main Content */}
+          <main className="flex-1 p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
+        <FloatingQuickActions user={userForNav} />
       </div>
-      <FloatingQuickActions user={userForNav} />
-    </div>
+    </TooltipProvider>
   );
 }

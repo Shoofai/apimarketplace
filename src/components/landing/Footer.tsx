@@ -17,6 +17,8 @@ const footerColumns: { title: string; links: FooterLink[] }[] = [
       { name: 'Pricing', href: '/pricing' },
       { name: 'API Directory', href: '/directory' },
       { name: 'Documentation', href: '/docs' },
+      { name: 'Compare APIs', href: '/comparison' },
+      { name: 'Roadmap', href: '/roadmap' },
       { name: 'API Audit Tool', href: '/audit' },
       { name: 'API Status', href: '/status' },
     ],
@@ -47,6 +49,8 @@ const footerColumns: { title: string; links: FooterLink[] }[] = [
     title: 'Company',
     links: [
       { name: 'About Us', href: '/about' },
+      { name: 'Customers', href: '/customers' },
+      { name: 'Trust Center', href: '/trust-center' },
       { name: 'Use Cases', href: '/use-cases' },
       { name: 'Contact & Support', href: '/contact' },
       { name: 'Help Center', href: '/help' },
@@ -218,7 +222,7 @@ export default function Footer() {
           {/* Trust signals */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             <span className="rounded-md border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 dark:border-gray-700 dark:text-gray-400">
-              SOC 2 Ready
+              SOC 2 (in progress)
             </span>
             <span className="rounded-md border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 dark:border-gray-700 dark:text-gray-400">
               GDPR Compliant

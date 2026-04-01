@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { GovernanceFeatureShowcase } from '@/components/growth/GovernanceFeatureShowcase';
 import { EnterprisePageClient } from './EnterprisePageClient';
+import { EnterpriseFAQ } from './EnterpriseFAQ';
 
 export const metadata: Metadata = {
   title: 'Enterprise API Governance | API Marketplace',
@@ -62,6 +63,15 @@ export default function EnterprisePage() {
 
       {/* ROI Calculator + Demo scheduling — client island */}
       <EnterprisePageClient />
+
+      {/* Procurement FAQ */}
+      <section className="py-16 px-4 bg-muted/30">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Procurement FAQ</h2>
+          <p className="text-muted-foreground mb-6">Common questions from legal and procurement teams.</p>
+          <EnterpriseFAQ />
+        </div>
+      </section>
 
       {/* Footer CTA */}
       <section className="py-16 px-4 bg-primary text-primary-foreground text-center">

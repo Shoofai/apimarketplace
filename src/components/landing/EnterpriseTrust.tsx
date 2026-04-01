@@ -10,37 +10,14 @@ import {
   Quote,
 } from 'lucide-react';
 import { useRef } from 'react';
+import { TESTIMONIALS } from '@/lib/testimonials';
 
 const trustBadges = [
-  { label: 'SOC 2 Type II', icon: Shield },
+  { label: 'SOC 2 Type II (in progress)', icon: Shield },
   { label: 'GDPR Compliant', icon: ShieldCheck },
   { label: '99.9% Uptime SLA', icon: Activity },
   { label: 'Enterprise SSO', icon: Lock },
   { label: 'MFA Enforced', icon: Fingerprint },
-];
-
-const testimonials = [
-  {
-    quote:
-      'LukeAPI cut our API integration time from weeks to hours. The AI code generation is a game-changer for our engineering team.',
-    name: 'Sarah Chen',
-    title: 'VP Engineering at TechFlow',
-    initials: 'SC',
-  },
-  {
-    quote:
-      'We migrated from RapidAPI and saw 40% cost savings in the first month. The governance features alone justify the switch.',
-    name: 'Marcus Rodriguez',
-    title: 'CTO at DataPipe',
-    initials: 'MR',
-  },
-  {
-    quote:
-      'Finally, one platform where our providers and developers both thrive. Revenue grew 3x after listing on LukeAPI.',
-    name: 'Priya Patel',
-    title: 'Head of API Strategy at CloudNine',
-    initials: 'PP',
-  },
 ];
 
 export default function EnterpriseTrust() {
@@ -98,10 +75,13 @@ export default function EnterpriseTrust() {
             );
           })}
         </motion.div>
+        <p className="text-center text-xs text-muted-foreground mb-16">
+          *SOC 2 Type II audit is in progress. Contact us for our current security posture documentation.
+        </p>
 
         {/* Part 2: Testimonials */}
         <div className="grid gap-8 md:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
+          {TESTIMONIALS.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
               initial={{ opacity: 0, y: 30 }}
@@ -127,7 +107,7 @@ export default function EnterpriseTrust() {
                     {testimonial.name}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {testimonial.title}
+                    {testimonial.title}, {testimonial.company}
                   </p>
                 </div>
               </div>

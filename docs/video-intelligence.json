@@ -1,0 +1,671 @@
+{
+  "meta": {
+    "app_name": "LukeAPI",
+    "extracted_from": "Next.js 14 / TypeScript / Supabase / Tailwind CSS codebase",
+    "extraction_date": "2026-03-30",
+    "extractor_version": "1.0",
+    "codebase_path": "/Users/timinkan/projects/apimarketplace",
+    "confidence": "high"
+  },
+  "app": {
+    "name": "LukeAPI",
+    "tagline": "The AI-Powered API Marketplace That Runs Itself",
+    "category": "API Marketplace / Developer Platform",
+    "core_problem_solved": "Fragmented API ecosystem: providers need months to monetize, developers spend days on integrations, enterprises lack governance and cost visibility across their API spend",
+    "primary_value_delivered": "All-in-one platform combining API discovery, AI code generation, one-click monetization, universal gateway, and enterprise governance — reducing integration from 2 days to 2 minutes",
+    "one_sentence_description": "LukeAPI is an AI-powered API marketplace that lets developers find and integrate APIs in 2 minutes while giving API providers a complete monetization platform and enterprises full governance in one place.",
+    "url": "https://apimarketplace.pro",
+    "tech_stack": [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "Tailwind CSS",
+      "Stripe",
+      "Anthropic Claude (AI)",
+      "Framer Motion",
+      "Radix UI",
+      "TanStack React Query",
+      "Zod",
+      "Redis",
+      "Resend",
+      "CodeMirror",
+      "React Flow",
+      "Chart.js",
+      "Sentry",
+      "Vitest",
+      "Playwright"
+    ],
+    "launch_readiness": "beta"
+  },
+  "messaging": {
+    "hero_headlines": [
+      "Find, test, and ship APIs in 2 minutes",
+      "The AI-Powered API Marketplace",
+      "Discover, integrate, and monetize APIs in one place"
+    ],
+    "hero_subheadlines": [
+      "From API discovery to production in 2 minutes. Test before you buy, AI-generated code, one-click monetization, and enterprise governance—all in one place.",
+      "Monetize APIs with zero friction. Discover APIs with AI-powered code generation. Govern at enterprise scale.",
+      "The only platform with AI, marketplace, gateway, and payments in one."
+    ],
+    "cta_copy": [
+      "Start Building",
+      "Watch 2-min Demo",
+      "Start Free",
+      "Upgrade to Pro",
+      "Contact Sales",
+      "Get Started Free",
+      "Browse APIs",
+      "Start publishing",
+      "Try the playground",
+      "See governance"
+    ],
+    "onboarding_copy": [
+      "Create account",
+      "Set up organization",
+      "Publish your first API",
+      "Get your first subscriber",
+      "Subscribe to an API",
+      "Make your first API call",
+      "Get started with {platformName} today",
+      "Create your account"
+    ],
+    "empty_state_copy": [
+      "No recent activity",
+      "Your activity will appear here as you use the platform"
+    ],
+    "error_messages_revealing_pain": [
+      "Building payment infrastructure, docs, billing, and analytics takes 6+ months. Most APIs never reach 1000 users.",
+      "Testing 10 different payment APIs takes 3 days. Switching providers requires rewriting code. Hidden costs eat budgets.",
+      "Shadow IT APIs everywhere. No visibility into $2M+ annual API spend. Security nightmares. Compliance hell."
+    ],
+    "tone_descriptors": [
+      "developer-forward",
+      "bold and direct",
+      "enterprise-credible",
+      "technically precise",
+      "speed-obsessed",
+      "ROI-focused"
+    ],
+    "key_phrases_to_use_in_video": [
+      "2 minutes vs 2 days",
+      "AI code generation",
+      "one-click monetization",
+      "6 months to 1 day",
+      "test before you buy",
+      "zero vendor lock-in",
+      "enterprise governance",
+      "Discover. Integrate. Ship.",
+      "The only all-in-one solution",
+      "90% faster time-to-revenue",
+      "40% avg cost savings"
+    ],
+    "phrases_to_avoid": [
+      "simple",
+      "easy",
+      "just",
+      "basic"
+    ]
+  },
+  "features": {
+    "all_features": [
+      {
+        "name": "AI Code Generator",
+        "route_or_component": "/dashboard/developer/playground, src/app/api/ai/playground/route.ts",
+        "description": "Analyzes API docs and generates production-ready integration code in any language, handling authentication, error handling, retries, and rate limiting automatically",
+        "user_problem_solved": "Integration takes 2 days; AI reduces it to 2 minutes with working code",
+        "prominence": "primary",
+        "is_ai_powered": true,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "One-Click Monetization",
+        "route_or_component": "/dashboard/provider/apis/publish, src/app/api/provider/connect/onboarding/route.ts",
+        "description": "Stripe Connect integration handles subscriptions, usage-based billing, invoicing, and global payouts in minutes",
+        "user_problem_solved": "API providers spend months building payment infrastructure; platform handles it all",
+        "prominence": "primary",
+        "is_ai_powered": false,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Developer Playground",
+        "route_or_component": "/dashboard/developer/playground",
+        "description": "Try any API directly in the browser with no coding required — test parameters, see live responses, share with team",
+        "user_problem_solved": "Test before you buy — no wasted integration time on APIs that don't fit",
+        "prominence": "primary",
+        "is_ai_powered": true,
+        "is_differentiator": true,
+        "evidence_file": "src/app/dashboard/developer/playground/page.tsx"
+      },
+      {
+        "name": "Universal API Gateway",
+        "route_or_component": "src/app/api/proxy/route.ts",
+        "description": "Multi-cloud gateway with automatic SSL, DDoS protection, rate limiting, caching, and load balancing",
+        "user_problem_solved": "Eliminates multi-cloud gateway complexity with zero config",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Auto-Generated Docs",
+        "route_or_component": "src/app/api/parse-openapi/route.ts, src/app/docs/[org_slug]/[api_slug]/page.tsx",
+        "description": "Upload OpenAPI/Swagger spec to instantly generate beautiful interactive docs with code examples in 10 languages",
+        "user_problem_solved": "Eliminates the manual documentation burden for API providers",
+        "prominence": "secondary",
+        "is_ai_powered": true,
+        "is_differentiator": false,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Usage-Based Billing",
+        "route_or_component": "src/app/api/subscriptions/route.ts, src/app/api/cron/generate-invoices/route.ts",
+        "description": "Automatic metering supporting per-call, tiered, volume discount, and freemium pricing models with automated invoicing",
+        "user_problem_solved": "Eliminates the need to build custom billing metering systems",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": false,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Cost Optimizer",
+        "route_or_component": "/dashboard/analytics/cost-intelligence",
+        "description": "AI analyzes API usage and automatically suggests cheaper alternatives — one-click migration saves 60% on average",
+        "user_problem_solved": "Enterprises overpay for APIs; platform surfaces savings opportunities automatically",
+        "prominence": "secondary",
+        "is_ai_powered": true,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Compliance Engine",
+        "route_or_component": "src/app/api/readiness/route.ts, src/app/(public)/audit/page.tsx",
+        "description": "Automatic compliance scanning for GDPR, HIPAA, SOC2 — generates audit reports, manages data retention, handles deletion requests",
+        "user_problem_solved": "Enterprises face compliance hell; platform automates GDPR/SOC2 scanning",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Smart API Router",
+        "route_or_component": "src/app/api/proxy/route.ts",
+        "description": "AI-optimized routing to fastest/cheapest/most reliable endpoint with failover, circuit breaking, and retry logic",
+        "user_problem_solved": "Developers manually handle retry logic and failover; platform automates it",
+        "prominence": "tertiary",
+        "is_ai_powered": true,
+        "is_differentiator": false,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Network Effects Engine",
+        "route_or_component": "/dashboard/discover/referrals",
+        "description": "Viral growth mechanics with referral system and marketplace algorithms creating exponential growth flywheel",
+        "user_problem_solved": "Bootstrapping a marketplace is hard; built-in virality compounds growth automatically",
+        "prominence": "tertiary",
+        "is_ai_powered": false,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/NetworkEffects.tsx"
+      },
+      {
+        "name": "White-Label Option",
+        "route_or_component": "/dashboard/enterprise, src/app/portal/[org_slug]/page.tsx",
+        "description": "Enterprise plan includes custom domain, colors, logo, and internal API marketplace for organizations",
+        "user_problem_solved": "Enterprises need branded internal developer portals",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": false,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "Production Readiness Audit",
+        "route_or_component": "/audit, src/app/api/readiness/route.ts",
+        "description": "Free quick audit on OpenAPI spec for score and top gaps; Pro/Enterprise get full audit with detailed reports and ship checklist",
+        "user_problem_solved": "API providers ship unvalidated specs that break consumers",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": true,
+        "evidence_file": "src/components/landing/KillerFeatures.tsx"
+      },
+      {
+        "name": "API Bundles",
+        "route_or_component": "/marketplace/bundles, src/app/api/bundles/route.ts",
+        "description": "Curated packs of complementary APIs sold together at a discount",
+        "user_problem_solved": "Developers need multiple complementary APIs and prefer bundled pricing",
+        "prominence": "tertiary",
+        "is_ai_powered": false,
+        "is_differentiator": false,
+        "evidence_file": "supabase/migrations/20260405000000_api_bundles.sql"
+      },
+      {
+        "name": "Workflow Builder",
+        "route_or_component": "/dashboard/developer/workflows, src/app/api/workflows/route.ts",
+        "description": "Visual workflow builder for orchestrating multi-API integrations",
+        "user_problem_solved": "Developers manually chain API calls; visual builder automates multi-step workflows",
+        "prominence": "tertiary",
+        "is_ai_powered": false,
+        "is_differentiator": false,
+        "evidence_file": "src/app/dashboard/developer/workflows/page.tsx"
+      },
+      {
+        "name": "Semantic Search",
+        "route_or_component": "src/app/api/marketplace/semantic-search/route.ts",
+        "description": "AI-powered semantic search across the API marketplace",
+        "user_problem_solved": "Keyword search fails to surface relevant APIs; semantic search understands intent",
+        "prominence": "secondary",
+        "is_ai_powered": true,
+        "is_differentiator": true,
+        "evidence_file": "src/app/api/marketplace/semantic-search/route.ts"
+      },
+      {
+        "name": "Enterprise SSO / SCIM",
+        "route_or_component": "src/app/api/organizations/current/sso/route.ts, src/app/api/scim/v2/Users/route.ts",
+        "description": "SSO integration and SCIM user provisioning for enterprise customers",
+        "user_problem_solved": "Enterprises require SSO and automated user lifecycle management",
+        "prominence": "secondary",
+        "is_ai_powered": false,
+        "is_differentiator": false,
+        "evidence_file": "src/app/api/scim/v2/Users/route.ts"
+      }
+    ],
+    "top_3_hero_features": [
+      "AI Code Generator",
+      "One-Click Monetization",
+      "Developer Playground"
+    ],
+    "ai_powered_features": [
+      "AI Code Generator",
+      "Semantic Search",
+      "Cost Optimizer",
+      "Smart API Router",
+      "AI Playground (Anthropic Claude)"
+    ],
+    "unique_differentiators": [
+      "AI code generation (unique vs RapidAPI, Stripe Connect, Postman, Kong)",
+      "Cost Optimizer (unique vs all competitors)",
+      "AI-Powered Search (unique vs all competitors)",
+      "Universal API Gateway + Marketplace + Monetization in one platform",
+      "Production Readiness Audit built-in"
+    ],
+    "routes_discovered": [
+      "/",
+      "/marketplace",
+      "/marketplace/[org_slug]/[api_slug]",
+      "/marketplace/bundles",
+      "/marketplace/compare",
+      "/pricing",
+      "/enterprise",
+      "/audit",
+      "/docs/[org_slug]/[api_slug]",
+      "/blog",
+      "/start",
+      "/about",
+      "/contact",
+      "/security",
+      "/status",
+      "/use-cases",
+      "/directory",
+      "/collections",
+      "/signup",
+      "/login",
+      "/dashboard",
+      "/dashboard/developer/playground",
+      "/dashboard/developer/sandbox",
+      "/dashboard/developer/workflows",
+      "/dashboard/analytics",
+      "/dashboard/analytics/cost-intelligence",
+      "/dashboard/provider/apis",
+      "/dashboard/provider/apis/new",
+      "/dashboard/settings/billing",
+      "/dashboard/settings/api-keys",
+      "/dashboard/settings/governance",
+      "/dashboard/discover",
+      "/dashboard/enterprise",
+      "/portal/[org_slug]"
+    ],
+    "api_routes_discovered": [
+      "/api/ai/playground",
+      "/api/ai/explain",
+      "/api/ai/sessions",
+      "/api/marketplace/search",
+      "/api/marketplace/semantic-search",
+      "/api/generate-code",
+      "/api/parse-openapi",
+      "/api/subscriptions",
+      "/api/subscriptions/checkout",
+      "/api/platform/checkout",
+      "/api/provider/connect/onboarding",
+      "/api/analytics",
+      "/api/analytics/cost-intelligence",
+      "/api/apis/[id]/pricing-plans",
+      "/api/apis/[id]/reviews",
+      "/api/apis/[id]/sdk",
+      "/api/apis/[id]/mock",
+      "/api/apis/[id]/sla",
+      "/api/readiness/full",
+      "/api/readiness/quick",
+      "/api/workflows",
+      "/api/webhooks/stripe",
+      "/api/enterprise/roi",
+      "/api/enterprise/schedule-demo",
+      "/api/scim/v2/Users",
+      "/api/graphql/proxy",
+      "/api/proxy"
+    ],
+    "onboarding_flow_steps": [
+      "Sign up (email/GitHub/Google OAuth)",
+      "Verify email",
+      "Set up organization (name, type: provider/consumer/both)",
+      "Onboarding checklist shown on dashboard",
+      "For providers: publish first API via OpenAPI spec upload",
+      "For consumers: browse marketplace and subscribe to first API",
+      "Connect Stripe (providers) or generate API key (consumers)",
+      "Access playground or analytics"
+    ],
+    "power_user_workflow": [
+      "Browse marketplace with semantic search → find relevant API",
+      "Test in Developer Playground before subscribing",
+      "Subscribe → platform generates AI code snippet for integration",
+      "Copy generated code into project",
+      "Monitor usage in analytics dashboard",
+      "Use Cost Intelligence to identify cheaper alternatives",
+      "Set up webhooks for real-time event notifications",
+      "Configure governance policies for team-wide API management"
+    ]
+  },
+  "audiences": [
+    {
+      "persona_name": "The Shipping Developer",
+      "role_or_type": "Individual Developer / Software Engineer",
+      "evidence": "src/components/landing/ProblemStatement.tsx — 'Testing 10 different payment APIs takes 3 days. Switching providers requires rewriting code. Hidden costs eat budgets.'",
+      "primary_problem": "Integration takes too long and vendor lock-in makes switching painful",
+      "job_to_be_done": "Integrate APIs quickly, test before buying, and never rewrite code when switching providers",
+      "technical_sophistication": "high",
+      "video_priority": "primary"
+    },
+    {
+      "persona_name": "The API Provider",
+      "role_or_type": "API Company / SaaS Founder / Developer Tooling Builder",
+      "evidence": "src/components/landing/ProblemStatement.tsx — 'Building payment infrastructure, docs, billing, and analytics takes 6+ months. Most APIs never reach 1000 users.'",
+      "primary_problem": "Monetizing and distributing an API requires building an entire platform from scratch",
+      "job_to_be_done": "Launch a monetized API business with docs, billing, and developer reach in 1 day",
+      "technical_sophistication": "high",
+      "video_priority": "primary"
+    },
+    {
+      "persona_name": "The Enterprise Platform Engineer",
+      "role_or_type": "VP Engineering / CTO / Platform Team at Enterprise",
+      "evidence": "src/components/landing/ProblemStatement.tsx — 'Shadow IT APIs everywhere. No visibility into $2M+ annual API spend. Security nightmares. Compliance hell.'",
+      "primary_problem": "No visibility or control over sprawling API usage across teams, with compliance and cost risks",
+      "job_to_be_done": "Get complete API visibility, enforce security policies, and optimize the $2M+ annual API spend",
+      "technical_sophistication": "high",
+      "video_priority": "secondary"
+    }
+  ],
+  "ui_visual": {
+    "primary_color": "#7c4ff2",
+    "secondary_color": "#6c30e8",
+    "accent_color": "#f59e0b",
+    "background_color": "#ffffff (light) / hsl(222, 47%, 11%) (dark)",
+    "text_color": "hsl(222, 47%, 11%) (light) / hsl(210, 40%, 98%) (dark)",
+    "font_primary": "Plus Jakarta Sans (var(--font-sans))",
+    "font_secondary": "Inter (var(--font-heading))",
+    "ui_aesthetic": "Enterprise SaaS — clean glass-morphism cards with purple-indigo gradient accents, animated bento grid features section, dark hero with constellation background, framer-motion animations throughout",
+    "theme": "system",
+    "tailwind_config_colors": {
+      "primary-50": "#f3f1ff",
+      "primary-100": "#e8e3fe",
+      "primary-200": "#d4cbfd",
+      "primary-300": "#b5a3fb",
+      "primary-400": "#9171f8",
+      "primary-500": "#7c4ff2",
+      "primary-600": "#6c30e8",
+      "primary-700": "#5b22c9",
+      "primary-800": "#4c1da5",
+      "primary-900": "#3f1a87",
+      "primary-950": "#250e5c",
+      "accent-500": "#f59e0b",
+      "accent-600": "#d97706",
+      "success-500": "#10B981",
+      "gradient-hero": "linear-gradient(135deg, #3f1a87 0%, #5b22c9 50%, #7c4ff2 100%)"
+    },
+    "dashboard_description": "Card-based enterprise dashboard with gradient left-border accent cards (blue for APIs, emerald for subscribers, amber for revenue, purple for activity), quick action grid, onboarding progress bar, recent activity feed with status badges, and AI-powered recommendations panel",
+    "key_ui_components": [
+      "Hero with animated API constellation background",
+      "Bento grid feature cards with hover-expand modals",
+      "Persona problem/solution cards (Provider/Developer/Enterprise)",
+      "Tabbed value proposition (Providers/Developers/Enterprises)",
+      "Competitor comparison table with check/X matrix",
+      "Pricing cards with monthly/annual toggle",
+      "Scrolling logo wall ticker",
+      "Live activity ticker",
+      "Trust badges (SOC2, GDPR, 99.9% Uptime, SSO, MFA)",
+      "Network effects flywheel diagram",
+      "Getting Started progress bar",
+      "CodeMirror-powered API playground",
+      "ReactFlow workflow builder"
+    ],
+    "key_metrics_displayed": [
+      "Published APIs count",
+      "Total Subscribers",
+      "Revenue (30d)",
+      "Active Subscriptions",
+      "Monthly Spend",
+      "Success Rate (API calls 30d)",
+      "API Calls (30d)",
+      "90% faster time-to-revenue",
+      "10X more API consumers",
+      "$0 infrastructure cost",
+      "2 min vs 2 days integration",
+      "75% cost reduction",
+      "6 months → 1 day time to market",
+      "3 days → 2 min integration time",
+      "40% avg cost savings"
+    ],
+    "key_interactive_moments": [
+      "Hero quiz flow (Start Building CTA)",
+      "Demo modal (Watch 2-min Demo)",
+      "Feature card click → expand modal with long description and CTA",
+      "Value proposition tab switching (Providers/Developers/Enterprises) with typing code animation",
+      "Annual/monthly pricing toggle",
+      "Competitor comparison table hover",
+      "Live activity ticker scrolling",
+      "API constellation responding to mouse movement",
+      "Magnetic button effect on primary CTAs",
+      "Problem card hover revealing stat and CTA"
+    ],
+    "empty_state_description": "Dashed border card with centered icon, 'No recent activity' headline, and descriptive subtext",
+    "loaded_state_description": "Dashboard shows gradient accent stat cards, quick action grid with hover lift effects, onboarding progress steps with primary-to-cyan gradient, recent activity list with colored status badges"
+  },
+  "user_journey": {
+    "first_screen_after_signup": "/verify-email → then /onboarding → then /dashboard with Getting Started checklist",
+    "aha_moment": "Generating working API integration code in 2 minutes via the AI Playground after subscribing to an API — seeing production-ready code appear instantly",
+    "common_user_paths": [
+      "Developer: Landing → Playground demo → Signup → Browse marketplace → Subscribe to API → Generate code → Ship",
+      "Provider: Landing → Provider tab → Signup → Publish API (upload OpenAPI spec) → Connect Stripe → Share link → Get subscribers",
+      "Enterprise: Landing → Enterprise page → Schedule demo → Custom onboarding → Governance setup → Team-wide API catalog"
+    ],
+    "friction_points_from_code": [
+      "Email verification required before accessing dashboard",
+      "Organization creation required during signup",
+      "Stripe Connect onboarding required for providers before monetizing",
+      "API publishing requires OpenAPI spec upload and admin review before going live",
+      "Pro plan checkout redirects to Stripe (external flow)"
+    ],
+    "success_state_description": "Provider dashboard showing revenue charts, subscriber counts, and published APIs. Consumer dashboard showing active subscriptions, API call success rates, and cost intelligence savings opportunities.",
+    "before_product_state": "Developer spending 3 days integrating APIs, rewriting code for each provider, paying for 5 separate tools. Provider spending 6+ months building payment infrastructure that still reaches fewer than 1000 users. Enterprise with no visibility into $2M+ API spend and compliance violations.",
+    "after_product_state": "Developer integrating any API in 2 minutes with AI-generated code, switching providers without code changes. Provider monetizing in 1 day with built-in billing, docs, and 100K+ developer reach. Enterprise with 100% API visibility, 40% cost savings, and automated compliance."
+  },
+  "integrations": {
+    "third_party_packages": [
+      "@anthropic-ai/sdk",
+      "@stripe/react-stripe-js",
+      "@stripe/stripe-js",
+      "stripe",
+      "@supabase/supabase-js",
+      "@supabase/ssr",
+      "resend",
+      "redis",
+      "framer-motion",
+      "reactflow",
+      "@apidevtools/swagger-parser",
+      "@tanstack/react-query",
+      "react-hook-form",
+      "zod",
+      "pino",
+      "@sentry/nextjs",
+      "chart.js",
+      "lucide-react",
+      "@uiw/react-codemirror",
+      "next-themes",
+      "googleapis",
+      "gray-matter",
+      "nanoid",
+      "bcryptjs",
+      "date-fns",
+      "yaml",
+      "cmdk"
+    ],
+    "payment_provider": "Stripe (Stripe Connect for provider payouts, Stripe Checkout for subscriptions, Stripe webhooks, usage-based billing)",
+    "auth_provider": "Supabase Auth (email/password, GitHub OAuth, Google OAuth, SSO/SAML via organizations, SCIM provisioning)",
+    "analytics_tools": [
+      "Custom Supabase-based analytics (page_views, cta_clicks, feature_demo_interactions tables)",
+      "Sentry (error monitoring)",
+      "Cookie consent with DNT support"
+    ],
+    "apis_connected_or_exposed": [
+      "Anthropic Claude API (AI code generation, playground, explanations)",
+      "Stripe API (payments, connect, subscriptions)",
+      "Supabase REST/Realtime (database, auth)",
+      "Google APIs (googleapis package)",
+      "Resend (transactional email)",
+      "Redis (rate limiting, caching)",
+      "GraphQL proxy",
+      "OpenAPI/Swagger parser"
+    ],
+    "platforms_supported": [
+      "Web (Next.js)",
+      "White-label via custom domain portal",
+      "CLI (api/auth/cli-config route)",
+      "REST API (proxy gateway)",
+      "GraphQL (proxy endpoint)"
+    ],
+    "target_sophistication_signal": "High — uses TypeScript strict mode, OpenAPI spec parsing, SCIM provisioning, GraphQL proxy, Redis rate limiting, GDPR deletion flows, SOC2 compliance scanning, Playwright E2E tests, k6 load tests"
+  },
+  "business_model": {
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price_monthly": 0,
+        "price_annual": 0,
+        "target": "Individual developers exploring APIs",
+        "key_limits": "10,000 API calls/month, 50 AI code generations/day, basic analytics, community support",
+        "features_included": ["Access to 10,000+ APIs", "AI code generation (50/day)", "Basic analytics", "Community support"]
+      },
+      {
+        "name": "Pro",
+        "price_monthly": 99,
+        "price_annual": 950,
+        "target": "Growing teams and production workloads",
+        "key_limits": "1M API calls/month, unlimited AI code generation",
+        "features_included": ["Unlimited API access", "Unlimited AI code generation", "Advanced analytics & insights", "Priority email support", "Custom rate limits", "SSO integration", "Workflows & Collaborative Testing"],
+        "popular": true
+      },
+      {
+        "name": "Enterprise",
+        "price_monthly": "Custom",
+        "price_annual": "Custom",
+        "target": "Organizations requiring custom solutions",
+        "key_limits": "Unlimited everything",
+        "features_included": ["Unlimited API calls", "White-label platform", "Dedicated account manager", "24/7 phone + Slack support", "Custom SLAs & contracts", "On-premise deployment option", "Security & compliance review"]
+      }
+    ],
+    "primary_conversion_event": "Signup → Pro plan upgrade via /api/platform/checkout with Stripe Checkout",
+    "monetization_triggers": [
+      "10,000 API calls/month limit hit on Free tier",
+      "50 AI generations/day limit hit on Free tier",
+      "Advanced analytics access required",
+      "SSO integration needed for team",
+      "Workflows & collaborative testing needed",
+      "Provider wanting to monetize APIs (requires Stripe Connect)"
+    ],
+    "tracked_analytics_events": [
+      "page_views (scroll_depth, time_on_page)",
+      "cta_clicks (cta_type, cta_location, metadata)",
+      "feature_demo_interactions (feature_id, feature_name, interaction_type: view/hover/click/demo_open)",
+      "pricing_free CTA click",
+      "pricing_pro CTA click",
+      "pricing_enterprise CTA click",
+      "start_building_quiz CTA",
+      "watch_demo CTA",
+      "final_start_free_trial CTA",
+      "final_book_demo CTA"
+    ],
+    "revenue_model": "SaaS subscription (Free/Pro/$99/mo/Enterprise custom) + usage-based billing on API calls + Stripe Connect platform fees on provider transactions + Enterprise custom contracts"
+  },
+  "competitive_context": {
+    "competitors_mentioned_in_code": [
+      "RapidAPI",
+      "Stripe Connect",
+      "Postman",
+      "Kong"
+    ],
+    "implicit_alternatives": [
+      "Building custom payment infrastructure in-house (6+ month path)",
+      "Using separate tools: RapidAPI (marketplace) + Postman (testing) + Kong (gateway) + Stripe Connect (billing)",
+      "AWS API Gateway",
+      "Apigee",
+      "MuleSoft"
+    ],
+    "unique_capabilities_from_code": [
+      "AI code generation (only platform with this vs RapidAPI, Stripe Connect, Postman, Kong)",
+      "Cost Optimizer with auto-switch to cheaper providers (unique across all competitors)",
+      "AI-powered semantic search (unique across all competitors)",
+      "White-label portal with custom domain middleware rewriting",
+      "Production readiness audit with OpenAPI spec scoring",
+      "Network effects flywheel (referral system built into marketplace mechanics)",
+      "API bundles (curated complementary API packs)",
+      "Workflow builder for multi-API orchestration"
+    ],
+    "positioning_statement": "The only all-in-one platform with AI code generation, marketplace discovery, usage-based monetization, universal gateway, and enterprise governance — replace 5 separate tools with one."
+  },
+  "video_content_recommendations": {
+    "highest_priority_video": "Developer transformation story: 'I used to spend 3 days integrating APIs. Now it takes 2 minutes.' — show the AI playground generating working code, subscribe to an API, paste code, ship.",
+    "recommended_story_type": "B",
+    "strongest_before_after": "Before: Developer copying docs, writing boilerplate auth/retry/error handling for 2 days. After: Type what you need in the AI playground, get production-ready code in 2 minutes, ship.",
+    "most_visual_feature": "AI Playground — watching code appear in real-time as AI generates a complete, working integration is visually compelling and immediately demonstrates the core value",
+    "best_hook_angle": "'Your last API integration took 2 days. This one takes 2 minutes.' — open on a timer/stopwatch visual contrast",
+    "target_emotion": "Relief and excitement — the feeling of finally having the tools that remove the drudgery from API integration",
+    "suggested_character_archetype": "Senior developer or tech lead who has shipped a lot of products but is tired of repeating the same integration boilerplate — someone who values their time and wants to focus on product, not plumbing",
+    "suggested_environment": "Modern home office or tech startup office — screen recording of the platform in action with picture-in-picture of developer reactions",
+    "priority_platforms": [
+      "Twitter/X (developer audience)",
+      "YouTube (longer demo format)",
+      "LinkedIn (enterprise/CTO audience for governance angle)",
+      "Product Hunt launch video"
+    ],
+    "messages_ranked_by_impact": [
+      "2 minutes vs 2 days — AI code generation transforms API integration speed",
+      "Replace 5 tools with 1 — stop paying for RapidAPI + Postman + Kong + Stripe + custom billing",
+      "6 months to 1 day — API providers can monetize immediately without building payment infrastructure",
+      "40% cost savings — enterprises get AI-powered cost optimization across all API spend",
+      "Test before you buy — developer playground eliminates wasted integration time on wrong APIs",
+      "Enterprise governance — complete visibility into shadow IT APIs and $2M+ annual spend"
+    ],
+    "screens_worth_recording": [
+      "Hero landing page with live API constellation animation",
+      "AI Playground generating code in real-time",
+      "Developer playground testing an API with live response",
+      "API subscription flow (browse → subscribe → get API key)",
+      "Provider publishing flow (upload OpenAPI spec → auto-generated docs → Stripe connect)",
+      "Cost intelligence dashboard showing before/after savings",
+      "Competitor comparison table (all green checkmarks for our platform)",
+      "Pricing page with monthly/annual toggle",
+      "Dashboard overview with stats and quick actions",
+      "Getting Started checklist completing in sequence"
+    ]
+  }
+}
