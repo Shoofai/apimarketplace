@@ -146,15 +146,15 @@ export default function Comparison() {
           transition={{ delay: 0.2 }}
           className="overflow-x-auto"
         >
-          <table className="w-full min-w-[800px] border-collapse rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
+          <table className="w-full min-w-[640px] border-collapse rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
             {/* Header */}
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/50">
-                <th className="p-6 text-left text-sm font-semibold text-gray-600 dark:text-gray-400">
+                <th className="p-2 sm:p-4 lg:p-6 text-left text-sm font-semibold text-gray-600 dark:text-gray-400">
                   Feature
                 </th>
                 {competitors.map((competitor) => (
-                  <th key={competitor.name} className={`p-6 text-center ${competitor.isUs ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''}`}>
+                  <th key={competitor.name} className={`p-2 sm:p-4 lg:p-6 text-center ${competitor.isUs ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''}`}>
                     <div
                       className={`flex flex-col items-center ${
                         competitor.isUs ? 'scale-110 rounded-xl border-2 border-primary-500 bg-white p-4 shadow-lg ring-4 ring-primary-500/10 dark:bg-gray-900' : ''
@@ -193,8 +193,8 @@ export default function Comparison() {
                   key={feature.name}
                   className={`border-b border-gray-100 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50 ${index % 2 === 0 ? 'bg-gray-50/30 dark:bg-gray-900/30' : ''}`}
                 >
-                  <td className="p-6 text-sm font-medium text-gray-900 dark:text-gray-100">{feature.name}</td>
-                  <td className="bg-primary-50/30 p-6 text-center dark:bg-primary-900/10">
+                  <td className="p-2 sm:p-4 lg:p-6 text-sm font-medium text-gray-900 dark:text-gray-100">{feature.name}</td>
+                  <td className="bg-primary-50/30 p-2 sm:p-4 lg:p-6 text-center dark:bg-primary-900/10">
                     {feature.apimp ? (
                       <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                         <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -203,28 +203,28 @@ export default function Comparison() {
                       <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="p-6 text-center">
+                  <td className="p-2 sm:p-4 lg:p-6 text-center">
                     {feature.rapidapi ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="p-6 text-center">
+                  <td className="p-2 sm:p-4 lg:p-6 text-center">
                     {feature.stripe ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="p-6 text-center">
+                  <td className="p-2 sm:p-4 lg:p-6 text-center">
                     {feature.postman ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (
                       <X className="mx-auto h-6 w-6 text-gray-500 dark:text-gray-600" />
                     )}
                   </td>
-                  <td className="p-6 text-center">
+                  <td className="p-2 sm:p-4 lg:p-6 text-center">
                     {feature.kong ? (
                       <Check className="mx-auto h-6 w-6 text-green-600 dark:text-green-400" />
                     ) : (

@@ -154,7 +154,7 @@ export default function Pricing() {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
           {pricingTiers.map((tier, index) => (
             <motion.div
               key={tier.name}
@@ -163,7 +163,7 @@ export default function Pricing() {
               transition={{ delay: index * 0.1 }}
             >
               <Card
-                className={`card-elevated relative flex h-full flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+                className={`card-elevated relative flex h-full flex-col p-6 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
                   tier.popular
                     ? 'border-2 border-primary-500 shadow-xl ring-4 ring-primary-500/10 dark:border-primary-400 dark:ring-primary-400/10'
                     : 'border border-gray-200 hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-700'
@@ -187,7 +187,7 @@ export default function Pricing() {
                     <div className="text-4xl font-black text-gray-900 dark:text-white">Custom</div>
                   ) : (
                     <div className="flex items-baseline">
-                      <span className="text-5xl font-bold text-gray-900 dark:text-white">
+                      <span className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white">
                         ${annual ? Math.round(tier.price * 0.8 * 12) : tier.price}
                       </span>
                       <span className="ml-2 text-gray-600 dark:text-gray-400">

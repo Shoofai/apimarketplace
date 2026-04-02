@@ -80,14 +80,14 @@ export default function EnterpriseTrust() {
         </p>
 
         {/* Part 2: Testimonials */}
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
           {TESTIMONIALS.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ delay: 0.3 + index * 0.15 }}
-              className="flex flex-col card-elevated p-8"
+              className="flex flex-col card-elevated p-6 sm:p-8"
             >
               {/* Quote icon */}
               <Quote className="mb-4 h-8 w-8 text-gray-200 dark:text-gray-600" aria-hidden />

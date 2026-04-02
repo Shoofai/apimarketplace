@@ -45,7 +45,7 @@ export default async function CustomersPage() {
             <CardContent className="p-0">
               <div className="grid lg:grid-cols-5">
                 {/* Story content */}
-                <div className="lg:col-span-3 p-8 lg:p-10">
+                <div className="lg:col-span-3 p-4 sm:p-8 lg:p-10">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold">
                       {featured.initials}
@@ -118,8 +118,8 @@ export default async function CustomersPage() {
         </section>
 
         {/* Platform stats */}
-        <section className="rounded-xl border border-border bg-muted/30 p-8">
-          <div className="grid grid-cols-3 divide-x divide-border text-center">
+        <section className="rounded-xl border border-border bg-muted/30 p-4 sm:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border text-center">
             {platformStats.map(({ value, label }) => (
               <div key={label} className="px-4">
                 <div className="text-3xl font-bold text-primary mb-1">{value}</div>

@@ -102,7 +102,7 @@ export default async function RoadmapPage() {
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         {/* Timeline */}
-        <ol className="relative border-l border-border space-y-12 pl-8">
+        <ol className="relative border-l border-border space-y-8 sm:space-y-12 pl-4 sm:pl-8">
           {phases.map(({ title, quarter, color, icon: Icon, items }) => (
             <li key={title} className="relative">
               {/* Dot */}

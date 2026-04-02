@@ -107,7 +107,7 @@ export default async function StatusPage() {
               <h2 className="text-lg font-semibold text-foreground">Uptime History — Last 30 Days</h2>
               <span className="text-sm font-medium text-green-600 dark:text-green-400">30-day uptime: 100%</span>
             </div>
-            <div className="flex items-end gap-1">
+            <div className="flex items-end gap-0.5 sm:gap-1">
               {Array.from({ length: 30 }, (_, i) => {
                 const d = new Date();
                 d.setDate(d.getDate() - (29 - i));
@@ -121,7 +121,7 @@ export default async function StatusPage() {
                 );
               })}
             </div>
-            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-sm bg-green-500" /> Operational</span>
               <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-sm bg-amber-400" /> Degraded</span>
               <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-sm bg-red-500" /> Outage</span>

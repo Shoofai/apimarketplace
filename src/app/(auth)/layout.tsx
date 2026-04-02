@@ -118,7 +118,7 @@ export default async function AuthLayout({
       </div>
 
       {/* Right Side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gradient-to-b from-background via-background to-primary/5 dark:to-primary-900/20 relative lg:border-l lg:border-primary/10 dark:lg:border-primary-800/30">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-background via-background to-primary/5 dark:to-primary-900/20 relative lg:border-l lg:border-primary/10 dark:lg:border-primary-800/30">
         {/* Theme Switcher - Fixed Position */}
         <div className="fixed top-4 right-4 z-50">
           <ThemeSwitcher />
@@ -133,7 +133,7 @@ export default async function AuthLayout({
           <span className="text-sm font-medium">Back</span>
         </Link>
 
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card/50 dark:bg-card/30 p-8 shadow-sm ring-1 ring-primary/5 dark:ring-primary-900/20 lg:p-10">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card/50 dark:bg-card/30 p-6 sm:p-8 shadow-sm ring-1 ring-primary/5 dark:ring-primary-900/20 lg:p-10">
           {/* Mobile Logo */}
           <div className="lg:hidden mb-8 text-center">
             <div className="inline-flex items-center justify-center mb-2">

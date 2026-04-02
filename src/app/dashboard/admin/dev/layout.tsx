@@ -6,6 +6,7 @@ const tabs = [
   { label: 'Tracker', href: `${BASE}/tracker` },
   { label: 'Changelog', href: `${BASE}/changelog` },
   { label: 'Git notes', href: `${BASE}/git-notes` },
+  { label: 'Env config', href: `${BASE}/config` },
 ];
 
 export default function AdminDevLayout({

@@ -43,7 +43,7 @@ export default function EnterprisePage() {
           </div>
 
           {/* Social proof strip */}
-          <div className="mt-12 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-card text-center">
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border rounded-2xl border border-border bg-card text-center">
             {[
               { value: '60%', label: 'Reduction in management overhead' },
               { value: '$50K+', label: 'Average annual savings per org' },
