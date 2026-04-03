@@ -47,7 +47,7 @@ export default function HeroDeveloper() {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden bg-gradient-hero dark:bg-gradient-hero-dark"
+      className="relative min-h-[calc(100svh-3.75rem)] overflow-hidden bg-gradient-hero dark:bg-gradient-hero-dark"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -75,7 +75,7 @@ export default function HeroDeveloper() {
 
       <APIConstellation mouseX={mousePos.x} mouseY={mousePos.y} />
 
-      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <div className="relative mx-auto flex min-h-[calc(100svh-3.75rem)] max-w-7xl flex-col justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <motion.div
           variants={staggerContainer}
           initial="initial"

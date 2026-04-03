@@ -63,7 +63,7 @@ export default function HeroSplit() {
   };
 
   return (
-    <section className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero-dark">
+    <section className="relative flex min-h-[calc(100svh-3.75rem)] flex-col overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-100/50 dark:bg-gradient-hero-dark">
       {/* Dot/grid pattern */}
       <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.12]">
         <div

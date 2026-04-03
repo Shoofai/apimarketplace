@@ -11,7 +11,7 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen">
       <PublicNav />
-      <div className="pt-[calc(4rem+env(safe-area-inset-top,0px))]">{children}</div>
+      <div id="main-content">{children}</div>
       <Footer />
     </div>
   );

@@ -62,9 +62,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const platformName = await getPlatformName();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
+
   return (
     <html lang="en" className={`${plusJakarta.variable} ${inter.variable} ${firaCode.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {supabaseHost && <link rel="preconnect" href={`https://${supabaseHost}`} />}
+        <link rel="preconnect" href="https://js.stripe.com" />
+      </head>
       <body className="antialiased" suppressHydrationWarning>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus:ring-2 focus:ring-primary focus:outline-none"
+        >
+          Skip to content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
