@@ -1,18 +1,25 @@
+import { Suspense } from 'react';
 import { getUserSafe } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getHeroVariant } from '@/lib/settings/hero-variant';
+import { getPlatformName } from '@/lib/settings/platform-name';
+import dynamic from 'next/dynamic';
+
+// Above-the-fold: eagerly loaded
 import Hero from '@/components/landing/Hero';
 import LogoWall from '@/components/landing/LogoWall';
-import ValueProposition from '@/components/landing/ValueProposition';
 import ProblemStatement from '@/components/landing/ProblemStatement';
-import KillerFeatures from '@/components/landing/KillerFeatures';
-import APIFlowDiagram from '@/components/landing/APIFlowDiagram';
-import TechShowcase from '@/components/landing/TechShowcase';
-import Pricing from '@/components/landing/Pricing';
-import NetworkEffects from '@/components/landing/NetworkEffects';
-import Comparison from '@/components/landing/Comparison';
-import EnterpriseTrust from '@/components/landing/EnterpriseTrust';
-import FinalCTA from '@/components/landing/FinalCTA';
+
+// Below-the-fold: lazy loaded to reduce initial bundle
+const ValueProposition = dynamic(() => import('@/components/landing/ValueProposition'));
+const KillerFeatures   = dynamic(() => import('@/components/landing/KillerFeatures'));
+const APIFlowDiagram   = dynamic(() => import('@/components/landing/APIFlowDiagram'));
+const TechShowcase     = dynamic(() => import('@/components/landing/TechShowcase'));
+const Comparison       = dynamic(() => import('@/components/landing/Comparison'));
+const EnterpriseTrust  = dynamic(() => import('@/components/landing/EnterpriseTrust'));
+const NetworkEffects   = dynamic(() => import('@/components/landing/NetworkEffects'));
+const Pricing          = dynamic(() => import('@/components/landing/Pricing'));
+const FinalCTA         = dynamic(() => import('@/components/landing/FinalCTA'));
 
 /*
  * Landing page section order & background rhythm:
@@ -23,15 +30,25 @@ import FinalCTA from '@/components/landing/FinalCTA';
  *   5. KillerFeatures  — white
  *   6. APIFlowDiagram  — dark (always dark)
  *   7. TechShowcase    — dark (always dark)
- *   8. PlatformStats   — white
- *   9. Comparison      — gray-50
- *  10. EnterpriseTrust — white  (NEW — trust badges + testimonials)
- *  11. NetworkEffects  — purple gradient
- *  12. Pricing         — white
- *  13. FinalCTA        — purple gradient
- *
- * Removed: ComparisonMini (merged into Comparison), redundant "Powered By" ticker (was in TechShowcase)
+ *   8. Comparison      — gray-50
+ *   9. EnterpriseTrust — white
+ *  10. NetworkEffects  — purple gradient
+ *  11. Pricing         — white
+ *  12. FinalCTA        — purple gradient
  */
+
+export async function generateMetadata() {
+  const name = await getPlatformName();
+  return {
+    title: `${name} - The AI-Powered API Marketplace`,
+    description: 'Discover, test, and integrate 500+ APIs. AI-generated code, one-click monetization, and enterprise governance — all in one platform.',
+    openGraph: {
+      title: `${name} - The AI-Powered API Marketplace`,
+      description: 'From API discovery to production in 2 minutes. AI code generation, Stripe Connect monetization, and enterprise governance.',
+      type: 'website',
+    },
+  };
+}
 
 export default async function Home() {
   const { data: { user } } = await getUserSafe();
@@ -44,18 +61,23 @@ export default async function Home() {
 
   return (
     <>
+      {/* Critical above-the-fold content */}
       <Hero variant={heroVariant} />
       <LogoWall />
       <ProblemStatement />
-      <ValueProposition />
-      <KillerFeatures />
-      <APIFlowDiagram />
-      <TechShowcase />
-      <Comparison />
-      <EnterpriseTrust />
-      <NetworkEffects />
-      <Pricing />
-      <FinalCTA />
+
+      {/* Below-the-fold: dynamically loaded */}
+      <Suspense fallback={null}>
+        <ValueProposition />
+        <KillerFeatures />
+        <APIFlowDiagram />
+        <TechShowcase />
+        <Comparison />
+        <EnterpriseTrust />
+        <NetworkEffects />
+        <Pricing />
+        <FinalCTA />
+      </Suspense>
     </>
   );
 }

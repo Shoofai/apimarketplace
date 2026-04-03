@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Check, X, Zap } from 'lucide-react';
 import { usePlatformName } from '@/contexts/PlatformNameContext';
+import Image from 'next/image';
 
 const competitorList = (platformName: string) => [
   {
@@ -162,7 +163,7 @@ export default function Comparison() {
                     >
                       <div className="mb-1 text-3xl">
                         {competitor.isUs ? (
-                          <img src={competitor.logo} alt={competitor.name} className="h-8 w-8 inline-block" />
+                          <Image src={competitor.logo} alt={competitor.name} width={32} height={32} className="inline-block" />
                         ) : (
                           competitor.logo
                         )}

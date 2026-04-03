@@ -4,6 +4,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import matter from 'gray-matter';
 import { ArrowRight } from 'lucide-react';
+import { getPlatformName } from '@/lib/settings/platform-name';
+
+export async function generateMetadata() {
+  const name = await getPlatformName();
+  return {
+    title: `Blog | ${name}`,
+    description: `News, tutorials, and product updates from the ${name} team.`,
+  };
+}
 
 interface BlogPost {
   slug: string;

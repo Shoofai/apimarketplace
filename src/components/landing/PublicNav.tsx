@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -194,7 +194,7 @@ function NavDropdown({
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function PublicNav() {
+export const PublicNav = memo(function PublicNav() {
   const platformName = usePlatformName();
   const pathname = usePathname();
 
@@ -235,13 +235,13 @@ export function PublicNav() {
   }, [pathname]);
 
   // Dropdown open/close with delay to prevent accidental close
-  const openDropdown = (label: string) => {
+  const openDropdown = useCallback((label: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpenGroup(label);
-  };
-  const scheduleClose = () => {
+  }, []);
+  const scheduleClose = useCallback(() => {
     closeTimer.current = setTimeout(() => setOpenGroup(null), 150);
-  };
+  }, []);
 
   return (
     <>
@@ -437,4 +437,4 @@ export function PublicNav() {
       </div>
     </>
   );
-}
+});

@@ -1,13 +1,19 @@
-import type { Metadata } from 'next';
 import { GovernanceFeatureShowcase } from '@/components/growth/GovernanceFeatureShowcase';
 import { EnterprisePageClient } from './EnterprisePageClient';
 import { EnterpriseFAQ } from './EnterpriseFAQ';
+import { getPlatformName } from '@/lib/settings/platform-name';
 
-export const metadata: Metadata = {
-  title: 'Enterprise API Governance | API Marketplace',
-  description:
-    'Centralise API discovery, access control, compliance, and cost intelligence for your organisation. Calculate your ROI and book a demo.',
-};
+export async function generateMetadata() {
+  const name = await getPlatformName();
+  return {
+    title: `Enterprise API Governance | ${name}`,
+    description: `${name} Enterprise gives your team SSO, RBAC, SLA guarantees, and procurement-ready compliance. Book a demo.`,
+    openGraph: {
+      title: `Enterprise | ${name}`,
+      description: 'Governance, SSO, SLAs, and procurement compliance for engineering teams at scale.',
+    },
+  };
+}
 
 export default function EnterprisePage() {
   return (

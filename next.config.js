@@ -2,7 +2,10 @@
 const { withSentryConfig } = require('@sentry/nextjs');
 
 const nextConfig = {
-  /* config options here */
+  // Security & performance headers
+  poweredByHeader: false,
+  compress: true,
+
   experimental: {
     // Enable Server Actions
     serverActions: {
@@ -25,6 +28,37 @@ const nextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  // Security & caching headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      {
+        source: '/(.*)\\.(svg|png|jpg|jpeg|webp|avif|ico|woff2)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ];
   },
 
   // Performance optimizations
