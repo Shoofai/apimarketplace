@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserCircle, Search, Shield, Clock, Users } from 'lucide-react';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 
 const PAGE_SIZE = 25;
@@ -77,6 +78,7 @@ export default async function UserManagementPage({
 
   return (
     <div className="space-y-8">
+      <Breadcrumb items={[{ label: 'Admin', href: '/dashboard/admin' }, { label: 'People', href: '/dashboard/admin/people' }, { label: 'Users' }]} className="mb-6" />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Box, Clock, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 import Link from 'next/link';
 
@@ -64,6 +65,7 @@ export default async function APIReviewQueuePage() {
 
   return (
     <div className="space-y-8">
+      <Breadcrumb items={[{ label: 'Admin', href: '/dashboard/admin' }, { label: 'APIs', href: '/dashboard/admin/apis' }, { label: 'Review Queue' }]} className="mb-6" />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import BrandingSettings from './BrandingSettings';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 export const metadata: Metadata = {
   title: 'Branding | Admin',
@@ -23,5 +24,10 @@ export default async function BrandingPage() {
 
   if (!userData?.is_platform_admin) redirect('/dashboard');
 
-  return <BrandingSettings />;
+  return (
+    <div className="space-y-6">
+      <Breadcrumb items={[{ label: 'Admin', href: '/dashboard/admin' }, { label: 'Branding' }]} className="mb-6" />
+      <BrandingSettings />
+    </div>
+  );
 }
