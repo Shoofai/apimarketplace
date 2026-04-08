@@ -26,6 +26,8 @@ import type { RecommendedAPI } from '@/lib/recommendations/types';
 
 type Category = { id: string; name: string; slug: string };
 
+type HealthData = { is_healthy: boolean | null; response_time_ms: number | null };
+
 interface MarketplaceContentProps {
   categories: Category[];
   searchResults: SearchResult;
@@ -39,8 +41,9 @@ interface MarketplaceContentProps {
   tags: string[];
   priceMin: number | undefined;
   priceMax: number | undefined;
-  productType?: 'api' | 'dataset' | 'all';
+  productType?: 'api' | 'dataset' | 'mcp' | 'all';
   searchParams: Record<string, string | undefined>;
+  healthMap?: Record<string, HealthData>;
 }
 
 const FORM_ID = 'marketplace-filters';
@@ -74,6 +77,7 @@ export function MarketplaceContent({
   priceMax,
   productType = 'all',
   searchParams,
+  healthMap = {},
 }: MarketplaceContentProps) {
   const [filtersSheetOpen, setFiltersSheetOpen] = useState(false);
   const base = {
@@ -204,7 +208,7 @@ export function MarketplaceContent({
                   (api as any).product_type === 'dataset' ? (
                     <DatasetCard key={api.id} api={api as any} />
                   ) : (
-                    <APICard key={api.id} api={api} />
+                    <APICard key={api.id} api={api} healthData={healthMap[api.id]} />
                   )
                 )}
               </div>

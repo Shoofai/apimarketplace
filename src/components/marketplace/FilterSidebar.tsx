@@ -29,7 +29,7 @@ interface FilterSidebarProps {
   priceMax: number | undefined;
   minRating: number | undefined;
   tags: string[];
-  productType?: 'api' | 'dataset' | 'all';
+  productType?: 'api' | 'dataset' | 'mcp' | 'all';
   /** Open sections by default: categories. Price open if price filter active. */
   defaultOpenSections?: string[];
   /** Form id to associate with external submit (optional) */
@@ -82,7 +82,7 @@ export function FilterSidebar({
     <>
       {/* Product Type */}
       <div className="flex rounded-md border border-border overflow-hidden mb-3">
-        {(['all', 'api', 'dataset'] as const).map((pt) => (
+        {(['all', 'api', 'dataset', 'mcp'] as const).map((pt) => (
           <label
             key={pt}
             className={cn(
@@ -99,7 +99,7 @@ export function FilterSidebar({
               defaultChecked={productType === pt}
               className="sr-only"
             />
-            {pt === 'all' ? 'All' : pt === 'api' ? 'APIs' : 'Datasets'}
+            {pt === 'all' ? 'All' : pt === 'api' ? 'APIs' : pt === 'dataset' ? 'Datasets' : 'MCP'}
           </label>
         ))}
       </div>

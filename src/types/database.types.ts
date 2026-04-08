@@ -2139,6 +2139,8 @@ export type Database = {
           min_price_cached: number | null
           name: string
           openapi_raw: string | null
+          mcp_server_url: string | null
+          mcp_tools: Json | null
           openapi_spec: Json | null
           organization_id: string
           original_url: string | null
@@ -2172,6 +2174,8 @@ export type Database = {
           min_price_cached?: number | null
           name: string
           openapi_raw?: string | null
+          mcp_server_url?: string | null
+          mcp_tools?: Json | null
           openapi_spec?: Json | null
           organization_id: string
           original_url?: string | null
@@ -2202,6 +2206,8 @@ export type Database = {
           logo_url?: string | null
           long_description?: string | null
           max_price_cached?: number | null
+          mcp_server_url?: string | null
+          mcp_tools?: Json | null
           min_price_cached?: number | null
           name?: string
           openapi_raw?: string | null

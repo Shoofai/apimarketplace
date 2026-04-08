@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, ArrowRight, ArrowLeft, Check, Database, Code2 } from 'lucide-react';
+import { Loader2, ArrowRight, ArrowLeft, Check, Database, Code2, Bot } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -50,7 +50,11 @@ export function PublishWizard({ categories }: PublishWizardProps) {
   const [description, setDescription] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
 
-  const [productType, setProductType] = useState<'api' | 'dataset'>('api');
+  const [productType, setProductType] = useState<'api' | 'dataset' | 'mcp'>('api');
+
+  // MCP fields
+  const [mcpServerUrl, setMcpServerUrl] = useState('');
+  const [mcpToolsRaw, setMcpToolsRaw] = useState('');
 
   // API fields
   const [openApiRaw, setOpenApiRaw] = useState('');
@@ -154,7 +158,10 @@ export function PublishWizard({ categories }: PublishWizardProps) {
           description: description.trim() || undefined,
           base_url: baseUrl.trim(),
           product_type: productType,
-          ...(productType === 'dataset' ? {
+          ...(productType === 'mcp' ? {
+            mcp_server_url: mcpServerUrl.trim() || undefined,
+            mcp_tools: mcpToolsRaw.trim() ? (() => { try { return JSON.parse(mcpToolsRaw); } catch { return undefined; } })() : undefined,
+          } : productType === 'dataset' ? {
             dataset_metadata: {
               file_format: dataFileFormat.trim() || undefined,
               file_size_bytes: dataSizeBytes ? Number(dataSizeBytes) : undefined,
@@ -251,10 +258,21 @@ export function PublishWizard({ categories }: PublishWizardProps) {
                 >
                   <Database className="h-4 w-4" /> Dataset
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setProductType('mcp')}
+                  className={`flex-1 flex items-center gap-2 justify-center rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
+                    productType === 'mcp'
+                      ? 'border-violet-600 bg-violet-500/10 text-violet-700 dark:text-violet-300'
+                      : 'border-border text-muted-foreground hover:bg-accent'
+                  }`}
+                >
+                  <Bot className="h-4 w-4" /> MCP Server
+                </button>
               </div>
             </div>
             <div>
-              <Label htmlFor="name">{productType === 'dataset' ? 'Dataset' : 'API'} Name</Label>
+              <Label htmlFor="name">{productType === 'dataset' ? 'Dataset' : productType === 'mcp' ? 'MCP Server' : 'API'} Name</Label>
               <Input
                 id="name"
                 value={name}
@@ -397,6 +415,36 @@ export function PublishWizard({ categories }: PublishWizardProps) {
           </div>
         )}
 
+        {step === 1 && productType === 'mcp' && (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              MCP (Model Context Protocol) servers let AI agents discover and call your tools automatically.
+              Provide the server URL and optionally list the tools it exposes.
+            </p>
+            <div>
+              <Label htmlFor="mcp-url">Server URL</Label>
+              <Input
+                id="mcp-url"
+                className="mt-1 font-mono text-sm"
+                value={mcpServerUrl}
+                onChange={(e) => setMcpServerUrl(e.target.value)}
+                placeholder="https://your-server.example.com/mcp"
+              />
+            </div>
+            <div>
+              <Label htmlFor="mcp-tools">Tools (JSON array, optional)</Label>
+              <Textarea
+                id="mcp-tools"
+                className="mt-1 font-mono text-sm min-h-[140px]"
+                value={mcpToolsRaw}
+                onChange={(e) => setMcpToolsRaw(e.target.value)}
+                placeholder={'[{"name": "search", "description": "Search the web"}, {"name": "summarize", "description": "Summarize content"}]'}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Each tool needs a <code className="font-mono">name</code> and optionally a <code className="font-mono">description</code>.</p>
+            </div>
+          </div>
+        )}
+
         {step === 2 && (
           <div className="space-y-4">
             {plans.map((plan, i) => (
@@ -471,9 +519,9 @@ export function PublishWizard({ categories }: PublishWizardProps) {
           <div className="space-y-4">
             <div className="rounded-lg border p-4 space-y-2">
               <div className="flex items-center gap-2">
-                {productType === 'dataset' ? <Database className="h-4 w-4 text-teal-600" /> : <Code2 className="h-4 w-4 text-primary" />}
+                {productType === 'dataset' ? <Database className="h-4 w-4 text-teal-600" /> : productType === 'mcp' ? <Bot className="h-4 w-4 text-violet-600" /> : <Code2 className="h-4 w-4 text-primary" />}
                 <h3 className="font-semibold">{name || 'Name'}</h3>
-                <span className="text-xs text-muted-foreground capitalize px-1.5 py-0.5 rounded bg-muted">{productType}</span>
+                <span className="text-xs text-muted-foreground capitalize px-1.5 py-0.5 rounded bg-muted">{productType === 'mcp' ? 'MCP Server' : productType}</span>
               </div>
               <p className="text-sm text-muted-foreground">{shortDescription || 'No description'}</p>
               {productType === 'api' && (
@@ -489,6 +537,12 @@ export function PublishWizard({ categories }: PublishWizardProps) {
                   {dataFileFormat && <p>Format: {dataFileFormat}</p>}
                   {dataUpdateFrequency && <p>Update frequency: {dataUpdateFrequency}</p>}
                   {dataDeliveryMethod && <p>Delivery: {dataDeliveryMethod}</p>}
+                  <p>{plans.length} pricing plan(s)</p>
+                </div>
+              )}
+              {productType === 'mcp' && (
+                <div className="text-xs text-muted-foreground space-y-0.5">
+                  {mcpServerUrl && <p className="font-mono">{mcpServerUrl}</p>}
                   <p>{plans.length} pricing plan(s)</p>
                 </div>
               )}

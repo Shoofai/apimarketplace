@@ -17,8 +17,8 @@ export interface MarketplaceFilters {
   tags?: string[];
   priceMin?: number;
   priceMax?: number;
-  /** Filter by product type: 'api' | 'dataset' | 'all' (default 'all') */
-  productType?: 'api' | 'dataset' | 'all';
+  /** Filter by product type: 'api' | 'dataset' | 'mcp' | 'all' (default 'all') */
+  productType?: 'api' | 'dataset' | 'mcp' | 'all';
 }
 
 /** Escape % and _ for safe use in ilike patterns (literal match). */

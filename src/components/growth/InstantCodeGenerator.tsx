@@ -28,6 +28,11 @@ export interface CodeGenEndpoint {
   summary: string;
 }
 
+export interface EndpointSchema {
+  requestBodySchema?: unknown;
+  responseSchema?: unknown;
+}
+
 interface InstantCodeGeneratorProps {
   apiName: string;
   apiBaseUrl?: string;
@@ -36,6 +41,8 @@ interface InstantCodeGeneratorProps {
   developerId?: string;
   sessionId?: string;
   className?: string;
+  /** OpenAPI-derived request/response schemas keyed by `METHOD:path` (e.g. "POST:/users") */
+  endpointSchemas?: Record<string, EndpointSchema>;
 }
 
 export function InstantCodeGenerator({
@@ -46,6 +53,7 @@ export function InstantCodeGenerator({
   developerId,
   sessionId,
   className,
+  endpointSchemas,
 }: InstantCodeGeneratorProps) {
   const instanceId = useId();
   const [language, setLanguage] = useState<LangId>('typescript');
@@ -73,6 +81,8 @@ export function InstantCodeGenerator({
     setError(null);
     try {
       const endpoint = endpoints[selectedEndpoint] ?? endpoints[0];
+      const schemaKey = `${endpoint.method.toUpperCase()}:${endpoint.path}`;
+      const schema = endpointSchemas?.[schemaKey];
       const res = await fetch('/api/generate-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,6 +95,8 @@ export function InstantCodeGenerator({
           api_id: apiId ?? null,
           developer_id: developerId ?? null,
           session_id: anonSessionId ?? null,
+          request_body_schema: schema?.requestBodySchema ?? null,
+          response_schema: schema?.responseSchema ?? null,
         }),
       });
       const data = await res.json();

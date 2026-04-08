@@ -40,7 +40,7 @@ const features = [
     apimp: true,
     rapidapi: false,
     stripe: false,
-    postman: false,
+    postman: true,
     kong: false,
   },
   {
@@ -109,6 +109,14 @@ const features = [
   },
   {
     name: 'AI-Powered Search',
+    apimp: true,
+    rapidapi: false,
+    stripe: false,
+    postman: false,
+    kong: false,
+  },
+  {
+    name: 'MCP Server Listings',
     apimp: true,
     rapidapi: false,
     stripe: false,
@@ -265,9 +273,9 @@ export function ComparisonMini() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   const rows = [
-    { feature: 'AI Code Generation', us: true, rapidapi: false, stripe: false, postman: false },
+    { feature: 'AI Code Generation', us: true, rapidapi: false, stripe: false, postman: true },
+    { feature: 'MCP Server Listings', us: true, rapidapi: false, stripe: false, postman: false },
     { feature: 'One-Click Monetization', us: true, rapidapi: true, stripe: true, postman: false },
-    { feature: 'Developer Playground', us: true, rapidapi: false, stripe: false, postman: true },
   ];
   const cols = [platformName, 'RapidAPI', 'Stripe Connect', 'Postman'];
 

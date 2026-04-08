@@ -23,6 +23,30 @@ interface APIDetailPageProps {
   params: Promise<{ org_slug: string; api_slug: string }>;
 }
 
+/** Build a map of endpoint schemas from the raw OpenAPI spec for context-aware code gen. */
+function buildEndpointSchemas(spec: unknown): Record<string, { requestBodySchema?: unknown; responseSchema?: unknown }> {
+  if (!spec || typeof spec !== 'object') return {};
+  const paths = (spec as Record<string, unknown>).paths;
+  if (!paths || typeof paths !== 'object') return {};
+  const map: Record<string, { requestBodySchema?: unknown; responseSchema?: unknown }> = {};
+  for (const [path, pathItem] of Object.entries(paths as Record<string, unknown>)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+    for (const method of ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'] as const) {
+      const op = (pathItem as Record<string, unknown>)[method];
+      if (!op || typeof op !== 'object') continue;
+      const opObj = op as Record<string, unknown>;
+      const reqBody = opObj.requestBody as Record<string, unknown> | undefined;
+      const responses = opObj.responses as Record<string, unknown> | undefined;
+      const resp200 = responses?.['200'] as Record<string, unknown> | undefined;
+      map[`${method.toUpperCase()}:${path}`] = {
+        requestBodySchema: (reqBody?.content as Record<string, unknown> | undefined)?.['application/json'] as unknown ?? null,
+        responseSchema: ((resp200?.content as Record<string, unknown> | undefined)?.['application/json'] as Record<string, unknown> | undefined)?.schema ?? null,
+      };
+    }
+  }
+  return map;
+}
+
 export async function generateMetadata({ params }: APIDetailPageProps) {
   const { api_slug } = await params;
   const supabase = await createClient();
@@ -216,6 +240,36 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
           );
         })()}
 
+        {/* MCP Server info block */}
+        {(api as any).product_type === 'mcp' && (
+          <div className="rounded-xl border border-violet-500/30 bg-violet-500/5 p-5 mb-6">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm font-semibold text-violet-700 dark:text-violet-300">MCP Server</span>
+              <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">Model Context Protocol</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              Connect AI agents (Claude, Cursor, Windsurf) to this tool directly. Add to your MCP client config:
+            </p>
+            {(api as any).mcp_server_url && (
+              <code className="block text-sm font-mono bg-muted px-3 py-2 rounded-lg break-all">
+                {(api as any).mcp_server_url}
+              </code>
+            )}
+            {(api as any).mcp_tools && Array.isArray((api as any).mcp_tools) && (api as any).mcp_tools.length > 0 && (
+              <div className="mt-3">
+                <p className="text-xs font-medium text-muted-foreground mb-1.5">Available tools</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {((api as any).mcp_tools as { name?: string }[]).map((tool, i) => (
+                    <span key={i} className="rounded-md bg-violet-500/10 px-2 py-0.5 text-xs font-mono text-violet-700 dark:text-violet-300">
+                      {tool.name ?? `tool_${i}`}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -375,6 +429,7 @@ export default async function APIDetailPage({ params }: APIDetailPageProps) {
                     path: ep.path ?? '/',
                     summary: ep.description ?? '',
                   }))}
+                  endpointSchemas={buildEndpointSchemas((api as any).api_specs?.[0]?.openapi_raw ?? (api as any).openapi_spec)}
                 />
                 <APITestSandbox
                   apiName={api.name}

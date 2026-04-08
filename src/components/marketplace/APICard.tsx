@@ -22,6 +22,7 @@ interface APICardProps {
     total_subscribers: number | null;
     total_api_calls?: number | null;
     status?: string | null;
+    product_type?: string | null;
     organization: {
       name: string;
       slug: string;
@@ -34,6 +35,7 @@ interface APICardProps {
     minPrice?: number;
     maxPrice?: number;
   };
+  healthData?: { is_healthy: boolean | null; response_time_ms: number | null };
 }
 
 /** Badge color class for category slug (enterprise semantic colors). */
@@ -50,7 +52,7 @@ function categoryBadgeClass(slug: string | undefined): string {
   return 'bg-muted text-muted-foreground border-border';
 }
 
-export function APICard({ api }: APICardProps) {
+export function APICard({ api, healthData }: APICardProps) {
   const rating = api.avg_rating || 0;
   const reviewCount = api.total_reviews || 0;
   const subscriberCount = api.total_subscribers || 0;
@@ -109,12 +111,17 @@ export function APICard({ api }: APICardProps) {
         {isClaimPending && (
           <Badge variant="secondary" className="text-xs">Pending</Badge>
         )}
-        {!isUnclaimed && !isClaimPending && api.category?.name && (
+        {!isUnclaimed && !isClaimPending && api.product_type === 'mcp' && (
+          <Badge variant="outline" className="text-xs bg-violet-500/15 text-violet-700 dark:text-violet-300 border-violet-500/30">
+            MCP Server
+          </Badge>
+        )}
+        {!isUnclaimed && !isClaimPending && api.product_type !== 'mcp' && api.category?.name && (
           <Badge variant="outline" className={cn('text-xs border', categoryBadgeClass(api.category?.slug))}>
             {api.category.name}
           </Badge>
         )}
-        {!isUnclaimed && !isClaimPending && !api.category?.name && (
+        {!isUnclaimed && !isClaimPending && api.product_type !== 'mcp' && !api.category?.name && (
           <Badge variant="secondary" className="text-xs">API</Badge>
         )}
       </div>
@@ -136,6 +143,17 @@ export function APICard({ api }: APICardProps) {
         )}
         {totalCalls > 0 && (
           <span className="font-medium">{totalCalls.toLocaleString()} calls</span>
+        )}
+        {healthData && (
+          <div className="flex items-center gap-1">
+            <span
+              className={cn('h-2 w-2 rounded-full', healthData.is_healthy ? 'bg-green-500' : 'bg-red-500')}
+              title={healthData.is_healthy ? 'Healthy' : 'Degraded'}
+            />
+            {healthData.response_time_ms != null && (
+              <span className="font-medium">{healthData.response_time_ms}ms</span>
+            )}
+          </div>
         )}
       </div>
 
