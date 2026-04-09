@@ -42,17 +42,20 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'The only platform with AI, marketplace, gateway, and payments in one.',
       type: 'website',
       url: 'https://apimarketplace.pro',
-      images: ['/og-image.png'],
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: `${name} — The AI-Powered API Marketplace` }],
     },
     twitter: {
       card: 'summary_large_image',
       title: name,
       description: 'The AI-Powered API Marketplace That Runs Itself',
-      images: ['/og-image.png'],
+      images: ['/opengraph-image'],
     },
     icons: {
-      icon: '/favicon.svg',
-      apple: '/favicon.svg',
+      icon: [
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/icon', sizes: '32x32', type: 'image/png' },
+      ],
+      apple: { url: '/icon', sizes: '180x180', type: 'image/png' },
     },
   };
 }
