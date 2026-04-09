@@ -206,6 +206,22 @@ export default function BrandingSettings() {
     }
   };
 
+  const handleOgImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', 'og-image');
+
+    const res = await fetch('/api/admin/branding/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({ error: 'Upload failed' }));
+      throw new Error(data.error || 'Upload failed');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -214,7 +230,7 @@ export default function BrandingSettings() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Branding</h1>
         </div>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Manage your platform logo and favicon. Changes apply across the entire application.
+          Manage your platform logo, favicon, and social share image. Changes apply across the entire application.
         </p>
       </div>
 
@@ -248,6 +264,15 @@ export default function BrandingSettings() {
           accept=".svg,.png,.ico"
           onUpload={handleFaviconUpload}
         />
+        <LogoUploadCard
+          title="OG / Social Share Image"
+          description="Shown when links are shared on Slack, Twitter, iMessage, LinkedIn, etc. Recommended: 1200×630px PNG or JPG."
+          currentSrc={brandingUrl('og-image.png', cacheBust)}
+          previewSize={240}
+          accept=".png,.jpg,.jpeg,.webp"
+          onUpload={handleOgImageUpload}
+          previewBg="light"
+        />
       </div>
 
       {/* Info */}
@@ -255,9 +280,10 @@ export default function BrandingSettings() {
         <CardContent className="p-4">
           <h3 className="text-sm font-medium text-primary-900 dark:text-primary-300">How it works</h3>
           <ul className="mt-2 space-y-1 text-xs text-primary-700 dark:text-primary-400">
-            <li>&#8226; Logos are stored in Supabase Storage and served globally via CDN</li>
-            <li>&#8226; SVG format is recommended for crisp rendering at all sizes</li>
-            <li>&#8226; The component auto-switches between light and dark variants based on theme</li>
+            <li>&#8226; All assets are stored in Supabase Storage and served globally via CDN</li>
+            <li>&#8226; SVG format is recommended for logos and favicons for crisp rendering at all sizes</li>
+            <li>&#8226; The OG image is used when links are shared on social platforms — 1200×630px PNG recommended</li>
+            <li>&#8226; Favicon changes are reflected in browser tabs and bookmark icons immediately</li>
             <li>&#8226; Changes take effect immediately on next page load</li>
           </ul>
         </CardContent>

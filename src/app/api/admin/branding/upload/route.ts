@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing file or type' }, { status: 400 });
     }
 
-    if (!['logo', 'logo-dark', 'favicon'].includes(type)) {
+    if (!['logo', 'logo-dark', 'favicon', 'og-image'].includes(type)) {
       return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
     }
 
@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
       logo: `logo.${ext}`,
       'logo-dark': `logo-dark.${ext}`,
       favicon: `favicon.${ext}`,
+      'og-image': `og-image.${ext}`,
     };
     const filename = filenameMap[type] || `logo.${ext}`;
 
@@ -88,11 +89,26 @@ export async function POST(request: NextRequest) {
     // Build the public URL
     const { data: urlData } = adminClient.storage.from(BUCKET).getPublicUrl(filename);
 
+    // Persist OG image URL to app_settings so metadata can use it
+    if (type === 'og-image') {
+      await adminClient.from('app_settings').upsert({
+        key: 'og_image_url',
+        value: { url: urlData.publicUrl },
+        updated_at: new Date().toISOString(),
+        updated_by: user.id,
+      }, { onConflict: 'key' });
+    }
+
+    const typeLabel =
+      type === 'logo' ? 'Logo (light)' :
+      type === 'logo-dark' ? 'Logo (dark)' :
+      type === 'og-image' ? 'OG image' : 'Favicon';
+
     return NextResponse.json({
       success: true,
       filename,
       publicUrl: urlData.publicUrl,
-      message: `${type === 'logo' ? 'Logo (light)' : type === 'logo-dark' ? 'Logo (dark)' : 'Favicon'} uploaded successfully`,
+      message: `${typeLabel} uploaded successfully`,
     });
   } catch (err) {
     console.error('Branding upload error:', err);
