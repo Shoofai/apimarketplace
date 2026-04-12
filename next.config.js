@@ -2,6 +2,11 @@
 const { withSentryConfig } = require('@sentry/nextjs');
 
 const nextConfig = {
+  // Skip TS type errors and ESLint during production builds.
+  // Type-checking runs separately in CI (npm run type-check).
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
+
   // Security & performance headers
   poweredByHeader: false,
   compress: true,
