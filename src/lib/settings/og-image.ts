@@ -6,13 +6,15 @@ import { createAdminClient } from '@/lib/supabase/admin';
  * or null to fall back to the generated /opengraph-image route.
  */
 export const getOgImageUrl = cache(async (): Promise<string | null> => {
-  const supabase = createAdminClient();
-  const { data } = await supabase
-    .from('app_settings')
-    .select('value')
-    .eq('key', 'og_image_url')
-    .maybeSingle();
-
-  const value = data?.value as { url?: string } | null;
-  return value?.url ?? null;
+  try {
+    const supabase = createAdminClient();
+    const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
+    const query = supabase.from('app_settings').select('value').eq('key', 'og_image_url').maybeSingle()
+      .then(({ data }) => data);
+    const data = await Promise.race([query, timeout]);
+    const value = data?.value as { url?: string } | null | undefined;
+    return value?.url ?? null;
+  } catch {
+    return null;
+  }
 });

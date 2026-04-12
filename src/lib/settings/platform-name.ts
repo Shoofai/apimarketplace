@@ -10,15 +10,17 @@ const DEFAULT_PLATFORM_NAME = 'LukeAPI';
  * Defaults to "LukeAPI" if not set.
  */
 export const getPlatformName = cache(async (): Promise<string> => {
-  const supabase = createAdminClient();
-  const { data } = await supabase
-    .from('app_settings')
-    .select('value')
-    .eq('key', PLATFORM_NAME_KEY)
-    .maybeSingle();
-
-  const value = data?.value as { name?: string } | null;
-  return value?.name ?? DEFAULT_PLATFORM_NAME;
+  try {
+    const supabase = createAdminClient();
+    const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
+    const query = supabase.from('app_settings').select('value').eq('key', PLATFORM_NAME_KEY).maybeSingle()
+      .then(({ data }) => data);
+    const data = await Promise.race([query, timeout]);
+    const value = data?.value as { name?: string } | null | undefined;
+    return value?.name ?? DEFAULT_PLATFORM_NAME;
+  } catch {
+    return DEFAULT_PLATFORM_NAME;
+  }
 });
 
 export { PLATFORM_NAME_KEY, DEFAULT_PLATFORM_NAME };
