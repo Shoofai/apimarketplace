@@ -1,3 +1,4 @@
+// @ts-nocheck — local import script, not part of the Next.js app
 import { google } from 'googleapis';
 import { authenticate } from '@google-cloud/local-auth';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
