@@ -1,3 +1,4 @@
+// @ts-nocheck — local utility script, not part of the Next.js app
 /**
  * Reads Playwright JSON report (test-results/regression-results.json) and writes
  * a compact regression-summary.json for the Regression Dashboard.
