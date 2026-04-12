@@ -44,7 +44,7 @@ export default async function PrelaunchPage() {
             {message ??
               (isMaintenance
                 ? 'We are performing scheduled maintenance. Check back in a few minutes.'
-                : 'We're putting the finishing touches on something great. Leave your email and we'll let you know when we launch.')}
+                : "We're putting the finishing touches on something great. Leave your email and we'll let you know when we launch.")}
           </p>
         </div>
 
