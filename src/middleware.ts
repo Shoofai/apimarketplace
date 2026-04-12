@@ -2,6 +2,120 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { rateLimit } from '@/lib/rate-limit';
 
+// ---------------------------------------------------------------------------
+// Site-mode gate (prelaunch / maintenance)
+// Module-level cache so we don't hit the DB on every request.
+// ---------------------------------------------------------------------------
+let _siteModeCache: { mode: string; message: string | null; ts: number } | null = null;
+const SITE_MODE_TTL = 10_000; // 10 s
+
+async function fetchSiteMode(): Promise<{ mode: string; message: string | null }> {
+  const now = Date.now();
+  if (_siteModeCache && now - _siteModeCache.ts < SITE_MODE_TTL) {
+    return { mode: _siteModeCache.mode, message: _siteModeCache.message };
+  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return { mode: 'live', message: null };
+  try {
+    const sb = createClient(url, key, { auth: { persistSession: false } });
+    const { data } = await sb
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'site_mode')
+      .maybeSingle();
+    const v = data?.value as { mode?: string; message?: string | null } | null;
+    const result = { mode: v?.mode ?? 'live', message: v?.message ?? null, ts: now };
+    _siteModeCache = result;
+    return result;
+  } catch {
+    return { mode: 'live', message: null };
+  }
+}
+
+/** Paths that are always reachable regardless of site mode. */
+function isAllowedPath(pathname: string): boolean {
+  return (
+    pathname === '/prelaunch' ||
+    pathname.startsWith('/early-access') ||
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/signup') ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/api/waitlist') ||
+    pathname.startsWith('/api/early-access') ||
+    pathname.startsWith('/api/cron') ||
+    pathname.startsWith('/api/webhooks') ||
+    pathname.startsWith('/api/health') ||
+    pathname === '/favicon.svg' ||
+    pathname === '/icon' ||
+    pathname === '/opengraph-image'
+  );
+}
+
+/** Extract the JWT payload sub (user_id) from the Supabase auth cookie. */
+function getUserIdFromToken(request: NextRequest): string | null {
+  try {
+    const cookieHeader = request.headers.get('cookie') ?? '';
+    const match = cookieHeader.match(/sb-[a-z0-9]+-auth-token/);
+    if (!match) return null;
+    const cookieName = match[0];
+    let raw = '';
+    const single = request.cookies.get(cookieName);
+    if (single?.value) {
+      raw = single.value;
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const chunk = request.cookies.get(`${cookieName}.${i}`);
+        if (!chunk?.value) break;
+        raw += chunk.value;
+      }
+    }
+    if (!raw) return null;
+    let accessToken: string | undefined;
+    try { accessToken = JSON.parse(base64UrlDecode(raw))?.access_token; } catch {}
+    try { if (!accessToken) accessToken = JSON.parse(decodeURIComponent(raw))?.access_token; } catch {}
+    if (!accessToken && raw.split('.').length === 3) accessToken = raw;
+    if (!accessToken) return null;
+    const parts = accessToken.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(base64UrlDecode(parts[1]));
+    return payload?.sub ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Check if the signed-in user is a platform admin (DB lookup, maintenance mode only). */
+async function isPlatformAdmin(userId: string): Promise<boolean> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return false;
+  try {
+    const sb = createClient(url, key, { auth: { persistSession: false } });
+    const { data } = await sb
+      .from('users')
+      .select('is_platform_admin')
+      .eq('id', userId)
+      .maybeSingle();
+    return data?.is_platform_admin === true;
+  } catch {
+    return false;
+  }
+}
+
+/** True if the request carries a valid (non-empty UUID-shaped) early_access cookie. */
+function hasEarlyAccessCookie(request: NextRequest): boolean {
+  const val = request.cookies.get('early_access')?.value ?? '';
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(val);
+}
+
+function rewriteToPrelaunch(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = '/prelaunch';
+  url.search = '';
+  return NextResponse.rewrite(url);
+}
+
 /**
  * Resolve a custom domain to an org slug via Supabase REST (no server-side cookies needed).
  */
@@ -150,6 +264,26 @@ export async function middleware(request: NextRequest) {
       });
     }
   }
+
+  // ── Site-mode gate ────────────────────────────────────────────────────────
+  // Skip gate for dashboard (already auth-guarded) and always-open paths.
+  if (!pathname.startsWith('/dashboard') && !isAllowedPath(pathname)) {
+    const { mode } = await fetchSiteMode();
+
+    if (mode === 'maintenance') {
+      const signedIn = hasValidAuthToken(request);
+      if (!signedIn) return rewriteToPrelaunch(request);
+      const uid = getUserIdFromToken(request);
+      if (!uid || !(await isPlatformAdmin(uid))) return rewriteToPrelaunch(request);
+      // Admin: fall through to the rest of the middleware
+    } else if (mode === 'prelaunch') {
+      if (!hasValidAuthToken(request) && !hasEarlyAccessCookie(request)) {
+        return rewriteToPrelaunch(request);
+      }
+      // Signed-in users or invite-code holders: fall through
+    }
+  }
+  // ── End gate ──────────────────────────────────────────────────────────────
 
   // Custom domain rewrite: if the host doesn't match the platform domain,
   // look up the org and rewrite to /portal/[org_slug]

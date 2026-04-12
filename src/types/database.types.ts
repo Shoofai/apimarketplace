@@ -7207,6 +7207,66 @@ export type Database = {
           },
         ]
       }
+      prelaunch_allowlist: {
+        Row: {
+          id: string
+          email: string
+          note: string | null
+          added_at: string
+          added_by: string | null
+        }
+        Insert: {
+          id?: string
+          email: string
+          note?: string | null
+          added_at?: string
+          added_by?: string | null
+        }
+        Update: {
+          id?: string
+          email?: string
+          note?: string | null
+          added_at?: string
+          added_by?: string | null
+        }
+        Relationships: []
+      }
+      prelaunch_invite_codes: {
+        Row: {
+          id: string
+          code: string
+          label: string | null
+          max_uses: number
+          uses_count: number
+          expires_at: string | null
+          is_active: boolean
+          created_at: string
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          code: string
+          label?: string | null
+          max_uses?: number
+          uses_count?: number
+          expires_at?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          code?: string
+          label?: string | null
+          max_uses?: number
+          uses_count?: number
+          expires_at?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+        Relationships: []
+      }
       waitlist_signups: {
         Row: {
           company: string | null
