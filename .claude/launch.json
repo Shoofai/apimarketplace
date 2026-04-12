@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["/Users/timinkan/projects/apimarketplace/.claude/dev-start.sh"],
       "port": 3020
     }
   ]
