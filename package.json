@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3020 --turbo",
-    "build": "NEXT_PRIVATE_BUILD_WORKERS=1 next build --webpack",
+    "build": "next build",
     "build:clean": "rm -rf .next && npm run build",
     "start": "next start",
     "lint": "next lint",
@@ -17,7 +17,7 @@
     "test:e2e:regression:report": "tsx scripts/write-regression-summary.ts",
     "load:marketplace": "k6 run tests/load/marketplace.js",
     "load:dashboard": "k6 run tests/load/dashboard.js",
-    "analyze": "ANALYZE=true next build --webpack",
+    "analyze": "ANALYZE=true next build",
     "create-test-users": "tsx scripts/create-test-users.ts",
     "seed-public-apis": "tsx src/lib/seed/seed-public-apis.ts",
     "seed-programmableweb-bulk": "tsx src/lib/seed/seed-programmableweb-bulk.ts",
