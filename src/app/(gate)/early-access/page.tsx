@@ -15,7 +15,7 @@ export default async function EarlyAccessPage() {
   const name = await getPlatformName();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 flex flex-col overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 flex flex-col overflow-hidden">
       {/* Background grid */}
       <div
         className="pointer-events-none absolute inset-0 opacity-20"

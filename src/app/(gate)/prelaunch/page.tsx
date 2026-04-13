@@ -30,7 +30,7 @@ export default async function PrelaunchPage() {
 
   if (isMaintenance) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 px-4">
+      <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 overflow-hidden px-4">
         <div className="pointer-events-none absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-3xl" />
         <div className="relative z-10 w-full max-w-md text-center space-y-6">
           <div className="flex justify-center">
@@ -53,7 +53,7 @@ export default async function PrelaunchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 overflow-hidden">
       {/* Background grid */}
       <div
         className="pointer-events-none absolute inset-0 opacity-20"
