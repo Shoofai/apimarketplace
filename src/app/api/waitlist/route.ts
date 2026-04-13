@@ -1,6 +1,6 @@
 // Call sites: API_ROUTE_CALLSITES.md (UI-3)
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Insert into waitlist_signups table
     const { data, error } = await supabase.from('waitlist_signups').insert({
