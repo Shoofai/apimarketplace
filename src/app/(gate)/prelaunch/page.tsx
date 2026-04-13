@@ -30,8 +30,8 @@ export default async function PrelaunchPage() {
 
   if (isMaintenance) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 px-4">
-        <div className="pointer-events-none absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-violet-300/20 to-indigo-300/10 blur-3xl" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 px-4">
+        <div className="pointer-events-none absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-3xl" />
         <div className="relative z-10 w-full max-w-md text-center space-y-6">
           <div className="flex justify-center">
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
@@ -39,12 +39,12 @@ export default async function PrelaunchPage() {
             </div>
           </div>
           <div className="space-y-3">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">We&apos;ll be back soon</h1>
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
+            <h1 className="text-4xl font-bold tracking-tight text-white">We&apos;ll be back soon</h1>
+            <p className="text-lg text-indigo-200/70 leading-relaxed">
               {message ?? 'We are performing scheduled maintenance. Check back in a few minutes.'}
             </p>
           </div>
-          <Link href="/login" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+          <Link href="/login" className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
             Sign in to your account
           </Link>
         </div>
@@ -69,8 +69,21 @@ export default async function PrelaunchPage() {
       <div className="pointer-events-none absolute -bottom-40 -right-20 w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-3xl" />
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-indigo-500/10 blur-3xl" />
 
+      {/* Nav */}
+      <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center">
+            <Zap className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-white font-bold text-lg">{name}</span>
+        </div>
+        <Link href="/login" className="text-sm text-indigo-300 hover:text-white transition-colors">
+          Sign in →
+        </Link>
+      </nav>
+
       {/* Two-section hero */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-20 lg:pt-16 lg:pb-32 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-20 lg:pt-12 lg:pb-32 grid lg:grid-cols-2 gap-16 items-center">
 
         {/* ── LEFT: Copy + Form ── */}
         <div className="space-y-8">
@@ -221,10 +234,8 @@ function ApiMarketplaceIllustration() {
 
   return (
     <div className="relative w-full max-w-[520px]">
-      {/* Glow behind cards */}
       <div className="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-3xl scale-105" />
 
-      {/* Browser chrome */}
       <div className="relative bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-black/50">
         {/* Browser bar */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.03]">
@@ -244,10 +255,8 @@ function ApiMarketplaceIllustration() {
             </div>
             <span className="text-white text-sm font-semibold">Marketplace</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="bg-indigo-500/20 border border-indigo-500/30 rounded-md px-2 py-1 text-xs text-indigo-300">
-              2,400+ APIs
-            </div>
+          <div className="bg-indigo-500/20 border border-indigo-500/30 rounded-md px-2 py-1 text-xs text-indigo-300">
+            2,400+ APIs
           </div>
         </div>
 
@@ -261,14 +270,13 @@ function ApiMarketplaceIllustration() {
           </div>
         </div>
 
-        {/* API cards grid */}
+        {/* API cards */}
         <div className="p-4 grid grid-cols-2 gap-3">
           {apis.map((api) => (
             <div
               key={api.name}
               className={`bg-gradient-to-br ${api.color} border ${api.border} rounded-xl p-3 space-y-2.5 group cursor-pointer hover:scale-[1.02] transition-transform duration-200`}
             >
-              {/* Header */}
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-xs font-semibold truncate">{api.name}</p>
@@ -278,8 +286,6 @@ function ApiMarketplaceIllustration() {
                 </div>
                 <span className={`h-2 w-2 rounded-full ${api.dot} flex-shrink-0 mt-1 shadow-lg`} />
               </div>
-
-              {/* Stats */}
               <div className="flex items-center justify-between text-[10px] text-white/50">
                 <span className="flex items-center gap-1">
                   <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
@@ -288,8 +294,6 @@ function ApiMarketplaceIllustration() {
                 <span>{api.latency}</span>
                 <span>{api.users} users</span>
               </div>
-
-              {/* Integrate button */}
               <div className="bg-white/10 rounded-md py-1 text-center text-[10px] text-white/70 font-medium group-hover:bg-white/20 transition-colors">
                 Integrate →
               </div>
@@ -297,7 +301,7 @@ function ApiMarketplaceIllustration() {
           ))}
         </div>
 
-        {/* Code snippet footer */}
+        {/* Code snippet */}
         <div className="mx-4 mb-4 bg-slate-950/60 border border-white/5 rounded-xl p-3">
           <div className="flex items-center gap-2 mb-2">
             <Code2 className="h-3.5 w-3.5 text-indigo-400" />
@@ -307,15 +311,12 @@ function ApiMarketplaceIllustration() {
             </span>
           </div>
           <pre className="text-[10px] leading-relaxed font-mono text-indigo-300/70 overflow-hidden">
-            <span className="text-violet-400">import</span>
-            {' '}
-            <span className="text-amber-300">{'{ LukeAPI }'}</span>
-            {' '}
-            <span className="text-violet-400">from</span>
-            {' '}
+            <span className="text-violet-400">import</span>{' '}
+            <span className="text-amber-300">{'{ LukeAPI }'}</span>{' '}
+            <span className="text-violet-400">from</span>{' '}
             <span className="text-green-300">&apos;lukeapi&apos;</span>
-            {'\n'}
-            <span className="text-indigo-400/50">{'\n'}// One line to any API</span>
+            {'\n\n'}
+            <span className="text-indigo-400/50">{'// One line to any API'}</span>
             {'\n'}
             <span className="text-blue-300">const</span>
             {' result = '}
@@ -332,7 +333,6 @@ function ApiMarketplaceIllustration() {
         <Activity className="h-4 w-4 text-green-400" />
         <span className="text-green-300 text-xs font-medium">99.9% uptime</span>
       </div>
-
       <div className="absolute -bottom-4 -left-4 bg-violet-500/20 border border-violet-500/30 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center gap-2 shadow-lg">
         <TrendingUp className="h-4 w-4 text-violet-400" />
         <span className="text-violet-300 text-xs font-medium">+340% MoM growth</span>
