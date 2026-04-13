@@ -69,22 +69,6 @@ export default async function PrelaunchPage() {
       <div className="pointer-events-none absolute -bottom-40 -right-20 w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-3xl" />
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-indigo-500/10 blur-3xl" />
 
-      {/* Nav bar */}
-      <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center">
-            <Zap className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-white font-bold text-lg">{name}</span>
-        </div>
-        <Link
-          href="/login"
-          className="text-sm text-indigo-300 hover:text-white transition-colors"
-        >
-          Sign in →
-        </Link>
-      </nav>
-
       {/* Two-section hero */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-20 lg:pt-16 lg:pb-32 grid lg:grid-cols-2 gap-16 items-center">
 
