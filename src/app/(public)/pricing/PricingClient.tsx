@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { PricingFAQ } from './PricingFAQ';
+import type { FAQ } from '@/lib/faqs';
 
 const tiers = [
   {
@@ -77,7 +78,7 @@ const tiers = [
   },
 ];
 
-export default function PricingPage() {
+export default function PricingPage({ faqs }: { faqs: FAQ[] }) {
   const [annual, setAnnual] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -278,7 +279,7 @@ export default function PricingPage() {
           Usage beyond your plan&apos;s included calls may incur per-call overage charges as defined by each API&apos;s pricing plan.
         </p>
 
-        <PricingFAQ />
+        <PricingFAQ faqs={faqs} />
       </div>
     </div>
   );
