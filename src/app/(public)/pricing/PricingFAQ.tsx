@@ -8,7 +8,7 @@ interface Props {
 
 export function PricingFAQ({ faqs }: Props) {
   return (
-    <div className="mt-16 max-w-2xl mx-auto">
+    <div id="faq" className="mt-16 max-w-2xl mx-auto scroll-mt-16">
       <h2 className="text-2xl font-bold text-center mb-8">Frequently asked questions</h2>
       <dl className="space-y-3">
         {faqs.map((faq) => (
