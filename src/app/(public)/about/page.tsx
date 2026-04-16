@@ -21,13 +21,13 @@ export default async function AboutPage() {
       <PageHero
         title={`About ${platformName}`}
         subtitle="We believe API integration shouldn't take weeks."
-        stats={['Stripe Connect', 'OpenAPI → Docs', 'Usage-based billing']}
+        stats={['Instant Monetization', 'OpenAPI → Docs', 'Usage-based billing']}
       />
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <div className="not-prose grid grid-cols-3 gap-4 my-10 rounded-xl border border-border bg-muted/30 p-6">
             <div className="text-center">
-              <div className="text-sm font-semibold text-foreground">Stripe Connect</div>
+              <div className="text-sm font-semibold text-foreground">Instant Monetization</div>
               <div className="text-xs text-muted-foreground">Get paid in minutes</div>
             </div>
             <div className="text-center">
@@ -68,7 +68,7 @@ export default async function AboutPage() {
             IT and fragmented spend. We built a single platform where:
           </p>
           <ul>
-            <li><strong>Providers</strong> monetize in minutes with Stripe Connect and AI-generated docs</li>
+            <li><strong>Providers</strong> monetize in minutes with built-in payments and AI-generated docs</li>
             <li><strong>Developers</strong> integrate in 2 minutes with AI-generated code and unified billing</li>
             <li><strong>Enterprises</strong> govern everything with full visibility, compliance, and cost control</li>
           </ul>
@@ -149,19 +149,12 @@ export default async function AboutPage() {
             <li><strong>Roadmap:</strong> SOC 2 Type II, HIPAA BAA, white-label options</li>
           </ul>
 
-          <h2>Technology Stack</h2>
+          <h2>How We&apos;re Built</h2>
           <p>
-            We build on modern, trusted infrastructure for performance and security:
-          </p>
-          <ul>
-            <li><strong>Frontend:</strong> Next.js, React, Tailwind CSS</li>
-            <li><strong>Backend:</strong> Supabase (PostgreSQL, Auth, Realtime)</li>
-            <li><strong>Hosting:</strong> Vercel (edge network, CDN)</li>
-            <li><strong>Payments:</strong> Stripe</li>
-            <li><strong>AI:</strong> Anthropic for code generation and documentation</li>
-          </ul>
-          <p>
-            We believe in transparency: you can read our <Link href="/security" className="text-primary hover:underline">Security & Compliance</Link> page for details.
+            We build on modern, battle-tested infrastructure selected for performance, reliability, and security.
+            Our stack covers everything from edge delivery and real-time data to payment processing and AI —
+            all operated by certified, enterprise-grade providers. You can read our{' '}
+            <Link href="/security" className="text-primary hover:underline">Security &amp; Compliance</Link> page for details on our infrastructure posture and certifications.
           </p>
 
           <h2>Diversity & Inclusion</h2>

@@ -29,7 +29,7 @@ const testimonials = [
   },
 ];
 
-const capabilities = ['Stripe Connect', 'OpenAPI → Docs', 'Usage-based billing', 'Built to scale'];
+const capabilities = ['Instant Monetization', 'OpenAPI → Docs', 'Usage-based billing', 'Built to scale'];
 
 const caseStudies = [
   {

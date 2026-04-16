@@ -231,7 +231,7 @@ export default function Footer() {
               99.9% Uptime SLA
             </span>
             <span className="text-xs text-gray-400 dark:text-gray-600">
-              Payments powered by Stripe
+              Payments secured &amp; encrypted
             </span>
           </div>
 

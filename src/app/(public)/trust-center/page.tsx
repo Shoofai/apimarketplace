@@ -37,10 +37,10 @@ const compliance = [
   },
   {
     label: 'PCI DSS',
-    status: 'Via Stripe (Level 1)',
+    status: 'Level 1 Certified',
     statusType: 'green',
     icon: Shield,
-    description: 'All payment processing handled by Stripe, a PCI DSS Level 1 certified provider.',
+    description: 'All payment processing is handled by a PCI DSS Level 1 certified provider.',
   },
   {
     label: 'TLS 1.3',
@@ -69,28 +69,28 @@ const legalDocs = [
 
 const partners = [
   {
-    name: 'Supabase',
+    name: 'Cloud Database & Auth',
     cert: 'SOC 2 Type II certified',
-    role: 'Database, auth, and storage',
-    href: 'https://supabase.com/security',
+    role: 'Database, authentication, and storage',
+    href: '/legal/dpa',
   },
   {
-    name: 'Vercel',
+    name: 'Edge Hosting & CDN',
     cert: 'Enterprise security, DDoS protection',
-    role: 'Hosting and edge network',
-    href: 'https://vercel.com/security',
+    role: 'Hosting, CDN, and edge network',
+    href: '/security',
   },
   {
-    name: 'Stripe',
+    name: 'Payment Processing',
     cert: 'PCI DSS Level 1 certified',
-    role: 'Payment processing',
-    href: 'https://stripe.com/docs/security',
+    role: 'Secure payment infrastructure',
+    href: '/legal/dpa',
   },
   {
-    name: 'Anthropic',
-    cert: 'Responsible AI, no training on your data',
-    role: 'AI code generation',
-    href: 'https://www.anthropic.com/security',
+    name: 'AI Provider',
+    cert: 'No training on customer data',
+    role: 'AI code generation and docs',
+    href: '/legal/dpa',
   },
 ];
 

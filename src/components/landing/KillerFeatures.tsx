@@ -36,7 +36,7 @@ const PRIMARY_GRADIENT_DARK = 'dark:from-primary-400 dark:to-primary-600';
 
 const features = [
   { id: 1, name: 'AI Code Generator', icon: Sparkles, description: '2 minutes vs 2 days', longDescription: 'Our AI analyzes API docs and generates production-ready integration code in your language. Handles authentication, error handling, retries, and rate limiting automatically.' },
-  { id: 2, name: 'One-Click Monetization', icon: CreditCard, description: 'Stripe Connect integration', longDescription: 'Connect your Stripe account once. We handle subscriptions, usage-based billing, invoicing, and payouts. Get paid globally in minutes, not months.' },
+  { id: 2, name: 'One-Click Monetization', icon: CreditCard, description: 'Built-in payment infrastructure', longDescription: 'Connect your payment account once. We handle subscriptions, usage-based billing, invoicing, and payouts. Get paid globally in minutes, not months.' },
   { id: 3, name: 'Universal API Gateway', icon: Network, description: 'Multi-cloud, zero config', longDescription: 'Deploy our gateway in your cloud or use ours. Automatic SSL, DDoS protection, rate limiting, caching, and load balancing across all your APIs.' },
   { id: 4, name: 'Smart API Router', icon: Route, description: 'AI-optimized routing', longDescription: 'Automatically routes requests to the fastest, cheapest, or most reliable API endpoint. Handles failover, circuit breaking, and retry logic.' },
   { id: 5, name: 'Auto-Generated Docs', icon: FileText, description: 'OpenAPI → interactive docs', longDescription: 'Upload your OpenAPI/Swagger spec. We instantly generate beautiful, interactive documentation with code examples in 10 languages and a built-in playground.' },

@@ -81,7 +81,7 @@ export default async function SecurityPage() {
                 <div>
                   <h2 className="font-semibold text-lg">Infrastructure</h2>
                   <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                    <li>Trusted cloud providers (Vercel, Supabase)</li>
+                    <li>Trusted, enterprise-grade cloud providers</li>
                     <li>DDoS protection, CDN, edge network</li>
                     <li>Regular security assessments</li>
                   </ul>
@@ -119,8 +119,7 @@ export default async function SecurityPage() {
               Infrastructure Security
             </h2>
             <p>
-              Our platform runs on trusted cloud providers (Vercel for hosting and CDN, Supabase for database and
-              auth). We leverage:
+              Our platform runs on enterprise-grade cloud infrastructure with strong security postures across hosting, CDN, and data storage. We leverage:
             </p>
             <ul>
               <li><strong>DDoS protection:</strong> Edge network and CDN with built-in DDoS mitigation</li>
@@ -162,7 +161,7 @@ export default async function SecurityPage() {
               <li><strong>Encryption in transit:</strong> TLS 1.3 for all connections</li>
               <li><strong>Encryption at rest:</strong> AES-256 for stored data</li>
               <li><strong>Key management:</strong> Secrets managed via environment variables and provider secret stores</li>
-              <li><strong>Password hashing:</strong> Industry-standard algorithms via Supabase Auth</li>
+              <li><strong>Password hashing:</strong> Industry-standard bcrypt/argon2 algorithms</li>
             </ul>
           </section>
 
@@ -192,7 +191,7 @@ export default async function SecurityPage() {
               Authentication & Authorization
             </h2>
             <p>
-              User authentication and authorization are built on Supabase Auth:
+              User authentication and authorization are built on a secure, enterprise-grade auth system:
             </p>
             <ul>
               <li><strong>Authentication:</strong> Secure sign-up, sign-in, and session management</li>
@@ -289,12 +288,12 @@ export default async function SecurityPage() {
               We use trusted Sub-Processors with strong security practices:
             </p>
             <ul>
-              <li><strong>Stripe:</strong> PCI DSS Level 1 certified for payment processing</li>
-              <li><strong>Supabase:</strong> SOC 2 compliant; encryption, RLS, and secure auth</li>
-              <li><strong>Vercel:</strong> Enterprise-grade hosting and CDN</li>
+              <li><strong>Payment processing:</strong> PCI DSS Level 1 certified provider</li>
+              <li><strong>Database &amp; auth:</strong> SOC 2 compliant; encryption and row-level security</li>
+              <li><strong>Hosting &amp; CDN:</strong> Enterprise-grade edge infrastructure</li>
             </ul>
             <p>
-              Sub-processors are contractually bound to protect data. See our <Link href="/legal/dpa" className="text-primary hover:underline">Data Processing Agreement</Link> for the full list.
+              All sub-processors are contractually bound to protect data. See our <Link href="/legal/dpa" className="text-primary hover:underline">Data Processing Agreement</Link> for the full list.
             </p>
           </section>
         </div>

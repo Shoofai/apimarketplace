@@ -44,7 +44,7 @@ export async function generateMetadata() {
     description: 'Discover, test, and integrate 500+ APIs. AI-generated code, one-click monetization, and enterprise governance — all in one platform.',
     openGraph: {
       title: `${name} - The AI-Powered API Marketplace`,
-      description: 'From API discovery to production in 2 minutes. AI code generation, Stripe Connect monetization, and enterprise governance.',
+      description: 'From API discovery to production in 2 minutes. AI code generation, built-in monetization, and enterprise governance.',
       type: 'website',
     },
   };
