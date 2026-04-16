@@ -39,7 +39,10 @@ function isAllowedPath(pathname: string): boolean {
     pathname === '/prelaunch' ||
     pathname.startsWith('/early-access') ||
     pathname.startsWith('/login') ||
-    pathname.startsWith('/signup') ||
+    // /signup is intentionally excluded — gated in prelaunch/maintenance mode
+    pathname.startsWith('/forgot-password') ||
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/verify-email') ||
     pathname.startsWith('/auth') ||
     pathname.startsWith('/api/waitlist') ||
     pathname.startsWith('/api/early-access') ||

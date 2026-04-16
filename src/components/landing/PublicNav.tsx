@@ -77,9 +77,9 @@ const ALL_NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((g) => g.items);
 
 const ANNOUNCEMENT = {
   id: 'ann-q2-2026',
-  text: 'New: AI-powered code generation is now available for all plans.',
-  cta: 'Try it free →',
-  href: '/signup',
+  text: 'New: AI-powered code generation is now live.',
+  cta: 'Try it in the playground →',
+  href: '/dashboard/developer/playground',
 };
 
 function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
