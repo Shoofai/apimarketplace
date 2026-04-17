@@ -122,7 +122,7 @@ export async function generateMetadata({
 
   const _envUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteUrl =
-    _envUrl && !_envUrl.includes('localhost') ? _envUrl : 'https://apimarketplace.pro';
+    _envUrl && !_envUrl.includes('localhost') ? _envUrl : 'https://lukeapi.com';
 
   return {
     title: post.meta_title ?? `${post.title} | LukeAPI Blog`,
@@ -162,7 +162,7 @@ export default async function BlogPostPage({
 
   const _envUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteUrl =
-    _envUrl && !_envUrl.includes('localhost') ? _envUrl : 'https://apimarketplace.pro';
+    _envUrl && !_envUrl.includes('localhost') ? _envUrl : 'https://lukeapi.com';
   const postUrl = `${siteUrl}/blog/${post.slug}`;
   const content = post.content ?? '';
 
