@@ -43,3 +43,4 @@ next-env.d.ts
 .blog-import-credentials.json
 blog-import.config.json
 blog-import-oauth-credentials.json
+import.env

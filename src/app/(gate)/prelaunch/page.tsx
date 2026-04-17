@@ -12,6 +12,10 @@ import {
   Star,
   Activity,
   CheckCircle2,
+  Twitter,
+  Github,
+  Linkedin,
+  Mail,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -77,9 +81,14 @@ export default async function PrelaunchPage() {
           </div>
           <span className="text-white font-bold text-lg">{name}</span>
         </div>
-        <Link href="/login" className="text-sm text-indigo-300 hover:text-white transition-colors">
-          Sign in →
-        </Link>
+        <div className="flex items-center gap-6">
+          <Link href="/pricing" className="hidden sm:block text-sm text-indigo-300/70 hover:text-indigo-200 transition-colors">Pricing</Link>
+          <Link href="/blog" className="hidden sm:block text-sm text-indigo-300/70 hover:text-indigo-200 transition-colors">Blog</Link>
+          <Link href="/about" className="hidden sm:block text-sm text-indigo-300/70 hover:text-indigo-200 transition-colors">About</Link>
+          <Link href="/login" className="text-sm text-indigo-300 hover:text-white transition-colors font-medium">
+            Sign in →
+          </Link>
+        </div>
       </nav>
 
       {/* Two-section hero */}
@@ -192,6 +201,56 @@ export default async function PrelaunchPage() {
           ))}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 py-8 space-y-5">
+          {/* Top row: page links + social icons */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <nav className="flex flex-wrap items-center justify-center text-xs text-indigo-400/60">
+              <Link href="/pricing" className="px-3 py-1 hover:text-indigo-300 transition-colors">Pricing</Link>
+              <Link href="/about" className="px-3 py-1 hover:text-indigo-300 transition-colors">About</Link>
+              <Link href="/blog" className="px-3 py-1 hover:text-indigo-300 transition-colors">Blog</Link>
+              <Link href="/changelog" className="px-3 py-1 hover:text-indigo-300 transition-colors">Changelog</Link>
+              <Link href="/status" className="px-3 py-1 hover:text-indigo-300 transition-colors">Status</Link>
+              <Link href="/contact" className="px-3 py-1 hover:text-indigo-300 transition-colors">Contact</Link>
+            </nav>
+            <div className="flex items-center gap-4">
+              {process.env.NEXT_PUBLIC_TWITTER_URL && (
+                <a href={process.env.NEXT_PUBLIC_TWITTER_URL} target="_blank" rel="noopener noreferrer" aria-label="Twitter / X" className="text-indigo-500/50 hover:text-indigo-300 transition-colors">
+                  <Twitter className="h-4 w-4" />
+                </a>
+              )}
+              {process.env.NEXT_PUBLIC_GITHUB_URL && (
+                <a href={process.env.NEXT_PUBLIC_GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-indigo-500/50 hover:text-indigo-300 transition-colors">
+                  <Github className="h-4 w-4" />
+                </a>
+              )}
+              {process.env.NEXT_PUBLIC_LINKEDIN_URL && (
+                <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-indigo-500/50 hover:text-indigo-300 transition-colors">
+                  <Linkedin className="h-4 w-4" />
+                </a>
+              )}
+              <Link href="/contact" aria-label="Email us" className="text-indigo-500/50 hover:text-indigo-300 transition-colors">
+                <Mail className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Bottom row: copyright + legal */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/5 pt-5">
+            <p className="text-xs text-indigo-500/50">
+              © {new Date().getFullYear()} {name}. All rights reserved.
+            </p>
+            <nav className="flex flex-wrap items-center justify-center text-xs text-indigo-400/50">
+              <Link href="/legal/privacy" className="px-3 py-1 hover:text-indigo-300 transition-colors">Privacy Policy</Link>
+              <Link href="/legal/terms" className="px-3 py-1 hover:text-indigo-300 transition-colors">Terms of Service</Link>
+              <Link href="/legal/cookies" className="px-3 py-1 hover:text-indigo-300 transition-colors">Cookie Policy</Link>
+              <Link href="/legal/acceptable-use" className="px-3 py-1 hover:text-indigo-300 transition-colors">Acceptable Use</Link>
+            </nav>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

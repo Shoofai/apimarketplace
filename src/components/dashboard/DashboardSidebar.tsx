@@ -33,6 +33,7 @@ import {
   ChevronDown,
   Heart,
   TestTube2,
+  FileText,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -455,6 +456,7 @@ export default function DashboardSidebar({ user, forceExpanded }: DashboardSideb
         { title: 'APIs', href: '/dashboard/admin/apis', icon: Box },
         { title: 'Bundles', href: '/dashboard/admin/bundles', icon: Package },
         { title: 'Challenges', href: '/dashboard/admin/challenges', icon: Trophy },
+        { title: 'Blog', href: '/dashboard/admin/blog', icon: FileText },
         { title: 'Blog Import', href: '/dashboard/admin/blog-import', icon: FolderOpen },
       ],
     },

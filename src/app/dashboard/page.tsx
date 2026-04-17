@@ -25,6 +25,7 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  Gift,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -268,6 +269,11 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Referral widget */}
+      <Suspense fallback={null}>
+        <ReferralWidget userId={userData.id} />
+      </Suspense>
 
       {/* Recommended for you (consumers) */}
       {isConsumer && recommendations.length > 0 && (
@@ -741,6 +747,45 @@ async function GettingStartedProgress({
             </div>
           ))}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function ReferralWidget({ userId }: { userId: string }) {
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from('developer_profiles')
+    .select('referral_code, referrals_made')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  const code = profile?.referral_code;
+  if (!code) return null; // show only once profile exists
+
+  const referralsCount = profile?.referrals_made ?? 0;
+
+  return (
+    <Card className="card-elevated border-primary/20 bg-gradient-to-br from-violet-500/5 via-transparent to-transparent">
+      <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="p-3 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 shrink-0">
+          <Gift className="h-6 w-6" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm">Earn with referrals</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {referralsCount > 0
+              ? `${referralsCount} people have joined via your link. Keep sharing!`
+              : 'Share your unique link — you both benefit when they sign up.'}
+          </p>
+        </div>
+        <Link href="/dashboard/referrals" className="shrink-0">
+          <Button size="sm" variant="outline" className="gap-1.5 whitespace-nowrap">
+            <Gift className="h-3.5 w-3.5" />
+            View referrals
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

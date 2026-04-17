@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Check, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 export function WaitlistSignupForm({ dark = false }: { dark?: boolean }) {
   const [email, setEmail] = useState('');
@@ -118,6 +119,23 @@ export function WaitlistSignupForm({ dark = false }: { dark?: boolean }) {
           'Join the waitlist →'
         )}
       </Button>
+      <p className={`text-[11px] leading-relaxed ${dark ? 'text-indigo-400/50' : 'text-muted-foreground'}`}>
+        By joining you agree to our{' '}
+        <Link
+          href="/legal/privacy"
+          className={`underline underline-offset-2 hover:opacity-80 transition-opacity ${dark ? 'text-indigo-400/70' : ''}`}
+        >
+          Privacy Policy
+        </Link>
+        {' '}and{' '}
+        <Link
+          href="/legal/terms"
+          className={`underline underline-offset-2 hover:opacity-80 transition-opacity ${dark ? 'text-indigo-400/70' : ''}`}
+        >
+          Terms of Service
+        </Link>
+        . We&apos;ll only email you about your waitlist status and product updates.
+      </p>
     </form>
   );
 }

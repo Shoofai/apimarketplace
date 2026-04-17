@@ -252,7 +252,7 @@ export async function createStripeInvoice(invoiceId: string) {
       customer: billingAccount.stripe_customer_id,
       auto_advance: true,
       collection_method: 'charge_automatically',
-      description: `API Marketplace Usage: ${invoice.billing_period_start} to ${invoice.billing_period_end}`,
+      description: `LukeAPI Usage: ${invoice.billing_period_start} to ${invoice.billing_period_end}`,
       metadata: {
         invoice_id: invoiceId,
         organization_id: invoice.organization_id,

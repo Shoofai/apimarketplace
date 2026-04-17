@@ -2136,11 +2136,11 @@ export type Database = {
           logo_url: string | null
           long_description: string | null
           max_price_cached: number | null
+          mcp_server_url: string | null
+          mcp_tools: Json | null
           min_price_cached: number | null
           name: string
           openapi_raw: string | null
-          mcp_server_url: string | null
-          mcp_tools: Json | null
           openapi_spec: Json | null
           organization_id: string
           original_url: string | null
@@ -2171,11 +2171,11 @@ export type Database = {
           logo_url?: string | null
           long_description?: string | null
           max_price_cached?: number | null
+          mcp_server_url?: string | null
+          mcp_tools?: Json | null
           min_price_cached?: number | null
           name: string
           openapi_raw?: string | null
-          mcp_server_url?: string | null
-          mcp_tools?: Json | null
           openapi_spec?: Json | null
           organization_id: string
           original_url?: string | null
@@ -2423,6 +2423,114 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          canonical_url: string | null
+          category_id: string | null
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          featured: boolean
+          featured_image_url: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          published_at: string | null
+          reading_time_minutes: number | null
+          slug: string
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug: string
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug?: string
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
             referencedColumns: ["id"]
           },
         ]
@@ -5722,6 +5830,66 @@ export type Database = {
           },
         ]
       }
+      prelaunch_allowlist: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          email: string
+          id: string
+          note: string | null
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          email: string
+          id?: string
+          note?: string | null
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          email?: string
+          id?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
+      prelaunch_invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          max_uses: number
+          uses_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_uses?: number
+          uses_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_uses?: number
+          uses_count?: number
+        }
+        Relationships: []
+      }
       processed_stripe_events: {
         Row: {
           event_type: string
@@ -7206,66 +7374,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      prelaunch_allowlist: {
-        Row: {
-          id: string
-          email: string
-          note: string | null
-          added_at: string
-          added_by: string | null
-        }
-        Insert: {
-          id?: string
-          email: string
-          note?: string | null
-          added_at?: string
-          added_by?: string | null
-        }
-        Update: {
-          id?: string
-          email?: string
-          note?: string | null
-          added_at?: string
-          added_by?: string | null
-        }
-        Relationships: []
-      }
-      prelaunch_invite_codes: {
-        Row: {
-          id: string
-          code: string
-          label: string | null
-          max_uses: number
-          uses_count: number
-          expires_at: string | null
-          is_active: boolean
-          created_at: string
-          created_by: string | null
-        }
-        Insert: {
-          id?: string
-          code: string
-          label?: string | null
-          max_uses?: number
-          uses_count?: number
-          expires_at?: string | null
-          is_active?: boolean
-          created_at?: string
-          created_by?: string | null
-        }
-        Update: {
-          id?: string
-          code?: string
-          label?: string | null
-          max_uses?: number
-          uses_count?: number
-          expires_at?: string | null
-          is_active?: boolean
-          created_at?: string
-          created_by?: string | null
-        }
-        Relationships: []
       }
       waitlist_signups: {
         Row: {

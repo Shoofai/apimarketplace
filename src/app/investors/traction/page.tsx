@@ -102,7 +102,7 @@ export default function TractionDashboard() {
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="mb-12 text-center">
           <h1 className="mb-3 text-4xl font-bold">Live Traction Dashboard</h1>
-          <p className="text-lg text-white/60">Real-time metrics from APIMarketplace Pro</p>
+          <p className="text-lg text-white/60">Real-time metrics from LukeAPI</p>
           <p className="mt-2 text-sm text-white/30">Updated daily · Last: {new Date().toLocaleDateString()}</p>
         </div>
         <div className="mb-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

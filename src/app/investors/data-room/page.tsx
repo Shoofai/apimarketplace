@@ -126,7 +126,7 @@ export default function DataRoom() {
       <div className="mx-auto max-w-4xl px-6 py-16">
         <h1 className="mb-3 text-4xl font-bold">Investor Data Room</h1>
         <p className="mb-12 text-white/60">
-          Everything you need to evaluate APIMarketplace Pro as an investment opportunity.
+          Everything you need to evaluate LukeAPI as an investment opportunity.
         </p>
 
         {grouped.map((group) => (

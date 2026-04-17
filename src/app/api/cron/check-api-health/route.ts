@@ -70,7 +70,7 @@ async function runProcess() {
       const response = await fetch(api.base_url, {
         method: 'GET',
         signal: AbortSignal.timeout(TIMEOUT_MS),
-        headers: { 'User-Agent': 'APIMarketplace-HealthCheck/1.0' },
+        headers: { 'User-Agent': 'LukeAPI-HealthCheck/1.0' },
       });
 
       responseMs = Date.now() - start;

@@ -125,6 +125,49 @@ export async function POST(request: Request) {
             plan: meta.plan,
             stripeSubscriptionId,
           });
+
+          // ── Post-purchase onboarding email sequence ───────────────────────
+          // Fire-and-forget: send a welcome email immediately, then queue
+          // 2-day and 7-day follow-ups via the nurture engine.
+          try {
+            // Find the org owner to notify
+            const { data: orgUser } = await adminSb
+              .from('users')
+              .select('id')
+              .eq('current_organization_id', meta.organization_id)
+              .order('created_at', { ascending: true })
+              .limit(1)
+              .maybeSingle();
+
+            if (orgUser?.id) {
+              // Immediate welcome email
+              void dispatchNotification({
+                type: 'billing.subscription_activated',
+                userId: orgUser.id,
+                organizationId: meta.organization_id,
+                title: `Welcome to ${meta.plan.charAt(0).toUpperCase() + meta.plan.slice(1)}! 🎉`,
+                body: `Your ${meta.plan} plan is now active. Here's how to get the most out of it.`,
+                link: '/dashboard',
+                metadata: { plan: meta.plan, stripe_subscription_id: stripeSubscriptionId },
+              });
+
+              // Queue nurture sequence (Day 2 activation check, Day 7 tips)
+              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+              const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+              if (supabaseUrl && serviceKey) {
+                void fetch(`${supabaseUrl}/functions/v1/developer-nurture`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${serviceKey}`,
+                  },
+                  body: JSON.stringify({ user_id: orgUser.id, trigger: 'platform_subscribed', plan: meta.plan }),
+                }).catch(() => {});
+              }
+            }
+          } catch (onboardErr) {
+            logger.error('Post-purchase onboarding dispatch failed', { error: onboardErr });
+          }
         }
 
         // API subscription checkout completed
@@ -235,10 +278,125 @@ export async function POST(request: Request) {
         break;
       }
 
+      // Checkout session expired — abandoned checkout recovery
+      case 'checkout.session.expired': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const meta = session.metadata ?? {};
+
+        // Only recover platform subscription checkouts (Pro upgrade abandons)
+        if (meta.type === 'platform_subscription' && meta.organization_id) {
+          try {
+            const adminSb = createAdminClient();
+            // Find the org owner
+            const { data: orgUser } = await adminSb
+              .from('users')
+              .select('id')
+              .eq('current_organization_id', meta.organization_id)
+              .order('created_at', { ascending: true })
+              .limit(1)
+              .maybeSingle();
+
+            if (orgUser?.id) {
+              const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://apimarketplace.pro';
+              void dispatchNotification({
+                type: 'billing.abandoned_checkout',
+                userId: orgUser.id,
+                organizationId: meta.organization_id,
+                title: 'You left something behind',
+                body: 'You started upgrading to Pro but didn\'t complete it. Your plan is still available — resume where you left off.',
+                link: '/pricing',
+                metadata: { plan: meta.plan, action: 'abandoned_checkout' },
+              });
+
+              // Queue 24-hour follow-up via nurture engine
+              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+              const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+              if (supabaseUrl && serviceKey) {
+                void fetch(`${supabaseUrl}/functions/v1/developer-nurture`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${serviceKey}`,
+                  },
+                  body: JSON.stringify({ user_id: orgUser.id, trigger: 'checkout_abandoned', plan: meta.plan }),
+                }).catch(() => {});
+              }
+            }
+          } catch (abandonErr) {
+            logger.error('Abandoned checkout recovery failed', { error: abandonErr });
+          }
+        }
+        break;
+      }
+
       // Connect account updated
       case 'account.updated': {
         const account = event.data.object as Stripe.Account;
         await handleConnectAccountUpdate(account.id);
+
+        // ── Provider post-onboarding sequence ─────────────────────────────
+        // When a Connect account becomes fully enabled (charges_enabled = true),
+        // trigger the provider nurture sequence to guide them to publish their
+        // first API and start earning.
+        try {
+          if (account.charges_enabled) {
+            const adminSb = createAdminClient();
+            const { data: billingAccount } = await adminSb
+              .from('billing_accounts')
+              .select('organization_id')
+              .eq('stripe_connect_account_id', account.id)
+              .maybeSingle();
+
+            if (billingAccount?.organization_id) {
+              // Find org owner
+              const { data: orgUser } = await adminSb
+                .from('users')
+                .select('id')
+                .eq('current_organization_id', billingAccount.organization_id)
+                .order('created_at', { ascending: true })
+                .limit(1)
+                .maybeSingle();
+
+              if (orgUser?.id) {
+                // Check if we already sent the provider welcome (idempotency via metadata flag)
+                const { data: existing } = await adminSb
+                  .from('notifications')
+                  .select('id')
+                  .eq('user_id', orgUser.id)
+                  .eq('event_type', 'provider.connect_enabled')
+                  .maybeSingle();
+
+                if (!existing) {
+                  void dispatchNotification({
+                    type: 'billing.subscription_activated',
+                    userId: orgUser.id,
+                    organizationId: billingAccount.organization_id,
+                    title: "You're ready to monetize your APIs 🚀",
+                    body: "Your payment account is set up. Publish your first API and start earning from day one.",
+                    link: '/dashboard/provider/apis/new',
+                    metadata: { event_type: 'provider.connect_enabled', stripe_account_id: account.id },
+                  });
+
+                  // Queue provider nurture sequence
+                  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+                  if (supabaseUrl && serviceKey) {
+                    void fetch(`${supabaseUrl}/functions/v1/developer-nurture`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${serviceKey}`,
+                      },
+                      body: JSON.stringify({ user_id: orgUser.id, trigger: 'provider_connect_enabled' }),
+                    }).catch(() => {});
+                  }
+                }
+              }
+            }
+          }
+        } catch (providerErr) {
+          logger.error('Provider post-onboarding sequence failed', { error: providerErr });
+        }
         break;
       }
 

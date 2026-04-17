@@ -15,6 +15,8 @@ import {
   Shield,
   Gauge,
   FlaskConical,
+  BarChart3,
+  FileText,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -70,6 +72,18 @@ export default async function AdminDashboardPage() {
             <Button variant="outline" className="gap-2">
               <Gauge className="h-4 w-4" />
               Performance
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/revenue">
+            <Button variant="outline" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Revenue
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/blog">
+            <Button variant="outline" className="gap-2">
+              <FileText className="h-4 w-4" />
+              Blog
             </Button>
           </Link>
           <Link href="/dashboard/admin/regression">

@@ -140,7 +140,7 @@ export default async function AuthLayout({
               <PlatformLogo height={40} />
             </div>
             <p className="text-sm text-muted-foreground">
-              Enterprise API Marketplace & Governance
+              Enterprise API Platform & Governance
             </p>
           </div>
 

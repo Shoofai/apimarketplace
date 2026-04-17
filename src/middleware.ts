@@ -36,6 +36,7 @@ async function fetchSiteMode(): Promise<{ mode: string; message: string | null }
 /** Paths that are always reachable regardless of site mode. */
 function isAllowedPath(pathname: string): boolean {
   return (
+    // Core / auth
     pathname === '/prelaunch' ||
     pathname.startsWith('/early-access') ||
     pathname.startsWith('/login') ||
@@ -44,11 +45,33 @@ function isAllowedPath(pathname: string): boolean {
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/verify-email') ||
     pathname.startsWith('/auth') ||
+    // Public marketing & trust pages (visible in prelaunch mode)
+    pathname === '/pricing' ||
+    pathname === '/about' ||
+    pathname.startsWith('/blog') ||
+    pathname === '/changelog' ||
+    pathname === '/status' ||
+    pathname === '/security' ||
+    pathname === '/trust-center' ||
+    pathname === '/docs' ||
+    pathname.startsWith('/docs/') ||
+    pathname === '/contact' ||
+    pathname === '/enterprise' ||
+    pathname.startsWith('/help') ||
+    pathname === '/use-cases' ||
+    pathname === '/comparison' ||
+    pathname === '/customers' ||
+    pathname === '/roadmap' ||
+    // Legal pages (required for GDPR/CCPA compliance when capturing leads)
+    pathname.startsWith('/legal') ||
+    // API routes
     pathname.startsWith('/api/waitlist') ||
     pathname.startsWith('/api/early-access') ||
+    pathname.startsWith('/api/leads') ||
     pathname.startsWith('/api/cron') ||
     pathname.startsWith('/api/webhooks') ||
     pathname.startsWith('/api/health') ||
+    // Assets
     pathname === '/favicon.svg' ||
     pathname === '/icon' ||
     pathname === '/opengraph-image'
