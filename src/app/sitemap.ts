@@ -2,7 +2,12 @@ import { MetadataRoute } from 'next';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { HELP_ARTICLES } from '@/lib/help/articles';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://apimarketplace.pro';
+// Avoid localhost URLs in production sitemap when the env var is misconfigured
+const _envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const siteUrl =
+  _envSiteUrl && !_envSiteUrl.includes('localhost')
+    ? _envSiteUrl
+    : 'https://apimarketplace.pro';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createAdminClient();

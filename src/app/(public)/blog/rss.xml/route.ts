@@ -1,13 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 /**
  * GET /blog/rss.xml
  * Returns a valid RSS 2.0 feed of the 50 most recent published blog posts.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = createAdminClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://lukeapi.com';
+
+  // Derive the canonical origin from the request so the feed works correctly
+  // on any deployment URL without relying on a potentially misconfigured env var.
+  const reqOrigin = request.nextUrl.origin;
+  const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  // Prefer the env var only when it's explicitly set to a real host (not localhost)
+  const siteUrl =
+    envSiteUrl && !envSiteUrl.includes('localhost')
+      ? envSiteUrl
+      : reqOrigin;
 
   const { data: posts } = await supabase
     .from('blog_posts')
