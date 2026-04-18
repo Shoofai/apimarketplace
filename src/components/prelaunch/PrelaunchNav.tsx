@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { PlatformLogo } from '@/components/PlatformLogo';
+import PlatformLogo from '@/components/PlatformLogo';
 
 const NAV_LINKS = [
   { label: 'Pricing', href: '/pricing' },
