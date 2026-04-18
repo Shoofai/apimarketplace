@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import { PlatformLogo } from '@/components/PlatformLogo';
 
 const NAV_LINKS = [
   { label: 'Pricing', href: '/pricing' },
@@ -21,11 +22,8 @@ export function PrelaunchNav({ platformName }: { platformName: string }) {
       <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-              <Zap className="h-4 w-4 text-white" />
-            </div>
-            <span className="font-bold text-foreground">{platformName}</span>
+          <Link href="/" className="flex items-center shrink-0" aria-label={`${platformName} home`}>
+            <PlatformLogo height={36} />
           </Link>
 
           {/* Desktop links */}
@@ -81,7 +79,7 @@ export function PrelaunchNav({ platformName }: { platformName: string }) {
           />
           <div className="fixed inset-y-0 right-0 z-[101] w-[min(80vw,320px)] flex flex-col bg-background shadow-2xl">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <span className="font-bold text-foreground">{platformName}</span>
+              <PlatformLogo height={28} />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted"
