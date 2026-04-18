@@ -49,8 +49,6 @@ function isAllowedPath(pathname: string): boolean {
     pathname === '/pricing' ||
     pathname === '/about' ||
     pathname.startsWith('/blog') ||
-    pathname === '/changelog' ||
-    pathname === '/status' ||
     pathname === '/security' ||
     pathname === '/trust-center' ||
     pathname === '/docs' ||
