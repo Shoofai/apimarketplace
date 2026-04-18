@@ -6,8 +6,6 @@ const PAGE_LINKS = [
   { label: 'Pricing', href: '/pricing' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Changelog', href: '/changelog' },
-  { label: 'Status', href: '/status' },
   { label: 'Contact', href: '/contact' },
 ];
 

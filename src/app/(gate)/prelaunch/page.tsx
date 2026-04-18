@@ -209,8 +209,6 @@ export default async function PrelaunchPage() {
               <Link href="/pricing" className="px-3 py-1 hover:text-indigo-300 transition-colors">Pricing</Link>
               <Link href="/about" className="px-3 py-1 hover:text-indigo-300 transition-colors">About</Link>
               <Link href="/blog" className="px-3 py-1 hover:text-indigo-300 transition-colors">Blog</Link>
-              <Link href="/changelog" className="px-3 py-1 hover:text-indigo-300 transition-colors">Changelog</Link>
-              <Link href="/status" className="px-3 py-1 hover:text-indigo-300 transition-colors">Status</Link>
               <Link href="/contact" className="px-3 py-1 hover:text-indigo-300 transition-colors">Contact</Link>
             </nav>
             <div className="flex items-center gap-4">
