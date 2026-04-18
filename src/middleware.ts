@@ -64,10 +64,12 @@ function isAllowedPath(pathname: string): boolean {
     pathname === '/roadmap' ||
     // Legal pages (required for GDPR/CCPA compliance when capturing leads)
     pathname.startsWith('/legal') ||
-    // API routes
+    // API routes (must match every public-page form submission)
     pathname.startsWith('/api/waitlist') ||
     pathname.startsWith('/api/early-access') ||
     pathname.startsWith('/api/leads') ||
+    pathname.startsWith('/api/contact') ||   // ContactQuiz on /contact page
+    pathname.startsWith('/api/blog') ||      // blog view-tracking, RSS
     pathname.startsWith('/api/cron') ||
     pathname.startsWith('/api/webhooks') ||
     pathname.startsWith('/api/health') ||

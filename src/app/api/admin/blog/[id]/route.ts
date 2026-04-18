@@ -37,6 +37,7 @@ export async function PATCH(
     meta_description,
     featured_image_url,
     reading_time_minutes,
+    access_level,
   } = body;
 
   const updates: Record<string, unknown> = {};
@@ -65,6 +66,12 @@ export async function PATCH(
   if (meta_description !== undefined) updates.meta_description = meta_description;
   if (featured_image_url !== undefined) updates.featured_image_url = featured_image_url;
   if (reading_time_minutes !== undefined) updates.reading_time_minutes = reading_time_minutes;
+  if (access_level !== undefined) {
+    if (!['public', 'registered'].includes(access_level)) {
+      return NextResponse.json({ error: 'Invalid access_level' }, { status: 400 });
+    }
+    updates.access_level = access_level;
+  }
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });

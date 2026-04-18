@@ -50,6 +50,7 @@ const CreatePostSchema = z.object({
   meta_description: z.string().max(500).optional().nullable(),
   featured_image_url: z.string().url().optional().nullable(),
   reading_time_minutes: z.number().int().positive().optional().nullable(),
+  access_level: z.enum(['public', 'registered']).default('public'),
 });
 
 // POST /api/admin/blog — create a new post
@@ -93,6 +94,7 @@ export async function POST(req: NextRequest) {
     author_name: fields.author_name ?? null,
     status: fields.status,
     featured: fields.featured,
+    access_level: fields.access_level,
     tags: fields.tags ?? null,
     meta_title: fields.meta_title ?? null,
     meta_description: fields.meta_description ?? null,

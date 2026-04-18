@@ -20,6 +20,7 @@ export type BlogPost = {
   category_id: string | null;
   category_name: string | null;
   category_slug: string | null;
+  access_level?: 'public' | 'registered';
   // Extended content fields (present when editing a post)
   content?: string | null;
   excerpt?: string | null;

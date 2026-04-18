@@ -4,12 +4,15 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { ArrowLeft, Calendar, User, Tag, Clock } from 'lucide-react';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { MarkdownRenderer } from '@/components/blog/MarkdownRenderer';
+import { createClient } from '@/lib/supabase/server';
+import { ArticleBody } from '@/components/blog/ArticleBody';
 import { TableOfContents } from '@/components/blog/TableOfContents';
+import { BlogSidebarCTA } from '@/components/blog/BlogSidebarCTA';
 import { ReadingProgress } from '@/components/blog/ReadingProgress';
 import { ShareButtons } from '@/components/blog/ShareButtons';
 import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { ViewTracker } from '@/components/blog/ViewTracker';
+import { UniversalCaptureForm } from '@/components/growth/UniversalCaptureForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +34,7 @@ interface BlogPost {
   meta_description: string | null;
   canonical_url: string | null;
   category_id: string | null;
+  access_level: 'public' | 'registered';
   category: { name: string; slug: string } | null;
 }
 
@@ -44,7 +48,7 @@ async function getPost(slug: string): Promise<BlogPost | null> {
       .select(`
         id, slug, title, excerpt, content, featured_image_url,
         published_at, updated_at, author_name, reading_time_minutes, tags,
-        meta_title, meta_description, canonical_url, category_id,
+        meta_title, meta_description, canonical_url, category_id, access_level,
         blog_categories ( name, slug )
       `)
       .eq('slug', slug)
@@ -55,6 +59,7 @@ async function getPost(slug: string): Promise<BlogPost | null> {
 
     return {
       ...data,
+      access_level: (data.access_level as 'public' | 'registered') ?? 'public',
       category: Array.isArray(data.blog_categories)
         ? (data.blog_categories[0] ?? null)
         : (data.blog_categories as { name: string; slug: string } | null),
@@ -156,9 +161,16 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [post, adjacent] = await Promise.all([getPost(slug), getAdjacentPosts(slug)]);
+  const [post, adjacent, supabase] = await Promise.all([
+    getPost(slug),
+    getAdjacentPosts(slug),
+    createClient(),
+  ]);
 
   if (!post) notFound();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const isAuthenticated = !!user;
 
   const _envUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteUrl =
@@ -167,7 +179,7 @@ export default async function BlogPostPage({
   const content = post.content ?? '';
 
   // JSON-LD structured data
-  const jsonLd = {
+  const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
@@ -184,6 +196,14 @@ export default async function BlogPostPage({
       url: siteUrl,
     },
     url: postUrl,
+    ...(post.access_level === 'registered' && {
+      isAccessibleForFree: false,
+      hasPart: {
+        '@type': 'WebPageElement',
+        isAccessibleForFree: false,
+        cssSelector: '.paywall-gate',
+      },
+    }),
   };
 
   return (
@@ -210,7 +230,7 @@ export default async function BlogPostPage({
           Back to blog
         </Link>
 
-        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-16">
+        <div className="grid lg:grid-cols-[1fr_280px] lg:gap-16">
           {/* ── Main content ── */}
           <article>
             {/* Hero image */}
@@ -271,8 +291,13 @@ export default async function BlogPostPage({
               <ShareButtons url={postUrl} title={post.title} />
             </div>
 
-            {/* Content */}
-            <MarkdownRenderer content={content} />
+            {/* Content — SEO-safe gate applied client-side when access_level === 'registered' */}
+            <ArticleBody
+              content={content}
+              accessLevel={post.access_level}
+              isAuthenticated={isAuthenticated}
+              categorySlug={post.category?.slug ?? null}
+            />
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
@@ -285,6 +310,19 @@ export default async function BlogPostPage({
                     #{tag}
                   </span>
                 ))}
+              </div>
+            )}
+
+            {/* End-of-post email CTA (only for public posts) */}
+            {post.access_level === 'public' && (
+              <div className="mt-10 rounded-2xl border border-border bg-muted/40 p-6 sm:p-8">
+                <p className="text-lg font-semibold text-foreground mb-1">
+                  Stay in the loop
+                </p>
+                <p className="text-sm text-muted-foreground mb-5">
+                  Get the latest API insights, tutorials, and product updates — no spam.
+                </p>
+                <UniversalCaptureForm source="blog" variant="inline" />
               </div>
             )}
 
@@ -326,9 +364,10 @@ export default async function BlogPostPage({
             </div>
           </article>
 
-          {/* ── Sidebar (TOC) ── */}
+          {/* ── Sidebar (TOC + CTA) ── */}
           <aside>
             <TableOfContents content={content} />
+            <BlogSidebarCTA />
           </aside>
         </div>
       </div>

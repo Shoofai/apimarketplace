@@ -44,6 +44,7 @@ const schema = z.object({
   author_name: z.string().max(200).optional().nullable(),
   status: z.enum(['draft', 'published', 'archived']),
   featured: z.boolean(),
+  access_level: z.enum(['public', 'registered']),
   tags_raw: z.string().optional(), // comma-separated tags
   meta_title: z.string().max(200).optional().nullable(),
   meta_description: z.string().max(500).optional().nullable(),
@@ -88,6 +89,7 @@ export function PostEditor({ post, categories, onClose, onSaved }: PostEditorPro
       author_name: post?.author_name ?? 'LukeAPI Team',
       status: (post?.status as 'draft' | 'published' | 'archived') ?? 'draft',
       featured: post?.featured ?? false,
+      access_level: ((post as any)?.access_level as 'public' | 'registered') ?? 'public',
       tags_raw: (post as any)?.tags?.join(', ') ?? '',
       meta_title: (post as any)?.meta_title ?? '',
       meta_description: (post as any)?.meta_description ?? '',
@@ -99,6 +101,7 @@ export function PostEditor({ post, categories, onClose, onSaved }: PostEditorPro
   const watchedContent = watch('content') ?? '';
   const watchedFeatured = watch('featured');
   const watchedStatus = watch('status');
+  const watchedAccessLevel = watch('access_level');
 
   const estimatedReadingTime = estimateReadingTime(watchedContent);
 
@@ -132,6 +135,7 @@ export function PostEditor({ post, categories, onClose, onSaved }: PostEditorPro
         author_name: values.author_name || null,
         status: values.status,
         featured: values.featured,
+        access_level: values.access_level,
         tags,
         meta_title: values.meta_title || null,
         meta_description: values.meta_description || null,
@@ -289,6 +293,26 @@ export function PostEditor({ post, categories, onClose, onSaved }: PostEditorPro
                     Featured post
                   </Label>
                 </div>
+              </div>
+
+              {/* Access level */}
+              <div className="space-y-1.5">
+                <Label>Access level</Label>
+                <Select
+                  defaultValue={watchedAccessLevel}
+                  onValueChange={(v) => setValue('access_level', v as 'public' | 'registered')}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">🌐 Public — visible to everyone</SelectItem>
+                    <SelectItem value="registered">🔒 Members only — free account required</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Members-only posts show full content in the HTML (for SEO) but display a sign-up gate to signed-out visitors.
+                </p>
               </div>
 
               {/* Excerpt */}

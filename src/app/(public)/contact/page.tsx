@@ -102,8 +102,8 @@ export default async function ContactPage() {
                 <Link href="/security" className="text-primary hover:underline">
                   Security & Compliance
                 </Link>
-                <Link href="/directory" className="text-primary hover:underline">
-                  API Directory
+                <Link href="/help" className="text-primary hover:underline">
+                  Help Center
                 </Link>
               </div>
             </div>
