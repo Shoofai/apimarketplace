@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getSiteMode } from '@/lib/settings/site-mode';
 import { getPlatformName } from '@/lib/settings/platform-name';
 import { WaitlistSignupForm } from '@/components/prelaunch/WaitlistSignupForm';
+import PlatformLogo from '@/components/PlatformLogo';
 import {
   Wrench,
   ArrowRight,
@@ -75,12 +76,9 @@ export default async function PrelaunchPage() {
 
       {/* Nav */}
       <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center">
-            <Zap className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-white font-bold text-lg">{name}</span>
-        </div>
+        <Link href="/" aria-label={`${name} home`}>
+          <PlatformLogo height={36} variant="dark" />
+        </Link>
         <div className="flex items-center gap-6">
           <Link href="/pricing" className="hidden sm:block text-sm text-indigo-300/70 hover:text-indigo-200 transition-colors">Pricing</Link>
           <Link href="/blog" className="hidden sm:block text-sm text-indigo-300/70 hover:text-indigo-200 transition-colors">Blog</Link>
