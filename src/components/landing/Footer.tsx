@@ -238,7 +238,15 @@ export default function Footer() {
           {/* Copyright + social */}
           <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-6 dark:border-gray-800 sm:flex-row">
             <p className="text-sm text-gray-500 dark:text-gray-500">
-              © {new Date().getFullYear()} {platformName}. All rights reserved.
+              © {new Date().getFullYear()} {platformName}. All rights reserved.{' '}
+              <a
+                href="https://www.gradecircle.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              >
+                A GradeCircle product.
+              </a>
             </p>
             <div className="flex gap-4">
               {[

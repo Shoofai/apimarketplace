@@ -72,7 +72,15 @@ export function PrelaunchFooter({ platformName }: { platformName: string }) {
         {/* Bottom: copyright + legal */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-border pt-6">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} {platformName}. All rights reserved.
+            © {new Date().getFullYear()} {platformName}. All rights reserved.{' '}
+              <a
+                href="https://www.gradecircle.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors"
+              >
+                A GradeCircle product.
+              </a>
           </p>
           <nav className="flex flex-wrap items-center justify-center text-xs text-muted-foreground">
             {LEGAL_LINKS.map(({ label, href }) => (

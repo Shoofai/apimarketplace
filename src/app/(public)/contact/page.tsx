@@ -137,7 +137,15 @@ export default async function ContactPage() {
           </div>
 
           <p className="mt-8 text-sm text-muted-foreground">
-            © {new Date().getFullYear()} {platformName}. All rights reserved.
+            © {new Date().getFullYear()} {platformName}. All rights reserved.{' '}
+            <a
+              href="https://www.gradecircle.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+            >
+              A GradeCircle product.
+            </a>
           </p>
         </div>
       </main>

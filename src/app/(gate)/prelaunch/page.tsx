@@ -236,7 +236,15 @@ export default async function PrelaunchPage() {
           {/* Bottom row: copyright + legal */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/5 pt-5">
             <p className="text-xs text-indigo-500/50">
-              © {new Date().getFullYear()} {name}. All rights reserved.
+              © {new Date().getFullYear()} {name}. All rights reserved.{' '}
+              <a
+                href="https://www.gradecircle.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-indigo-300 transition-colors"
+              >
+                A GradeCircle product.
+              </a>
             </p>
             <nav className="flex flex-wrap items-center justify-center text-xs text-indigo-400/50">
               <Link href="/legal/privacy" className="px-3 py-1 hover:text-indigo-300 transition-colors">Privacy Policy</Link>
